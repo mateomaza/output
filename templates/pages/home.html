@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+Post
+{% endblock head_title %}
+
+{% block content %}
+
+<div class='row text-center mb-4'>
+    <div class='col'>
+        <h2>Welcome to 'Output'</h2>
+    </div>
+</div>
+
+<div class='row mb-5'>
+    <div class='col-10 col-md-4 mx-auto mb-3'>
+        <form id='postForm' class='form' method='POST' action='/post/create'>
+            {% csrf_token %}
+            <textarea id='input' class='form-control mb-2' name='content' required='required'
+                placeholder='Give your thoughts...'></textarea>
+            <button type='submit' class='btn btn-primary'>Publish</button>
+        </form>
+    </div>
+</div>
+
+<div class='row' id='posts'>
+    Loading...
+</div>
+
+<script>
+
+</script>
+
+<script>
+
+    const postsElement = document.getElementById('posts')
+    const postClasses = `class='col-12 col-md-10 border rounded mx-auto mb-4 py-3'`
+
+    const xhr = new XMLHttpRequest()
+    const method = 'get'
+    const url = '/posts'
+    const responseType = 'json'
+
+    xhr.responseType = responseType
+    xhr.open(method, url)
+    xhr.onload = function () {
+        const listedData = xhr.response.dataResponse
+        let listedPosts = listedData.map(function (post) {
+            let formattedContent = `<p>${post.content}</p><div class='btn-group'>${likeButton(post)}</div>`
+            let formattedPost = `<div ${postClasses} id='${post.id}'>${formattedContent}</div>`
+            return formattedPost
+        }).join('')
+        postsElement.innerHTML = listedPosts
+    }
+    xhr.send()
+
+    $(function () {
+        $('#postForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                complete: function (xhr) {
+                    if (xhr.status === 400) {
+                        alert('Post is too long, please try again.')
+                    }
+                    if (xhr.status === 500) {
+                        alert('There was a server error, please try again.')
+                    }
+                    if (xhr.status !== 201) {
+                        return undefined
+                    }
+                    let form = e.target
+                    form.reset();
+                }
+            }).done(function (res) {
+                let newContent = `<p>${res.content}</p><div class'btn-group'>${likeButton(res)}</div>`
+                let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
+                let previousHTML = postsElement.innerHTML
+                postsElement.innerHTML = newPost + previousHTML
+            });
+        });
+    });
+
+    function buttons(action, post) {
+        const button = action = 'like' ? `onclick='handleLike(${post.id}, ${post.likes})'` : ''
+        return button
+
+    }
+
+    function likeButton(post) {
+        const action = 'like'
+        const buttonClasses = `class='btn btn-primary btn-sm'`
+        return `<button ${buttonClasses} ${buttons(action, post)}>${post.likes}&nbspLikes</button>`
+    }
+
+    function handleLike(post_id, currentCount) {
+        console.log(post_id, currentCount)
+    }
+
+</script>
+
+{% endblock content %}
