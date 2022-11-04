@@ -1,13 +1,15 @@
+from django.conf import settings
 from email.policy import default
 from django.db import models
-from django.conf import settings
 import random
 
+
+max_length = settings.MAX_TWEET_LENGTH
 
 class Post(models.Model):
     # Maps to SQL Data
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    content = models.TextField(max_length=280, default='')
+    content = models.TextField(max_length=max_length, default='')
 
     class Meta:
         ordering = ['-id']

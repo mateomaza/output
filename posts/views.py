@@ -1,19 +1,19 @@
 import random
+from telnetlib import STATUS
 from django.conf import settings
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from posts.models import Post
 from posts.forms import PostForm
 
 
 def home(request):
-    print(request.user)
     return render(request, 'pages/home.html', context={}, status=200)
 
 
 def posts_list(request):
     """
-    REST API VIEW
+    REST API View
     Consumed by JavaScript/Swift/Java/iOS/Android/ReactNative
     return json data
     """
@@ -27,7 +27,7 @@ def posts_list(request):
 
 def post_detail(request, post_id):
     """
-    REST API VIEW
+    REST API View
     Consumed by JavaScript/Swift/Java/iOS/Android/ReactNative
     return json data
     """
@@ -45,9 +45,12 @@ def post_detail(request, post_id):
 
 
 def post_create(request, *args, **kwargs):
+    """
+    REST API Create View
+    """
     user = request.user
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return HttpResponse('401 Unauthorized', status=401)
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():

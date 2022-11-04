@@ -65,7 +65,7 @@ Post
                     if (xhr.status === 400) {
                         alert('Post is too long, please try again.')
                     }
-                    if (xhr.status === 404) {
+                    if (xhr.status === 401) {
                         alert('You must login!')
                         window.location.href = '/login'
                     }
