@@ -44,7 +44,7 @@ Post
     xhr.responseType = responseType
     xhr.open(method, url)
     xhr.onload = function () {
-        const listedData = xhr.response.dataResponse
+        const listedData = xhr.response
         let listedPosts = listedData.map(function (post) {
             let formattedContent = `<p>${post.content}</p><div class='btn-group'>${likeButton(post)}</div>`
             let formattedPost = `<div ${postClasses} id='${post.id}'>${formattedContent}</div>`

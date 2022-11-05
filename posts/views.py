@@ -1,17 +1,50 @@
-import random
-from telnetlib import STATUS
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from posts.models import Post
 from posts.forms import PostForm
+from posts.serializers import PostSerializer
 
+
+allowed_hosts = settings.ALLOWED_HOSTS
 
 def home(request):
     return render(request, 'pages/home.html', context={}, status=200)
 
 
+@api_view(['GET'])
 def posts_list(request):
+    qs = Post.objects.all()
+    serializer = PostSerializer(qs, many=True)
+    return Response(serializer.data, status=200)
+
+
+@api_view(['GET'])
+def post_detail(request, post_id):
+    qs = Post.objects.filter(id=post_id)
+    if not qs.exists():
+        return Response({}, status=404)
+    obj = qs.first()
+    serializer = PostSerializer(obj)
+    return Response(serializer.data, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_create(request, *args, **kwargs):
+    serializer = PostSerializer(data=request.POST or None)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+    return Response({}, status=400)
+
+
+def posts_list_django(request):
     """
     REST API View
     Consumed by JavaScript/Swift/Java/iOS/Android/ReactNative
@@ -25,7 +58,7 @@ def posts_list(request):
     return JsonResponse(data)
 
 
-def post_detail(request, post_id):
+def post_detail_django(request, post_id):
     """
     REST API View
     Consumed by JavaScript/Swift/Java/iOS/Android/ReactNative
@@ -44,7 +77,7 @@ def post_detail(request, post_id):
     return JsonResponse(data, status=status)
 
 
-def post_create(request, *args, **kwargs):
+def post_create_django(request, *args, **kwargs):
     """
     REST API Create View
     """

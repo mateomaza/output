@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 LOGIN_URL = '/login'
-MAX_TWEET_LENGHT = 280
+MAX_TWEET_LENGTH = 280
 
 
 # Application definition
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Third-party
-    'rest_framework'
+    'rest_framework',
     # Internal
     'posts',
 ]
@@ -128,3 +128,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer'
+    ]
+}
