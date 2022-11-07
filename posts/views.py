@@ -3,12 +3,13 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from posts.models import Post
 from posts.forms import PostForm
-from posts.serializers import PostSerializer
+from posts.serializers import PostSerializer, ActionSerializer
 
 
 allowed_hosts = settings.ALLOWED_HOSTS
@@ -42,6 +43,39 @@ def post_create(request, *args, **kwargs):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)
     return Response({}, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_actions(request):
+    serializer = ActionSerializer(request.POST)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        post_id = data.get('id')
+        action = data.get('action')
+        qs = Post.objects.filter(id=post_id)
+        if not qs.exists():
+            return Response({}, status=404)
+        obj = qs.first()
+        if action == 'like':
+            obj.likes.add(request.user)
+        elif action == 'unlike':
+            obj.likes.remove(request.user)
+        elif action == 're-post':
+            # todo
+            pass
+    return Response({'message': 'Tweet removed'}, status=200)
+
+
+@api_view(['DELETE', 'POST'])
+@permission_classes([IsAuthenticated])
+def post_delete(request, post_id):
+    qs = Post.objects.filter(id=post_id)
+    if not qs.exists():
+        return Response({}, status=404)
+    obj = qs.first()
+    obj.delete()
+    return Response({'message': 'Tweet removed'}, status=200)
 
 
 def posts_list_django(request):
