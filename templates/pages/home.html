@@ -33,6 +33,23 @@ Post
 
 <script>
 
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken')
+
     const postsElement = document.getElementById('posts')
     const postClasses = `class='col-12 col-md-10 border rounded mx-auto mb-4 py-3'`
 
@@ -100,7 +117,17 @@ Post
     }
 
     function handleLike(post_id, currentCount) {
-        console.log(post_id, currentCount)
+        $.ajax({
+            url: 'post/action',
+            type: 'POST',
+            data: JSON.stringify({
+                id: post_id,
+                action: 'like'
+            }),
+            contentType: 'application/json',
+            headers: {'X-CSRFToken': csrftoken}
+        });
+        return
     }
 
 </script>

@@ -47,8 +47,8 @@ def post_create(request, *args, **kwargs):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def post_actions(request):
-    serializer = ActionSerializer(request.POST)
+def post_action(request):
+    serializer = ActionSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         data = serializer.validated_data
         post_id = data.get('id')
