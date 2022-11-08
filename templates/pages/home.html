@@ -52,6 +52,7 @@ Post
 
     const postsElement = document.getElementById('posts')
     const postClasses = `class='col-12 col-md-10 border rounded mx-auto mb-4 py-3'`
+    const buttonClasses = `class='btn btn-primary btn-sm rounded mr-1'`
 
     const xhr = new XMLHttpRequest()
     const method = 'get'
@@ -63,7 +64,8 @@ Post
     xhr.onload = function () {
         const listedData = xhr.response
         let listedPosts = listedData.map(function (post) {
-            let formattedContent = `<p>${post.content}</p><div class='btn-group'>${likeButton(post)}</div>`
+            let formattedContent = `<p>${post.content}</p><div class='btn-group'>
+                ${likeButton(post)}${unlikeButton(post)}${repostButton(post)}</div>`
             let formattedPost = `<div ${postClasses} id='${post.id}'>${formattedContent}</div>`
             return formattedPost
         }).join('')
@@ -96,7 +98,8 @@ Post
                     form.reset();
                 }
             }).done(function (res) {
-                let newContent = `<p>${res.content}</p><div class'btn-group'>${likeButton(res)}</div>`
+                let newContent = `<p>${res.content}</p><div class'btn-group'>
+                    ${likeButton(res)}${unlikeButton(res)}${repostButton(res)}</div>`
                 let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
                 let previousHTML = postsElement.innerHTML
                 postsElement.innerHTML = newPost + previousHTML
@@ -104,29 +107,45 @@ Post
         });
     });
 
-    function buttons(action, post) {
-        const button = action = 'like' ? `onclick='handleLike(${post.id}, ${post.likes})'` : ''
-        return button
-
+    function buttonActions(action, post) {
+        if (action = 'like') return `onclick='handleButtons(${post.id}, ${post.likes}, "like")'`
+        if (action = 'unlike') return `onclick='handleButtons(${post.id}, ${post.likes}, "unlike")'`
+        if (action = 'repost') return `onclick='handleButtons(${post.id}, ${post.likes}, "repost")'`
     }
 
     function likeButton(post) {
         const action = 'like'
-        const buttonClasses = `class='btn btn-primary btn-sm'`
-        return `<button ${buttonClasses} ${buttons(action, post)}>${post.likes}&nbspLikes</button>`
+        return `<button ${buttonClasses} ${buttonActions(action, post)}>${post.likes}&nbspLikes</button>`
     }
 
-    function handleLike(post_id, currentCount) {
+    function unlikeButton(post) {
+        const action = 'unlike'
+        return `<button ${buttonClasses} ${buttonActions(action, post)}>Unlike</button>`
+    }
+
+    function repostButton(post) {
+        const action = 'repost'
+        return `<button ${buttonClasses} ${buttonActions(action, post)}>Re-Post</button>`
+    }
+
+    function handleButtons(post_id, currentCount, action) {
         $.ajax({
             url: 'post/action',
             type: 'POST',
             data: JSON.stringify({
                 id: post_id,
-                action: 'like'
+                action: action
             }),
             contentType: 'application/json',
             headers: {'X-CSRFToken': csrftoken}
-        });
+            
+        }).done(function (res) {
+                let newContent = `<p>${res.content}</p><div class'btn-group'>
+                    ${likeButton(res)}${unlikeButton(res)}${repostButton(res)}</div>`
+                let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
+                let previousHTML = postsElement.innerHTML
+                postsElement.innerHTML = newPost + previousHTML
+            });
         return
     }
 

@@ -7,6 +7,8 @@
     -> User Permissions
         -> Delete
         -> Re-post
+            -> Read-only serializer
+            -> Create serializer
         -> Like & Unlike
 
 2. Users

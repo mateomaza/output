@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from posts.models import Post
 from posts.forms import PostForm
-from posts.serializers import PostSerializer, ActionSerializer
+from posts.serializers import PostSerializer, CreateSerializer, ActionSerializer
 
 
 allowed_hosts = settings.ALLOWED_HOSTS
@@ -38,7 +38,7 @@ def post_detail(request, post_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def post_create(request, *args, **kwargs):
-    serializer = PostSerializer(data=request.POST or None)
+    serializer = CreateSerializer(data=request.POST or None)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)
@@ -47,24 +47,29 @@ def post_create(request, *args, **kwargs):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def post_action(request):
-    serializer = ActionSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        data = serializer.validated_data
+def post_actions(request):
+    action_serializer = ActionSerializer(data=request.data)
+    user = request.user
+    if action_serializer.is_valid(raise_exception=True):
+        data = action_serializer.validated_data
         post_id = data.get('id')
         action = data.get('action')
+        content = data.get('content')
         qs = Post.objects.filter(id=post_id)
         if not qs.exists():
             return Response({}, status=404)
         obj = qs.first()
+        post_serializer = PostSerializer(obj)
         if action == 'like':
-            obj.likes.add(request.user)
+            obj.likes.add(user)
+            return Response(post_serializer.data, status=200)            
         elif action == 'unlike':
             obj.likes.remove(request.user)
         elif action == 're-post':
-            # todo
-            pass
-    return Response({'message': 'Tweet removed'}, status=200)
+            repost = Post.objects.create(user=user, repost=obj, content=content)
+            serializer = PostSerializer(repost)
+            return Response(serializer.data, status=200)
+        return Response({}, 200)
 
 
 @api_view(['DELETE', 'POST'])
