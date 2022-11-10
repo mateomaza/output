@@ -38,7 +38,7 @@ def post_detail(request, post_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def post_create(request, *args, **kwargs):
-    serializer = CreateSerializer(data=request.POST or None)
+    serializer = CreateSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)
@@ -47,7 +47,7 @@ def post_create(request, *args, **kwargs):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def post_actions(request):
+def post_action(request):
     action_serializer = ActionSerializer(data=request.data)
     user = request.user
     if action_serializer.is_valid(raise_exception=True):
@@ -64,10 +64,11 @@ def post_actions(request):
             obj.likes.add(user)
             return Response(post_serializer.data, status=200)            
         elif action == 'unlike':
-            obj.likes.remove(request.user)
-        elif action == 're-post':
-            repost = Post.objects.create(user=user, repost=obj, content=content)
-            serializer = PostSerializer(repost)
+            obj.likes.remove(user)
+            return Response(post_serializer.data, status=200) 
+        elif action == 'repost':
+            new_tweet = Post.objects.create(user=user, repost=obj, content=content)
+            serializer = PostSerializer(new_tweet)
             return Response(serializer.data, status=200)
         return Response({}, 200)
 

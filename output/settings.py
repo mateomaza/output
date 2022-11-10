@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 LOGIN_URL = '/login'
 MAX_TWEET_LENGTH = 280
-POST_ACTION_OPTIONS = ['like', 'unlike', 're-post']
+POST_ACTION_OPTIONS = ['like', 'unlike', 'repost']
 
 
 # Application definition

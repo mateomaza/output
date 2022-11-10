@@ -14,7 +14,7 @@ Post
 
 <div class='row mb-5'>
     <div class='col-10 col-md-4 mx-auto mb-3'>
-        <form id='postForm' class='form' method='POST' action='/post/create'>
+        <form id='postForm' class='form' method='POST' action='/posts/create/'>
             {% csrf_token %}
             <textarea id='input' class='form-control mb-2' name='content' required='required'
                 placeholder='Give your thoughts...'></textarea>
@@ -84,7 +84,7 @@ Post
                     if (xhr.status === 400) {
                         alert('Post is too long, please try again.')
                     }
-                    if (xhr.status === 401) {
+                    if (xhr.status === 403) {
                         alert('You must login!')
                         window.location.href = '/login'
                     }
@@ -108,44 +108,43 @@ Post
     });
 
     function buttonActions(action, post) {
-        if (action = 'like') return `onclick='handleButtons(${post.id}, ${post.likes}, "like")'`
-        if (action = 'unlike') return `onclick='handleButtons(${post.id}, ${post.likes}, "unlike")'`
-        if (action = 'repost') return `onclick='handleButtons(${post.id}, ${post.likes}, "repost")'`
+        if (action === 'like') return `onclick='handleButtons(${post.id}, "like")'`
+        if (action === 'unlike') return `onclick='handleButtons(${post.id}, "unlike")'`
+        if (action === 'repost') return `onclick='handleButtons(${post.id}, "repost", "${post.content}")'`
     }
 
     function likeButton(post) {
-        const action = 'like'
-        return `<button ${buttonClasses} ${buttonActions(action, post)}>${post.likes}&nbspLikes</button>`
+        return `<button ${buttonClasses} ${buttonActions('like', post)}>${post.likes}&nbspLikes</button>`
     }
 
     function unlikeButton(post) {
-        const action = 'unlike'
-        return `<button ${buttonClasses} ${buttonActions(action, post)}>Unlike</button>`
+        return `<button ${buttonClasses} ${buttonActions('unlike', post)}>Unlike</button>`
     }
 
     function repostButton(post) {
-        const action = 'repost'
-        return `<button ${buttonClasses} ${buttonActions(action, post)}>Re-Post</button>`
+        return `<button ${buttonClasses} ${buttonActions('repost', post)}>Repost</button>`
     }
 
-    function handleButtons(post_id, currentCount, action) {
+    function handleButtons(post_id, action, content) {
         $.ajax({
-            url: 'post/action',
+            url: 'posts/action/',
             type: 'POST',
             data: JSON.stringify({
                 id: post_id,
-                action: action
+                action: action,
+                content: content
             }),
             contentType: 'application/json',
-            headers: {'X-CSRFToken': csrftoken}
-            
+            headers: { 'X-CSRFToken': csrftoken }
         }).done(function (res) {
+            if (action === 'repost') {
                 let newContent = `<p>${res.content}</p><div class'btn-group'>
                     ${likeButton(res)}${unlikeButton(res)}${repostButton(res)}</div>`
                 let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
                 let previousHTML = postsElement.innerHTML
                 postsElement.innerHTML = newPost + previousHTML
-            });
+            }
+        });
         return
     }
 
