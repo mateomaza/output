@@ -76,6 +76,8 @@ Post
     $(function () {
         $('#postForm').on('submit', function (e) {
             e.preventDefault();
+            const form = e.target
+            const formData = new FormData(form)
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
@@ -96,15 +98,15 @@ Post
                     }
                     let form = e.target
                     form.reset();
-                }
+                },
             }).done(function (res) {
                 let newContent = `<p>${res.content}</p><div class'btn-group'>
                     ${likeButton(res)}${unlikeButton(res)}${repostButton(res)}</div>`
                 let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
                 let previousHTML = postsElement.innerHTML
                 postsElement.innerHTML = newPost + previousHTML
-            });
-        });
+            })
+        })
     });
 
     function buttonActions(action, post) {
@@ -126,26 +128,29 @@ Post
     }
 
     function handleButtons(post_id, action, content) {
-        $.ajax({
-            url: 'posts/action/',
-            type: 'POST',
-            data: JSON.stringify({
-                id: post_id,
-                action: action,
-                content: content
-            }),
-            contentType: 'application/json',
-            headers: { 'X-CSRFToken': csrftoken }
-        }).done(function (res) {
-            if (action === 'repost') {
-                let newContent = `<p>${res.content}</p><div class'btn-group'>
+        const data = JSON.stringify({
+            id: post_id,
+            action: action,
+            content: content
+        })
+            $.ajax({
+                url: 'posts/action/',
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                headers: { 'X-CSRFToken': csrftoken },
+                complete: function(xhr) {
+                    console.log(xhr.status)
+                }
+            }).done(function (res) {
+                if (action === 'repost') {
+                    let newContent = `<p>${res.content}</p><div class'btn-group'>
                     ${likeButton(res)}${unlikeButton(res)}${repostButton(res)}</div>`
-                let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
-                let previousHTML = postsElement.innerHTML
-                postsElement.innerHTML = newPost + previousHTML
-            }
-        });
-        return
+                    let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
+                    let previousHTML = postsElement.innerHTML
+                    postsElement.innerHTML = newPost + previousHTML
+                }
+            })
     }
 
 </script>
