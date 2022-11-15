@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9!2d!94o9rwy^c^#25$l4+7nz1ma$p3f1%l(atqt8jsysgq%gk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost', '192.168.1.10']
 LOGIN_URL = '/login'
 MAX_TWEET_LENGTH = 280
 POST_ACTION_OPTIONS = ['like', 'unlike', 'repost']
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     
     # Third-party
     'rest_framework',
+    'corsheaders',
     # Internal
     'posts',
 ]
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -130,6 +132,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:8000'
+]
+
+CORS_URLS_REGEX = r"^/api/.*$"
 
 DEFAULT_RENDERER_CLASSES = ['rest_framework.renderers.JSONRenderer']
 

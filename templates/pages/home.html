@@ -14,7 +14,7 @@ Post
 
 <div class='row mb-5'>
     <div class='col-10 col-md-4 mx-auto mb-3'>
-        <form id='postForm' class='form' method='POST' action='/posts/create/'>
+        <form id='postForm' class='form' method='POST' action='/api/posts/create/'>
             {% csrf_token %}
             <textarea id='input' class='form-control mb-2' name='content' required='required'
                 placeholder='Give your thoughts...'></textarea>
@@ -56,7 +56,7 @@ Post
 
     const xhr = new XMLHttpRequest()
     const method = 'get'
-    const url = '/posts'
+    const url = '/api/posts'
     const responseType = 'json'
 
     xhr.responseType = responseType
@@ -134,7 +134,7 @@ Post
             content: content
         })
             $.ajax({
-                url: 'posts/action/',
+                url: '/api/posts/action/',
                 type: 'POST',
                 data: data,
                 contentType: 'application/json',
