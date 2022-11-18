@@ -1,21 +1,10 @@
 import { useState, useEffect, useId, useRef } from 'react'
 
-import { loadPosts } from '../lookup'
-
+import { createPost, loadPosts } from '../lookup'
 
 export function PostsComponent() {
 
-    return (
-        <div>
-            <PostForm id={`${postId}-post`} posts={posts} setPosts={setPosts} />
-            <PostsList />
-        </div>
-    )
-}
-
-export function PostsList() {
-
-    const postId = useId()
+    const id = useId()
     const [posts, setPosts] = useState([])
 
     useEffect(() => {
@@ -25,19 +14,32 @@ export function PostsList() {
             }
         }
         loadPosts(callback)
+
     }, [])
 
-    return posts.map((post, index) => {
-        console.log(post)
-        return <Post id={`${postId}-post`} post={post} key={index} />
-    })
+    const addPost = (content) => {
+        const key = posts.length
+        const newPost = { id, ...content, key }
+        createPost(newPost, (response, status) => {
+            if (status === 201) {
+                setPosts([response, ...posts])
+            } else {
+                alert('An error has occured, please try again.')
+            }
+        })
+    }
+
+    return (
+        <div>
+            <PostForm onAdd={addPost} />
+            {posts.map((post, index) => {
+                return <Post id={id} post={post} key={index} />
+            })}
+        </div>
+    )
 }
 
-
-
-
-
-export function Post({ id, post }) {
+function Post({ id, post }) {
     return (
         <div className='col-10 col-md-6 mx-auto my-5 py-5 border bg-white text-dark'>
             <p>{id} - {post.content}</p>
@@ -50,7 +52,7 @@ export function Post({ id, post }) {
     )
 }
 
-export function Button({ post, display }) {
+function Button({ post, display }) {
 
     const [currentLikes, setLikes] = useState(post.likes)
     const [hasLike, toggleLike] = useState(false)
@@ -73,10 +75,8 @@ export function Button({ post, display }) {
     }
 }
 
-export function PostForm({ id, posts}) {
+function PostForm({ onAdd }) {
 
-    const postId = useId()
-    const [posts, setPosts] = useState([])
     const inputRef = useRef()
 
     const handleSubmit = (e) => {
@@ -88,9 +88,8 @@ export function PostForm({ id, posts}) {
             alert('Nothing to post :(')
             return
         }
-        const key = posts.length + 1
-        const newPost = { id, content, key, likes: 0 }
-        setPosts(...posts, newPost)
+
+        onAdd({ content })
 
         inputRef.current.value = ''
     }
@@ -99,7 +98,7 @@ export function PostForm({ id, posts}) {
     return (
         <div className='col-12 mb-3'>
             <form onSubmit={handleSubmit}>
-                <textarea ref={inputRef} className='form-control' name='post'>123</textarea>
+                <textarea ref={inputRef} className='form-control' name='post'></textarea>
                 <button type='submit' className='btn btn-primary my-3'>Post</button>
             </form>
         </div>

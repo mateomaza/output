@@ -2,7 +2,6 @@ import './App.css';
 import { PostsComponent } from './posts/components';
 
 
-
 function App() {
   return <div className="App">
     <header className="App-header">

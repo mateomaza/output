@@ -1,8 +1,6 @@
-import { Post, PostForm, PostsList, Button } from "./components";
+import { PostsComponent } from "./components";
 
 export {
-    Post,
-    PostForm,
-    PostsList,
-    Button
+    PostsComponent,
+
 }

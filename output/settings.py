@@ -127,6 +127,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "static-root"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -140,11 +146,15 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_URLS_REGEX = r"^/api/.*$"
 
+DEFAULT_AUTHENTICATION_CLASSES = ['rest_framework.authentication.SessionAuthentication']
+
 DEFAULT_RENDERER_CLASSES = ['rest_framework.renderers.JSONRenderer']
 
 if DEBUG:
     DEFAULT_RENDERER_CLASSES += ['rest_framework.renderers.BrowsableAPIRenderer']
+    DEFAULT_AUTHENTICATION_CLASSES += ['posts.rest_api.dev.DevAuthentication']
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': DEFAULT_AUTHENTICATION_CLASSES,
     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
 }

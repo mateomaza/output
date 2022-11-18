@@ -37,7 +37,7 @@ def post_detail(request, post_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def post_create(request, *args, **kwargs):
-    serializer = CreateSerializer(data=request.POST)
+    serializer = CreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)
