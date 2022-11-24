@@ -62,9 +62,6 @@ def post_action(request):
         if action == 'like':
             obj.likes.add(user)
             return Response(post_serializer.data, status=200)            
-        elif action == 'unlike':
-            obj.likes.remove(user)
-            return Response(post_serializer.data, status=200) 
         elif action == 'repost':
             new_tweet = Post.objects.create(user=user, repost=obj, content=content)
             serializer = PostSerializer(new_tweet)

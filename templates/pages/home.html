@@ -65,7 +65,7 @@ Post
         const listedData = xhr.response
         let listedPosts = listedData.map(function (post) {
             let formattedContent = `<p>${post.content}</p><div class='btn-group'>
-                ${likeButton(post)}${unlikeButton(post)}${repostButton(post)}</div>`
+                ${likeButton(post)}${repostButton(post)}</div>`
             let formattedPost = `<div ${postClasses} id='${post.id}'>${formattedContent}</div>`
             return formattedPost
         }).join('')
@@ -101,7 +101,7 @@ Post
                 },
             }).done(function (res) {
                 let newContent = `<p>${res.content}</p><div class'btn-group'>
-                    ${likeButton(res)}${unlikeButton(res)}${repostButton(res)}</div>`
+                    ${likeButton(res)}${repostButton(res)}</div>`
                 let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
                 let previousHTML = postsElement.innerHTML
                 postsElement.innerHTML = newPost + previousHTML
@@ -111,16 +111,11 @@ Post
 
     function buttonActions(action, post) {
         if (action === 'like') return `onclick='handleButtons(${post.id}, "like")'`
-        if (action === 'unlike') return `onclick='handleButtons(${post.id}, "unlike")'`
         if (action === 'repost') return `onclick='handleButtons(${post.id}, "repost", "${post.content}")'`
     }
 
     function likeButton(post) {
         return `<button ${buttonClasses} ${buttonActions('like', post)}>${post.likes}&nbspLikes</button>`
-    }
-
-    function unlikeButton(post) {
-        return `<button ${buttonClasses} ${buttonActions('unlike', post)}>Unlike</button>`
     }
 
     function repostButton(post) {
@@ -145,7 +140,7 @@ Post
             }).done(function (res) {
                 if (action === 'repost') {
                     let newContent = `<p>${res.content}</p><div class'btn-group'>
-                    ${likeButton(res)}${unlikeButton(res)}${repostButton(res)}</div>`
+                    ${likeButton(res)}${repostButton(res)}</div>`
                     let newPost = `<div ${postClasses} id=${res.id}>${newContent}</div>`
                     let previousHTML = postsElement.innerHTML
                     postsElement.innerHTML = newPost + previousHTML

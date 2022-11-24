@@ -1,6 +1,7 @@
-import { loadPosts, createPost } from "./components";
+import { loadPosts, createPost, actionPost } from "./components";
 
 export {
     loadPosts,
-    createPost
+    createPost,
+    actionPost
 }

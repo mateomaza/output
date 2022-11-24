@@ -14,7 +14,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function lookup(method, endpoint, callback, data) {
+function backendLookup(method, endpoint, callback, data) {
     const parsedData = JSON.stringify(data)
     const xhr = new XMLHttpRequest()
     const url = `http://localhost:8000/api${endpoint}`
@@ -34,10 +34,14 @@ function lookup(method, endpoint, callback, data) {
 }
 
 export function loadPosts(callback) {
-    lookup('GET', '/posts/', callback)
+    backendLookup('GET', '/posts/', callback)
 }
 
 export function createPost(newPost, callback) {
-    lookup('POST', '/posts/create/', callback, newPost )
+    backendLookup('POST', '/posts/create/', callback, newPost )
+}
 
+export function actionPost(id, action, callback) {
+    const data =  {id: id, action: action}
+    backendLookup('POST', '/posts/action/', callback, data )
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useId, useRef } from 'react'
 
-import { createPost, loadPosts } from '../lookup'
+import { loadPosts, createPost, actionPost } from '../lookup'
 
 export function PostsComponent() {
 
@@ -42,36 +42,52 @@ export function PostsComponent() {
 function Post({ id, post }) {
     return (
         <div className='col-10 col-md-6 mx-auto my-5 py-5 border bg-white text-dark'>
+            <div>
             <p>{id} - {post.content}</p>
+            {post.original && <div><Post post={post}/></div>} 
+            </div>
             <div className='btn btn-group'>
-                <Button post={post} display='Likes' />
-                <Button post={post} display='Unlike' />
-                <Button post={post} display='Repost' />
+                <Button post={post} action={'like'} />
+                <Button post={post} action={'repost'} />
             </div>
         </div>
     )
 }
 
-function Button({ post, display }) {
+function Button({ post, action }) {
 
     const [currentLikes, setLikes] = useState(post.likes)
-    const [hasLike, toggleLike] = useState(false)
+    // const [hasLiked, toggleLike] = useState(false)
 
-    function likeUpdate() {
-        if (hasLike === false) {
-            setLikes((prevCount) => prevCount + 1)
-            toggleLike(true)
-        } else {
-            setLikes((prevCount) => prevCount - 1)
-            toggleLike(false)
+    //const likeDisplay = post.likes === 1 ? 'Like' : 'Likes'
+    //const [initialDisplay, toggleDisplay] = useState(likeDisplay)
+
+    //function displayUpdate() {
+        //if (currentLikes === 0 || (hasLiked === true && currentLikes === 2)) {
+            //toggleDisplay('Like')
+        
+        //if (currentLikes === 1) {
+            //toggleDisplay('Likes')
+        //}
+    //}
+
+    const actionHandler = (response, status) => {
+        if (action === 'like' && status === 200) {
+            setLikes(response.likes)
         }
+
     }
 
-    if (display === 'Likes') {
-        return <button className='btn btn-primary btn-sm' onClick={likeUpdate}>{currentLikes}&nbsp;{display}</button>
+    function handleClick() {
+        actionPost(post.id, action, actionHandler)
+    }
+
+    if (action === 'like') {
+        return <button className='btn btn-primary btn-sm' onClick={() => { handleClick()}}>
+            {currentLikes}&nbsp;Likes</button>
 
     } else {
-        return <button className='btn btn-primary btn-sm'>{display}</button>
+        return <button className='btn btn-primary btn-sm'>Repost</button>
     }
 }
 
