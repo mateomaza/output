@@ -2,8 +2,7 @@ import { useState, useEffect, useId, useRef } from 'react'
 
 import { loadPosts, createPost, postAction } from '../lookup'
 
-export function PostsComponent() {
-
+export function PostsComponent(props) {
     const id = useId()
     const [posts, setPosts] = useState([])
 

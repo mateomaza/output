@@ -33,8 +33,12 @@ function backendLookup(method, endpoint, callback, data) {
     xhr.send(parsedData)
 }
 
-export function loadPosts(callback) {
-    backendLookup('GET', '/posts/', callback)
+export function loadPosts(username, callback) {
+    let endpoint = '/posts/'
+    if (username) {
+        endpoint = `/posts/?username=${username}`
+    }
+    backendLookup('GET', endpoint, callback)
 }
 
 export function createPost(newPost, callback) {

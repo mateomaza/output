@@ -1,6 +1,7 @@
 import './App.css';
 import { PostsComponent } from './posts/components';
 
+const root = document.getElementById('root')
 
 function App() {
   return <div className="App">
@@ -8,7 +9,7 @@ function App() {
       <p>
         Edit <code>src/App.js</code> and save to reload.
       </p>
-      <PostsComponent />
+      <PostsComponent {...(root.dataset)}/>
     </header>
   </div>
 }

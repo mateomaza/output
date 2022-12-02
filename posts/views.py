@@ -20,6 +20,9 @@ def home(request):
 @api_view(['GET'])
 def posts_list(request):
     qs = Post.objects.all()
+    username = request.GET.get('username')
+    if username != None:
+        qs = qs.filter(user__username__iexact=username)
     serializer = PostSerializer(qs, many=True)
     return Response(serializer.data, status=200)
 
