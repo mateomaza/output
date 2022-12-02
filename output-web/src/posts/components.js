@@ -1,6 +1,6 @@
 import { useState, useEffect, useId, useRef } from 'react'
 
-import { loadPosts, createPost, actionPost } from '../lookup'
+import { loadPosts, createPost, postAction } from '../lookup'
 
 export function PostsComponent() {
 
@@ -29,65 +29,83 @@ export function PostsComponent() {
         })
     }
 
+    const handleRepost = (repost) => {
+        setPosts([repost, ...posts])
+    }
+
     return (
         <div>
             <PostForm onAdd={addPost} />
-            {posts.map((post, index) => {
-                return <Post id={id} post={post} key={index} />
-            })}
+            <PostsList id={id} posts={posts} onRepost={handleRepost} />
         </div>
     )
 }
 
-function Post({ id, post }) {
+function PostsList({ id, posts, onRepost }) {
+    return (
+        <>
+            {posts.map((post, index) => {
+                return <Post id={id} post={post} key={index} onRepost={onRepost} />
+            })}
+        </>
+    )
+}
+
+function Post({ id, post, onRepost, hideActions }) {
+
+    const [action, setAction] = useState(post)
+
+    const handleAction = (newAction, status) => {
+        if (status === 200) {
+            setAction(newAction)
+        } else if (status === 201 && onRepost) {
+            onRepost(newAction)
+        }
+    }
+
     return (
         <div className='col-10 col-md-6 mx-auto my-5 py-5 border bg-white text-dark'>
             <div>
-            <p>{id} - {post.content}</p>
-            {post.original && <div><Post post={post}/></div>} 
+                <p>{id} - {post.content}</p>
+                <Repost post={post} />
             </div>
-            <div className='btn btn-group'>
-                <Button post={post} action={'like'} />
-                <Button post={post} action={'repost'} />
-            </div>
+            {(action && hideActions !== true) && <div className='btn btn-group'>
+                <Button post={action} action={'like'} onAction={handleAction} />
+                <Button post={action} action={'repost'} onAction={handleAction} />
+            </div>}
         </div>
     )
 }
 
-function Button({ post, action }) {
+function Repost({ post }) {
+    return post.is_repost === true ? <div className='row'>
+        <div className='col-11 mx-auto p-3 border rounded'>
+            <p className='mb-0 text-muted small'>Repost</p>
+            <Post className={' '} post={post.original} hideActions />
+        </div>
+    </div> : null
+}
 
-    const [currentLikes, setLikes] = useState(post.likes)
-    // const [hasLiked, toggleLike] = useState(false)
+function Button({ post, action, onAction }) {
 
-    //const likeDisplay = post.likes === 1 ? 'Like' : 'Likes'
-    //const [initialDisplay, toggleDisplay] = useState(likeDisplay)
+    const likes = post.likes ? post.likes : 0
 
-    //function displayUpdate() {
-        //if (currentLikes === 0 || (hasLiked === true && currentLikes === 2)) {
-            //toggleDisplay('Like')
-        
-        //if (currentLikes === 1) {
-            //toggleDisplay('Likes')
-        //}
-    //}
-
-    const actionHandler = (response, status) => {
-        if (action === 'like' && status === 200) {
-            setLikes(response.likes)
+    const handleBackend = (response, status) => {
+        if ((status === 200 || status === 201) && onAction) {
+            onAction(response, status)
         }
-
     }
 
-    function handleClick() {
-        actionPost(post.id, action, actionHandler)
+    const handleClick = () => {
+        postAction(post.id, post.content, action, handleBackend)
     }
 
     if (action === 'like') {
-        return <button className='btn btn-primary btn-sm' onClick={() => { handleClick()}}>
-            {currentLikes}&nbsp;Likes</button>
+        return <button className='btn btn-primary btn-sm' onClick={handleClick}>
+            {likes}&nbsp;Likes</button>
 
-    } else {
-        return <button className='btn btn-primary btn-sm'>Repost</button>
+    } else if (action === 'repost') {
+        return <button className='btn btn-primary btn-sm' onClick={handleClick}>Repost</button>
     }
 }
 
@@ -97,19 +115,14 @@ function PostForm({ onAdd }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-
         const content = inputRef.current.value
-
         if (!content) {
             alert('Nothing to post :(')
             return
         }
-
         onAdd({ content })
-
         inputRef.current.value = ''
     }
-
 
     return (
         <div className='col-12 mb-3'>
@@ -120,4 +133,19 @@ function PostForm({ onAdd }) {
         </div>
     )
 }
+
+
+// const [hasLiked, toggleLike] = useState(false)
+
+    //const likeDisplay = post.likes === 1 ? 'Like' : 'Likes'
+    //const [initialDisplay, toggleDisplay] = useState(likeDisplay)
+
+    //function displayUpdate() {
+    //if (currentLikes === 0 || (hasLiked === true && currentLikes === 2)) {
+    //toggleDisplay('Like')
+
+    //if (currentLikes === 1) {
+    //toggleDisplay('Likes')
+    //}
+    //}
 

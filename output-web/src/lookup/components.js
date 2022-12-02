@@ -28,7 +28,7 @@ function backendLookup(method, endpoint, callback, data) {
         callback(xhr.response, xhr.status)
     }
     xhr.onerror = function () {
-        callback({message: 'The request was an error'}, 400)
+        callback({ message: 'The request was an error' }, 400)
     }
     xhr.send(parsedData)
 }
@@ -38,10 +38,11 @@ export function loadPosts(callback) {
 }
 
 export function createPost(newPost, callback) {
-    backendLookup('POST', '/posts/create/', callback, newPost )
+    backendLookup('POST', '/posts/create/', callback, newPost)
 }
 
-export function actionPost(id, action, callback) {
-    const data =  {id: id, action: action}
-    backendLookup('POST', '/posts/action/', callback, data )
+export function postAction(id, content, action, callback) {
+    const data = { id: id, content: content, action: action }
+    console.log(data)
+    backendLookup('POST', '/posts/action/', callback, data)
 }

@@ -31,3 +31,4 @@ Long term todos:
 - Notifications
 - DM
 - Explore -> finding hastags
+- Stars for memes
