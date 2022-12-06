@@ -1,7 +1,8 @@
-import { loadPosts, createPost, postAction } from "./components";
+import { loadPosts, createPost, postAction, postDetail } from "./components";
 
 export {
     loadPosts,
     createPost,
-    postAction
+    postAction,
+    postDetail
 }

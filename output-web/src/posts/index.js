@@ -1,6 +1,6 @@
-import { PostsComponent } from "./components";
+import { PostsComponent, PostDetail } from "./components";
 
 export {
     PostsComponent,
-
+    PostDetail
 }

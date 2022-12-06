@@ -64,7 +64,7 @@ Post
     xhr.onload = function () {
         const listedData = xhr.response
         let listedPosts = listedData.map(function (post) {
-            let formattedContent = `<p>${post.content}</p><div class='btn-group'>
+            let formattedContent = `<p>${post.id}${post.content}</p><div class='btn-group'>
                 ${likeButton(post)}${repostButton(post)}</div>`
             let formattedPost = `<div ${postClasses} id='${post.id}'>${formattedContent}</div>`
             return formattedPost

@@ -1,8 +1,9 @@
 import { useState, useEffect, useId, useRef } from 'react'
 
-import { loadPosts, createPost, postAction } from '../lookup'
+import { loadPosts, createPost, postAction, postDetail } from '../lookup'
 
-export function PostsComponent(props) {
+export function PostsComponent({ username, permission }) {
+
     const id = useId()
     const [posts, setPosts] = useState([])
 
@@ -12,9 +13,9 @@ export function PostsComponent(props) {
                 setPosts(response)
             }
         }
-        loadPosts(callback)
+        loadPosts(username, callback)
 
-    }, [])
+    }, [username])
 
     const addPost = (content) => {
         const key = posts.length
@@ -34,7 +35,7 @@ export function PostsComponent(props) {
 
     return (
         <div>
-            <PostForm onAdd={addPost} />
+            <PostForm onAdd={addPost} permission={permission} />
             <PostsList id={id} posts={posts} onRepost={handleRepost} />
         </div>
     )
@@ -108,9 +109,10 @@ function Button({ post, action, onAction }) {
     }
 }
 
-function PostForm({ onAdd }) {
+function PostForm({ onAdd, permission }) {
 
     const inputRef = useRef()
+    const canPost = permission === 'yes' ? true : false
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -122,18 +124,36 @@ function PostForm({ onAdd }) {
         onAdd({ content })
         inputRef.current.value = ''
     }
-
     return (
-        <div className='col-12 mb-3'>
-            <form onSubmit={handleSubmit}>
-                <textarea ref={inputRef} className='form-control' name='post'></textarea>
-                <button type='submit' className='btn btn-primary my-3'>Post</button>
-            </form>
-        </div>
+        <>
+            {canPost === true && <div className='col-12 mb-3'>
+                <form onSubmit={handleSubmit}>
+                    <textarea ref={inputRef} className='form-control' name='post'></textarea>
+                    <button type='submit' className='btn btn-primary my-3'>Post</button>
+                </form>
+            </div>}
+        </>
     )
 }
 
-
+export function PostDetail({id, className}) {
+    const [lookup, setLookup] = useState(false)
+    const [post, setPost] = useState(null)
+    const handleLookup = (response, status) => {
+        if (status === 200) {
+            setPost(response)
+        } else {
+            alert('No post to show')
+        }
+    }
+    useEffect(() => {
+        if (lookup === false) {
+            postDetail(id, handleLookup)
+            setLookup(true)
+        }
+    }, [id, lookup, setLookup])
+    return post === null ? null : <Post post={post} className={className}/>
+}
 // const [hasLiked, toggleLike] = useState(false)
 
     //const likeDisplay = post.likes === 1 ? 'Like' : 'Likes'

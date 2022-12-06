@@ -41,12 +41,15 @@ export function loadPosts(username, callback) {
     backendLookup('GET', endpoint, callback)
 }
 
+export function postDetail(id, callback) {
+    backendLookup('GET', `/posts/${id}`, callback)
+}
+
 export function createPost(newPost, callback) {
     backendLookup('POST', '/posts/create/', callback, newPost)
 }
 
 export function postAction(id, content, action, callback) {
     const data = { id: id, content: content, action: action }
-    console.log(data)
     backendLookup('POST', '/posts/action/', callback, data)
 }
