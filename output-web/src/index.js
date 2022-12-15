@@ -13,15 +13,17 @@ root.render(
   </React.StrictMode>
 );
 
+const detailRoot = ReactDOM.createRoot(document.getElementById('details'))
 const detailElements = document.querySelectorAll('.post-detail')
 
-detailElements.forEach(container => {
-  root.render(
+detailElements.forEach((element) => {
+  detailRoot.render(
     <React.StrictMode>
-      <PostDetail {...(container.dataset)} />
+      <PostDetail {...(element.dataset)} />
     </React.StrictMode>
   );
 })
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

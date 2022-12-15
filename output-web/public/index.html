@@ -14,9 +14,8 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div class="post-detail" data-id="129" data-class-name="col-6 mx-auto"></div>
-    <div class="post-detail" data-id="128" data-class-name="col-6 mx-auto"></div>
-    <div class='d-none' id="root" data-username="mateo" data-permission="yes"></div>
+    <div id="details"></div>
+    <div id="root" data-username="mateo" data-permission="yes"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -27,5 +26,18 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      var path = window.location.pathname
+      var idRegex = /(?<id>\d+)/
+      var match = path.match(idRegex)
+      if (match) {
+        id = match.groups.id
+        var root = document.getElementById('root')
+        root.className = 'd-none'
+        var detailElement = `<div class="post-detail" data-id=${id} data-class-name="col-6 mx-auto"></div>`
+        var details = document.getElementById('details')
+        details.innerHTML = detailElement
+      }
+    </script>
   </body>
 </html>
