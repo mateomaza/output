@@ -6,6 +6,10 @@ Post
 
 {% block content %}
 
+<div id='feed'>
+
+<div id="details"></div>
+
 <div class='row text-center mb-4'>
     <div class='col'>
         <h2>Welcome to 'Output'</h2>
@@ -23,13 +27,11 @@ Post
     </div>
 </div>
 
+</div>
+
 <div class='row' id='posts'>
     Loading...
 </div>
-
-<script>
-
-</script>
 
 <script>
 
@@ -122,9 +124,9 @@ Post
         return `<button ${buttonClasses} ${buttonActions('repost', post)}>Repost</button>`
     }
 
-    function handleButtons(post_id, action, content) {
+    function handleButtons(id, action, content) {
         const data = JSON.stringify({
-            id: post_id,
+            id: id,
             action: action,
             content: content
         })

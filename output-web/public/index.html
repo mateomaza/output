@@ -28,13 +28,13 @@
     -->
     <script>
       var path = window.location.pathname
-      var idRegex = /(?<id>\d+)/
+      var idRegex = /(?<post_id>\d+)/
       var match = path.match(idRegex)
       if (match) {
-        id = match.groups.id
+        post_id = match.groups.post_id
         var root = document.getElementById('root')
         root.className = 'd-none'
-        var detailElement = `<div class="post-detail" data-id=${id} data-class-name="col-6 mx-auto"></div>`
+        var detailElement = `<div class="post-detail" data-id=${post_id} data-class-name="col-6 mx-auto"></div>`
         var details = document.getElementById('details')
         details.innerHTML = detailElement
       }

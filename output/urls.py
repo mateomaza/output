@@ -15,19 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from posts.views import home, posts_list
+from posts.views import posts_list, post_detail, profile
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home),
-    path('api/posts/', include('posts.urls')),
-    path('react/', TemplateView.as_view(template_name='react.html'))    
+    path('', posts_list),
+    path('<int:post_id>', post_detail),
+    path('profile/<str:username>', profile),
+    path('api/posts/', include('posts.api.urls'))   
 ]
 
 if settings.DEBUG: 
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    
-

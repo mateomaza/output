@@ -1,10 +1,10 @@
 import { useState, useEffect, useId, useRef } from 'react'
 
-import { loadPosts, createPost, postAction, postDetail } from '../lookup'
+import { loadPosts, createPost, postAction, loadDetail } from '../lookup'
 
 export function PostsComponent({ username, permission }) {
 
-    const id = useId()
+    const post_id = useId()
     const [posts, setPosts] = useState([])
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export function PostsComponent({ username, permission }) {
 
     const addPost = (content) => {
         const key = posts.length
-        const newPost = { id, ...content, key }
+        const newPost = { post_id, ...content, key }
         createPost(newPost, (response, status) => {
             if (status === 201) {
                 setPosts([response, ...posts])
@@ -34,16 +34,16 @@ export function PostsComponent({ username, permission }) {
     return (
         <div>
             <PostForm onAdd={addPost} permission={permission} />
-            <PostsList id={id} posts={posts} onRepost={handleRepost} />
+            <PostsList post_id={post_id} posts={posts} onRepost={handleRepost} />
         </div>
     )
 }
 
-function PostsList({ id, posts, onRepost }) {
+function PostsList({ post_id, posts, onRepost }) {
     return (
         <>
             {posts.map((post) => {
-                return <Post id={id} post={post} key={post.id} onRepost={onRepost} />
+                return <Post post_id={post_id} post={post} key={post.id} onRepost={onRepost} />
             })}
         </>
     )
@@ -53,9 +53,9 @@ function Post({ post, onRepost, hideActions }) {
 
     const [actionData, setAction] = useState(post)
     const path = window.location.pathname
-    const match = path.match(/(?<id>\d+)/)
-    const urlId = match !== null ? match.groups.id : null
-    const isDetail = `${urlId}` === `${post.id}`
+    const match = path.match(/(?<post_id>\d+)/)
+    const url_id = match !== null ? match.groups.post_id : null
+    const isDetail = `${url_id}` === `${post.id}`
 
     const handleAction = (newAction, status) => {
         if (status === 200) {
@@ -75,8 +75,8 @@ function Post({ post, onRepost, hideActions }) {
             </div>
             <div className='btn btn-group'>
                 {(actionData && hideActions !== true) && <>
-                    <Button data={actionData} action={'like'} onAction={handleAction} />
-                    <Button data={actionData} action={'repost'} onAction={handleAction} />
+                    <Button data={actionData} display={'like'} onAction={handleAction} />
+                    <Button data={actionData} display={'repost'} onAction={handleAction} />
                 </>}
                 {isDetail === false && <button onClick={handleLink}>View</button>}
             </div>
@@ -93,35 +93,31 @@ function Repost({ post }) {
     </div> : null
 }
 
-function Button({ data, action, onAction }) {
+function Button({ data, display, onAction }) {
 
-    const likes = data.likes ? data.likes : 0
-    const [hasLiked, toggleLike] = useState(false)
-    const likeDisplay = data.likes === 1 ? 'Like' : 'Likes'
-    const [initialDisplay, toggleDisplay] = useState(likeDisplay)
-    const [initialAction, toggleAction] = useState(action)
-
-    function likeUpdate() {
-        if (likes === 0 || (hasLiked === true && likes === 2)) {
-            toggleDisplay('Like')
-        }
-        if (likes === 1) {
-            toggleDisplay('Likes')
-        }
-    }
+    const likes = data.likes ? data.likes : 0 
+    const [likeDisplay, toggleDisplay] = useState(likes === 1 ? 'Like' : 'Likes')
+    
     const handleBackend = (response, status) => {
         if ((status === 200 || status === 201) && onAction) {
             onAction(response, status)
         }
     }
     const handleClick = () => {
-        postAction(data.id, data.content, {action}, handleBackend)
+        postAction(data.id, data.content, display, handleBackend)
     }
-    if ({action} === 'like' || 'unlike') {
-        return <button className='btn btn-primary btn-sm' onClick={handleClick && likeUpdate}>
-            {likes}&nbsp;{initialDisplay}</button>
+    const handleDisplay = () => {
+        if (likeDisplay === 'Like') {
+            toggleDisplay('Likes')
+        }
+        if (likeDisplay === 'Likes')
+        toggleDisplay('Like')
+    }
+    if (display === 'like') {
+        return <button className='btn btn-primary btn-sm' onClick={() => { handleClick(); handleDisplay();}}>
+            {likes}&nbsp;{likeDisplay}</button>
 
-    } else if (action === 'repost') {
+    } else if (display === 'repost') {
         return <button className='btn btn-primary btn-sm' onClick={handleClick}>Repost</button>
     }
 }
@@ -167,7 +163,7 @@ export function PostDetail({ id, className }) {
     }
     useEffect(() => {
         if (lookup === false) {
-            postDetail(id, handleLookup)
+            loadDetail(id, handleLookup)
             setLookup(true)
         }
     }, [id, lookup, setLookup])
@@ -175,3 +171,23 @@ export function PostDetail({ id, className }) {
     return post === null ? null : <Post post={post} className={className} />
 }
 
+/*
+const [initialAction, toggleAction] = useState(action)
+
+    const [likesCount, setLikesCount] = useState(likes)
+    const [hasLiked, toggleLike] = useState(false)
+
+    function likeUpdate() {
+        if (likes === 0 || (hasLiked === true && likes === 2)) {
+            toggleDisplay('Like')
+        }
+        if (likes === 1) {
+            toggleDisplay('Likes')
+        }
+    }
+
+    
+    const likeDisplay = data.likes === 1 ? 'Like' : 'Likes'
+    const [initialDisplay, toggleDisplay] = useState(likeDisplay)
+
+*/
