@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save 
+from django.dispatch import receiver
 
 User = settings.AUTH_USER_MODEL
 
@@ -9,8 +10,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=220, null=True, blank=True)
     bio = models.TextField(blank=True, null=True)
     
+@receiver(post_save, sender=User)
 def user_did_save(sender, instance, created, *args, **kwargs):
     if created:
         Profile.objects.get_or_create(user=instance)
-
-post_save.connect(user_did_save, sender=User)
