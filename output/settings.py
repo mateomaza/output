@@ -25,9 +25,9 @@ SECRET_KEY = 'django-insecure-9!2d!94o9rwy^c^#25$l4+7nz1ma$p3f1%l(atqt8jsysgq%gk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost', '192.168.1.10']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.10']
 LOGIN_URL = '/login'
-MAX_TWEET_LENGTH = 280
+MAX_POST_LENGTH = 280
 POST_ACTION_OPTIONS = ['like', 'unlike', 'repost']
 
 
@@ -40,11 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
     # Third-party
     'rest_framework',
     'corsheaders',
     # Internal
+    'accounts',
+    'profiles',
     'posts',
 ]
 
@@ -152,7 +153,6 @@ DEFAULT_RENDERER_CLASSES = ['rest_framework.renderers.JSONRenderer']
 
 if DEBUG:
     DEFAULT_RENDERER_CLASSES += ['rest_framework.renderers.BrowsableAPIRenderer']
-    DEFAULT_AUTHENTICATION_CLASSES += ['posts.rest_api.dev.DevAuthentication']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': DEFAULT_AUTHENTICATION_CLASSES,

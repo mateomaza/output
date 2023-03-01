@@ -7,7 +7,7 @@ from posts.views import (
     post_delete
 ) 
 
-urlpatterns = [path('', posts_list),
+urlpatterns = [path('react/', posts_list),
                path('<int:post_id>/', post_detail),
                path('create/', post_create),
                path('action/', post_action),

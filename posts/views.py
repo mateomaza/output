@@ -9,11 +9,8 @@ def home(request):
         username = request.user.username
     return render(request, 'pages/home.html', context={'username': username}, status=200)
 
-def posts_list(request):
+def local_posts_list(request):
     return render(request, 'posts/list.html')
 
-def post_detail(request, post_id):
+def local_post_detail(request, post_id):
     return render(request, 'posts/detail.html', context={'post_id': post_id})
-
-def profile(request, username):
-    return render(request, 'posts/profile.html', context={'profie_username': username})

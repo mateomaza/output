@@ -2,7 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 from .models import Post
 
-max_length = settings.MAX_TWEET_LENGTH
+max_length = settings.MAX_POST_LENGTH
 post_actions = settings.POST_ACTION_OPTIONS
 
     

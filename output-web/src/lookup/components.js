@@ -22,9 +22,15 @@ function backendLookup(method, endpoint, callback, data) {
     xhr.responseType = 'json'
     xhr.open(method, url)
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf8")
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-    xhr.setRequestHeader('X-CSRFToken', csrftoken)
+    if (csrftoken) {
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+        xhr.setRequestHeader('X-CSRFToken', csrftoken)
+    }
     xhr.onload = function () {
+        const detail = xhr.response.detail
+        if (xhr.status === 403 && detail === 'Authentication credentials were not provided.') {
+            window.location.href = '/login?showLoginRequired=true'
+        }
         callback(xhr.response, xhr.status)
     }
     xhr.onerror = function () {
@@ -49,8 +55,7 @@ export function createPost(newPost, callback) {
     backendLookup('POST', '/posts/create/', callback, newPost)
 }
 
-export function postAction(post_id, content, action, callback) {
-    const data = {id: post_id, content: content, action: action }
-    console.log(data)
+export function postAction(post_id, content, action, callback, username) {
+    const data = { id: post_id, content: content, action: action, username: username }
     backendLookup('POST', '/posts/action/', callback, data)
 }

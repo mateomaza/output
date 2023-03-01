@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div class="post-detail" data-id="{{ id }}" data-class-name="col-6 mx-auto"></div>
+<div id="root"></div>
+<div id="details">
+<div class="post-detail" data-id="{{post_id}}" data-class-name="col-6 mx-auto"></div>
+</div>
 
 {% endblock content %}
