@@ -2,8 +2,9 @@ from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 
 from ..models import Post
@@ -33,7 +34,7 @@ def post_detail(request, post_id):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])
 def post_create(request, *args, **kwargs):
     serializer = CreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
@@ -43,7 +44,7 @@ def post_create(request, *args, **kwargs):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])
 def post_action(request):
     action_serializer = ActionSerializer(data=request.data)
     user = request.user
@@ -70,7 +71,7 @@ def post_action(request):
 
 
 @api_view(['DELETE', 'POST'])
-@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])
 def post_delete(request, post_id):
     qs = Post.objects.filter(id=post_id)
     if not qs.exists():

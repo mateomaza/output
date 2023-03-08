@@ -4,7 +4,6 @@ from .models import Post
 
 max_length = settings.MAX_POST_LENGTH
 post_actions = settings.POST_ACTION_OPTIONS
-
     
 class CreateSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)

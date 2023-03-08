@@ -1,3 +1,5 @@
+! Decide if i want new users to be able to see a 'global feed'
+
 1. Posts
     -> Create
         -> Text
@@ -19,12 +21,15 @@
         -> Image
         -> Text
         -> Follow Button
+        -> Cancel-update button
     -> Feed
         -> User's feed
         -> User + who they follow
 
 3. Following / Followers
 
+
+? question about weird thing with testing using rest_framework's API client
 
 Long term todos:
 

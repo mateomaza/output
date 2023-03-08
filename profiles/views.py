@@ -16,11 +16,12 @@ def profile_detail(request, username, *args, **kwargs):
     }
     return render(request, 'profiles/detail.html', context)
 
+
 def profile_update(request, *args, **kwargs):
-    if not request.user.is_authenticated:
-        return redirect('/login?next=/profile/update')
     user = request.user
     profile = user.profile
+    if not request.user.is_authenticated:
+        return redirect('/login?next=/profile/update')
     data = {
         'first_name': user.first_name,
         'last_name': user.last_name,
@@ -31,10 +32,12 @@ def profile_update(request, *args, **kwargs):
     form = ProfileForm(request.POST or None, instance=profile, initial=data)
     if form.is_valid():
         profile_obj = form.save(commit=False)
-        bio = form.cleaned_data.get('bio')
-        location = form.cleaned_data.get('location')
-        profile_obj.bio = bio
-        profile_obj.location = location
+        first_name = form.cleaned_data.get('first_name')
+        user.first_name = first_name
+        last_name = form.cleaned_data.get('last_name')
+        user.last_name = last_name
+        email = form.cleaned_data.get('email')
+        user.email = email
         profile_obj.save()
         user.save()
     context = {
