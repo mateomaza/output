@@ -6,7 +6,10 @@ from .views import (
     post_action, 
     post_delete
 ) 
-
+"""
+CLIENT
+Base Endpoint /api/posts/
+"""
 urlpatterns = [path('', posts_list),
                path('<int:post_id>/', post_detail),
                path('create/', post_create),

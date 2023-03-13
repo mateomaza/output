@@ -17,7 +17,7 @@ class CreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This post is too long!')
         return value
     
-    
+      
 class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     original = CreateSerializer(source='repost', read_only=True)

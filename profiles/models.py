@@ -14,6 +14,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default='')
     location = models.CharField(max_length=220, null=True, blank=True)
     bio = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
     followers = models.ManyToManyField(User, related_name='following', blank=True)
     
 @receiver(post_save, sender=User)

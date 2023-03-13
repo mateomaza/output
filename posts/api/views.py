@@ -35,7 +35,7 @@ def post_detail(request, post_id):
 
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
-def post_create(request, *args, **kwargs):
+def post_create(request):
     if not request.user.is_authenticated:
         return Response({'message': 'You must login!'}, status=401)
     serializer = CreateSerializer(data=request.data)
@@ -66,10 +66,10 @@ def post_action(request):
         if action == 'like':
             obj.likes.add(user)
             return Response(post_serializer.data, status=200)
-        elif action == 'unlike':
+        if action == 'unlike':
             obj.likes.remove(user)
             return Response(post_serializer.data, status=200)
-        elif action == 'repost':
+        if action == 'repost':
             new_post = Post.objects.create(
                 user=user, repost=obj, content=content)
             serializer = PostSerializer(new_post)
@@ -129,7 +129,7 @@ def post_detail_django(request, post_id):
     return JsonResponse(data, status=status)
 
 
-def post_create_django(request, *args, **kwargs):
+def post_create_django(request):
     """
     REST API Create View
     """

@@ -5,7 +5,7 @@ from .models import Profile
 from .forms import ProfileForm
 
 
-def profile_detail(request, username, *args, **kwargs):
+def profile_detail(request, username):
     qs = Profile.objects.filter(user__username=username)
     if not qs.exists():
         raise Http404
@@ -17,7 +17,7 @@ def profile_detail(request, username, *args, **kwargs):
     return render(request, 'profiles/detail.html', context)
 
 
-def profile_update(request, *args, **kwargs):
+def profile_update(request):
     user = request.user
     profile = user.profile
     if not request.user.is_authenticated:
