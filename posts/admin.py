@@ -9,7 +9,7 @@ class PostLikeAdmin(admin.TabularInline):
 
 class PostAdmin(admin.ModelAdmin):
     inlines = [PostLikeAdmin]
-    list_display = ['__str__', 'user']
+    list_display = ['__str__', 'user', 'id']
     search_fields = ['content', 'user__username', 'user__email']
     class Meta:
         model = Post

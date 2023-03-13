@@ -30,6 +30,7 @@
 
 
 ? question about weird thing with testing using rest_framework's API client
+? Index Error handle in 'posts' views
 
 Long term todos:
 

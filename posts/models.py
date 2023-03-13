@@ -6,15 +6,15 @@ max_length = settings.MAX_POST_LENGTH
 User = settings.AUTH_USER_MODEL
 
 class PostLike(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default='')
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     
 class Post(models.Model):
     # Maps to SQL Data
-    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    user = models.ForeignKey(User, related_name='posts',on_delete=models.CASCADE, default='') 
     repost = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
-    likes = models.ManyToManyField(User, related_name='post_user', through=PostLike, blank=True)
+    likes = models.ManyToManyField(User, related_name='post_likes', through=PostLike, blank=True)
     content = models.TextField(max_length=max_length, default='')
     image = models.FileField(upload_to='images/', blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

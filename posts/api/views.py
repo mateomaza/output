@@ -2,8 +2,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 
@@ -12,6 +11,7 @@ from ..forms import PostForm
 from ..serializers import PostSerializer, CreateSerializer, ActionSerializer
 
 allowed_hosts = settings.ALLOWED_HOSTS
+
 
 @api_view(['GET'])
 def posts_list(request):
@@ -36,6 +36,8 @@ def post_detail(request, post_id):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 def post_create(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return Response({'message': 'You must login!'}, status=401)
     serializer = CreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
@@ -46,8 +48,11 @@ def post_create(request, *args, **kwargs):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 def post_action(request):
-    action_serializer = ActionSerializer(data=request.data)
     user = request.user
+    if not user.is_authenticated:
+        user.id = 0
+        return Response({'message': 'You must login!'}, status=401)
+    action_serializer = ActionSerializer(data=request.data)
     if action_serializer.is_valid(raise_exception=True):
         data = action_serializer.validated_data
         post_id = data.get('id')
@@ -60,25 +65,35 @@ def post_action(request):
         post_serializer = PostSerializer(obj)
         if action == 'like':
             obj.likes.add(user)
-            return Response(post_serializer.data, status=200) 
+            return Response(post_serializer.data, status=200)
         elif action == 'unlike':
-            obj.likes.remove(user) 
-            return Response(post_serializer.data, status=200)                   
+            obj.likes.remove(user)
+            return Response(post_serializer.data, status=200)
         elif action == 'repost':
-            new_tweet = Post.objects.create(user=user, repost=obj, content=content)
-            serializer = PostSerializer(new_tweet)
+            new_post = Post.objects.create(
+                user=user, repost=obj, content=content)
+            serializer = PostSerializer(new_post)
             return Response(serializer.data, status=201)
 
 
 @api_view(['DELETE', 'POST'])
 @authentication_classes([SessionAuthentication])
 def post_delete(request, post_id):
-    qs = Post.objects.filter(id=post_id)
-    if not qs.exists():
-        return Response({}, status=404)
-    obj = qs.first()
-    obj.delete()
-    return Response({'message': 'Tweet removed'}, status=200)
+    try:
+        qs = Post.objects.filter(id=post_id)
+        post_user = qs[0].user
+        if not qs.exists():
+            return Response({'message': "Post doesn't exist"}, status=404)
+        if not request.user.is_authenticated:
+            return Response({'message': 'You must login!'}, status=401)
+        if request.user != post_user:
+            return Response({'message': 'You cannot delete this post'}, status=403)
+        obj = qs.first()
+        obj.delete()
+        return Response({'message': 'Post removed'}, status=200)
+    except IndexError:
+        return Response({'message': "Post doesn't exist"}, status=404)
+        
 
 
 def posts_list_django(request):
