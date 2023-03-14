@@ -1,10 +1,9 @@
-import { useState, useEffect, useId, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { loadPosts, createPost, postAction, loadDetail } from '../lookup'
 
 export function PostsComponent({ username, permission }) {
 
-    const post_id = useId()
     const [posts, setPosts] = useState([])
 
     useEffect(() => {
@@ -18,11 +17,9 @@ export function PostsComponent({ username, permission }) {
     }, [username])
 
     const addPost = (content) => {
-        const key = posts.length
-        const newPost = { post_id, ...content, key }
-        createPost(newPost, (response, status) => {
+        createPost(content, (response, status) => {
             if (status === 201) {
-                setPosts([response.results, ...posts])
+                setPosts([response, ...posts])
             } else {
                 alert('An error has occured, please try again.')
             }
@@ -34,16 +31,16 @@ export function PostsComponent({ username, permission }) {
     return (
         <div>
             <PostForm onAdd={addPost} permission={permission} />
-            <PostsList post_id={post_id} posts={posts} onRepost={handleRepost} username={username}/>
+            <PostsList posts={posts} onRepost={handleRepost} username={username} />
         </div>
     )
 }
 
-function PostsList({ post_id, posts, onRepost, username }) {
+function PostsList({ posts, onRepost, username }) {
     return (
         <>
             {posts.map((post) => {
-                return <Post post_id={post_id} post={post} key={post.id} onRepost={onRepost} username={username}/>
+                return <Post post={post} key={post.id} onRepost={onRepost} username={username} />
             })}
         </>
     )
@@ -75,8 +72,8 @@ function Post({ post, onRepost, hideActions, username }) {
             </div>
             <div className='btn btn-group'>
                 {(actionData && hideActions !== true) && <>
-                    <Button data={actionData} action={'like'} onAction={handleAction} username={username}/>
-                    <Button data={actionData} action={'repost'} onAction={handleAction} username={username}/>
+                    <Button data={actionData} action={'like'} onAction={handleAction} username={username} />
+                    <Button data={actionData} action={'repost'} onAction={handleAction} username={username} />
                 </>}
                 {isDetail === false && <button onClick={handleLink}>View</button>}
             </div>
