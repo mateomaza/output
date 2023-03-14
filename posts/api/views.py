@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from ..models import Post
 from ..forms import PostForm
@@ -13,14 +14,27 @@ from ..serializers import PostSerializer, CreateSerializer, ActionSerializer
 allowed_hosts = settings.ALLOWED_HOSTS
 
 
+def get_paginated_queryset(qs, request):
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_qs = paginator.paginate_queryset(qs, request)
+    serializer = PostSerializer(paginated_qs, many=True)
+    return paginator.get_paginated_response(serializer.data)
+
+@authentication_classes([SessionAuthentication])
+@api_view(['GET'])
+def posts_feed(request):
+    qs = Post.objects.by_feed(request.user)
+    return get_paginated_queryset(qs, request)
+
+
 @api_view(['GET'])
 def posts_list(request):
     qs = Post.objects.all()
     username = request.GET.get('username')
     if username != None:
-        qs = qs.filter(user__username__iexact=username)
-    serializer = PostSerializer(qs, many=True)
-    return Response(serializer.data, status=200)
+        qs = qs.by_username(username)
+    return get_paginated_queryset(qs, request)
 
 
 @api_view(['GET'])
@@ -93,7 +107,6 @@ def post_delete(request, post_id):
         return Response({'message': 'Post removed'}, status=200)
     except IndexError:
         return Response({'message': "Post doesn't exist"}, status=404)
-        
 
 
 def posts_list_django(request):

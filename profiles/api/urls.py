@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     user_follow
-) 
+)
 """
 CLIENT
 Base Endpoint r'/api/profiles?/'

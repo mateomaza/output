@@ -16,7 +16,7 @@ def user_follow(request, username):
         return Response({'message': 'You must login!'}, status=401)
     follower = request.user
     if follower.username == username:
-        return Response({'followers_count': follower.profile.followers.count()}, status=200)        
+        return Response({'followers_count': follower.profile.followers.count()}, status=200)
     qs = Profile.objects.filter(user__username=username)
     if not qs.exists():
         return Response({'message': "Profile doesn't exist"}, status=404)
@@ -26,5 +26,5 @@ def user_follow(request, username):
     if action == 'follow':
         profile.followers.add(follower)
     if action == 'unfollow':
-        profile.followers.remove(follower) 
+        profile.followers.remove(follower)
     return Response({'followers_count': profile.followers.count()}, status=200)

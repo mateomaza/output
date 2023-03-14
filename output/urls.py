@@ -29,8 +29,9 @@ urlpatterns = [
     path('<int:post_id>', local_post_detail),
     re_path(r'profiles?/', include('profiles.urls')),
     path('api/posts/', include('posts.api.urls')),
-    re_path(r'api/profiles?/', include('profiles.api.urls')),  
+    re_path(r'api/profiles?/', include('profiles.api.urls')),
 ]
 
-if settings.DEBUG: 
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)

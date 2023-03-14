@@ -10,7 +10,7 @@ export function PostsComponent({ username, permission }) {
     useEffect(() => {
         const callback = (response, status) => {
             if (status === 200) {
-                setPosts(response)
+                setPosts(response.results)
             }
         }
         loadPosts(username, callback)
@@ -22,7 +22,7 @@ export function PostsComponent({ username, permission }) {
         const newPost = { post_id, ...content, key }
         createPost(newPost, (response, status) => {
             if (status === 201) {
-                setPosts([response, ...posts])
+                setPosts([response.results, ...posts])
             } else {
                 alert('An error has occured, please try again.')
             }
