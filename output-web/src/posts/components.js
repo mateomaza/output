@@ -1,15 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
+import InfiniteScroll from 'react-infinite-scroller'
 
 import { loadPosts, createPost, postAction, loadDetail } from '../lookup'
 
 export function PostsComponent({ username, permission }) {
 
     const [posts, setPosts] = useState([])
+    const [next, setNext] = useState(null)
 
     useEffect(() => {
         const callback = (response, status) => {
             if (status === 200) {
                 setPosts(response.results)
+                setNext(response.next)
             }
         }
         loadPosts(username, callback)
@@ -32,6 +35,12 @@ export function PostsComponent({ username, permission }) {
         <div>
             <PostForm onAdd={addPost} permission={permission} />
             <PostsList posts={posts} onRepost={handleRepost} username={username} />
+            <InfiniteScroll
+                pageStart={0}
+                hasMore={true || false}
+                loader={<div className="loader" key={0}>Loading ...</div>}>
+                {next}
+            </InfiniteScroll>
         </div>
     )
 }
