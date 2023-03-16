@@ -38,10 +38,15 @@ function backendLookup(method, endpoint, callback, data) {
     xhr.send(parsedData)
 }
 
-export function loadPosts(username, callback) {
+export function loadPosts(username, callback, next) {
     let endpoint = '/posts/'
     if (username) {
         endpoint = `/posts/?username=${username}`
+    }
+    if (next !== null && next !== undefined) {
+        console.log(next)
+        endpoint = next.replace('http://localhost:8000/api', '')
+        console.log(endpoint)
     }
     backendLookup('GET', endpoint, callback)
 }

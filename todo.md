@@ -1,5 +1,3 @@
-! Decide if i want new users to be able to see a 'global feed'
-
 1. Posts
     -> Create
         -> Text
@@ -30,11 +28,12 @@
 
 
 ? question about weird thing with testing using rest_framework's API client
-? Index Error handle in 'posts' views
+! STYLING
 
 Long term todos:
 
 - Notifications
 - DM
 - Explore -> finding hastags
+- Global feed
 - Stars for memes

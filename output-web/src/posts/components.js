@@ -13,6 +13,8 @@ export function PostsComponent({ username, permission }) {
             if (status === 200) {
                 setPosts(response.results)
                 setNext(response.next)
+            } else {
+                alert('An error has occured, please try again.')
             }
         }
         loadPosts(username, callback)
@@ -31,16 +33,31 @@ export function PostsComponent({ username, permission }) {
     const handleRepost = (repost) => {
         setPosts([repost, ...posts])
     }
+    const handleNext = () => {
+        if (next !== null) {
+            const callback = (response, status) => {
+                if (status === 200) {
+                    const nextPosts = [...posts].concat(response.results)
+                    setNext(response.next)
+                    setPosts(nextPosts)
+                } else {
+                    alert('An error has occured, please try again.')
+                }
+                console.log(response.results)
+            }
+            loadPosts(username, callback, next)
+        }     
+    }
     return (
         <div>
             <PostForm onAdd={addPost} permission={permission} />
             <PostsList posts={posts} onRepost={handleRepost} username={username} />
-            <InfiniteScroll
+            {next !== null && <InfiniteScroll
                 pageStart={0}
+                loadMore={handleNext}
                 hasMore={true || false}
                 loader={<div className="loader" key={0}>Loading ...</div>}>
-                {next}
-            </InfiniteScroll>
+            </InfiniteScroll>}
         </div>
     )
 }
