@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 
 import { loadPosts, createPost, postAction, loadDetail } from '../lookup'
+import { ProfileDisplay, ProfilePicture } from '../profiles'
+
 
 export function PostsComponent({ username, permission }) {
 
@@ -43,16 +45,16 @@ export function PostsComponent({ username, permission }) {
                 } else {
                     alert('An error has occured, please try again.')
                 }
-                console.log(response.results)
             }
             loadPosts(username, callback, next)
-        }     
+        }
     }
     return (
         <div>
             <PostForm onAdd={addPost} permission={permission} />
             <PostsList posts={posts} onRepost={handleRepost} username={username} />
             {next !== null && <InfiniteScroll
+                children={''}
                 pageStart={0}
                 loadMore={handleNext}
                 hasMore={true || false}
@@ -72,7 +74,7 @@ function PostsList({ posts, onRepost, username }) {
     )
 }
 
-function Post({ post, onRepost, hideActions, username }) {
+function Post({ post, onRepost, isRepost, hideActions, repostVia, username }) {
 
     const [actionData, setAction] = useState(post)
     const path = window.location.pathname
@@ -87,33 +89,41 @@ function Post({ post, onRepost, hideActions, username }) {
             onRepost(newAction)
         }
     }
-    const handleLink = () => {
+    const handlePostLink = () => {
         window.location.href = post.id
     }
     return (
         <div className='col-10 col-md-6 mx-auto my-5 py-5 border bg-white text-dark'>
+            <ProfilePicture profile={post.profile} />
             <div>
-                <p>{post.id} - {post.content}</p>
-                <Repost post={post} />
+                {isRepost === true && <span>Repost via <ProfileDisplay profile={repostVia} /></span>}
+                <p>
+                    <ProfileDisplay profile={post.profile} includeName />
+                </p>
+                <p>{post.content}</p>
+                <Repost post={post} repostVia={post.profile} />
             </div>
             <div className='btn btn-group'>
                 {(actionData && hideActions !== true) && <>
                     <Button data={actionData} action={'like'} onAction={handleAction} username={username} />
                     <Button data={actionData} action={'repost'} onAction={handleAction} username={username} />
                 </>}
-                {isDetail === false && <button onClick={handleLink}>View</button>}
+                {isDetail === false && <button onClick={handlePostLink}>View</button>}
             </div>
         </div>
     )
 }
 
-function Repost({ post }) {
-    return post.is_repost === true ? <div className='row'>
-        <div className='col-11 mx-auto p-3 border rounded'>
-            <p className='mb-0 text-muted small'>Repost</p>
-            <Post className={' '} post={post.original} key={post.id} hideActions />
-        </div>
-    </div> : null
+function Repost({ post, repostVia }) {
+    const repostProps = {
+        isRepost: true,
+        hideActions: true,
+        repostVia: repostVia,
+        post: post.original,
+        key: post.id
+
+    }
+    return post.is_repost === true ? <Post className={' '} {...repostProps} /> : null
 }
 
 function Button({ data, action, onAction, username }) {
@@ -208,24 +218,3 @@ export function PostDetail({ id, className }) {
 
     return post === null ? null : <Post post={post} className={className} />
 }
-
-/*
-const [initialAction, toggleAction] = useState(action)
-
-    const [likesCount, setLikesCount] = useState(likes)
-    const [hasLiked, toggleLike] = useState(false)
-
-    function likeUpdate() {
-        if (likes === 0 || (hasLiked === true && likes === 2)) {
-            toggleDisplay('Like')
-        }
-        if (likes === 1) {
-            toggleDisplay('Likes')
-        }
-    }
-
-    
-    const likeDisplay = data.likes === 1 ? 'Like' : 'Likes'
-    const [initialDisplay, toggleDisplay] = useState(likeDisplay)
-
-*/

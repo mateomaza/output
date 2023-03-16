@@ -1,4 +1,4 @@
-import { loadPosts, createPost, postAction, loadDetail } from "./components";
+import { loadPosts, createPost, postAction, loadDetail } from "./functions";
 
 export {
     loadPosts,
