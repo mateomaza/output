@@ -1,9 +1,10 @@
 import './App.css';
 import { PostsComponent } from './posts/components';
+import { FeedComponent } from './feed';
 
 const root = document.getElementById('root')
 
-function App() {
+function Posts() {
   return <div className="App">
     <header className="App-header">
       <p>
@@ -14,4 +15,15 @@ function App() {
   </div>
 }
 
-export default App;
+function Feed() {
+  return <div className="App">
+    <header className="App-header">
+      <p>
+        Edit <code>src/App.js</code> and save to reload.
+      </p>
+      <FeedComponent {...(root.dataset)}/>
+    </header>
+  </div>
+}
+
+export default Posts && Feed 

@@ -1,10 +1,11 @@
 import { useState, useEffect} from 'react'
+import InfiniteScroll from 'react-infinite-scroller'
 
-import { Post } from '../posts'
-import { loadPosts } from '../lookup'
+import { PostsList, PostForm, } from '../posts'
+import { loadPosts, createPost } from '../lookup'
 
-function FeedList({ onRepost, username }) {
-    
+export function FeedComponent({ username, permission }) {
+
     const [posts, setPosts] = useState([])
     const [next, setNext] = useState(null)
 
@@ -17,9 +18,22 @@ function FeedList({ onRepost, username }) {
                 alert('An error has occured, please try again.')
             }
         }
-        loadPosts(username, callback)
+        loadPosts(callback)
 
     }, [username])
+
+    const addPost = (content) => {
+        createPost(content, (response, status) => {
+            if (status === 201) {
+                setPosts([response, ...posts])
+            } else {
+                alert('An error has occured, please try again.')
+            }
+        })
+    }
+    const handleRepost = (repost) => {
+        setPosts([repost, ...posts])
+    }
     const handleNext = () => {
         if (next !== null) {
             const callback = (response, status) => {
@@ -31,14 +45,20 @@ function FeedList({ onRepost, username }) {
                     alert('An error has occured, please try again.')
                 }
             }
-            loadPosts(username, callback, next)
+            loadPosts(callback, next)
         }
     }
     return (
-        <>
-            {posts.map((post) => {
-                return <Post post={post} key={post.id} onRepost={onRepost} username={username} />
-            })}
-        </>
+        <div>
+            <PostForm onAdd={addPost} permission={permission} />
+            <PostsList posts={posts} onRepost={handleRepost} username={username} />
+            {next !== null && <InfiniteScroll
+                children={''}
+                pageStart={0}
+                loadMore={handleNext}
+                hasMore={true || false}
+                loader={<div className="loader" key={0}>Loading ...</div>}>
+            </InfiniteScroll>}
+        </div>
     )
 }

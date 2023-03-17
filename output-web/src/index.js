@@ -2,15 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './App.css'
-import App from './App';
+import { Posts, Feed} from './App';
 import reportWebVitals from './reportWebVitals';
 import { PostDetail } from './posts';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const posts = ReactDOM.createRoot(document.getElementById('posts'));
 
-root.render(
+posts.render(
   <React.StrictMode>
-    <App />
+    <Posts />
+  </React.StrictMode>
+);
+
+const feed = ReactDOM.createRoot(document.getElementById('feed'));
+
+feed.render(
+  <React.StrictMode>
+    <Feed />
   </React.StrictMode>
 );
 
