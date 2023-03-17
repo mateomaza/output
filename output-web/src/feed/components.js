@@ -1,8 +1,8 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 
 import { PostsList, PostForm, } from '../posts'
-import { loadPosts, createPost } from '../lookup'
+import { loadFeed, createPost } from '../lookup'
 
 export function FeedComponent({ username, permission }) {
 
@@ -18,7 +18,7 @@ export function FeedComponent({ username, permission }) {
                 alert('An error has occured, please try again.')
             }
         }
-        loadPosts(callback)
+        loadFeed(callback)
 
     }, [username])
 
@@ -45,7 +45,7 @@ export function FeedComponent({ username, permission }) {
                     alert('An error has occured, please try again.')
                 }
             }
-            loadPosts(callback, next)
+            loadFeed(callback, next)
         }
     }
     return (

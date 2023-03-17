@@ -1,6 +1,9 @@
-import { PostsComponent, PostDetail } from "./components";
+import { PostsComponent, PostsList, PostDetail, PostForm, Post } from "./components";
 
 export {
     PostsComponent,
-    PostDetail
+    PostsList,
+    PostDetail,
+    PostForm,
+    Post
 }

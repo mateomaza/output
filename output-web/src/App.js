@@ -10,7 +10,7 @@ function Posts() {
       <p>
         Edit <code>src/App.js</code> and save to reload.
       </p>
-      <PostsComponent {...(root.dataset)}/>
+      <PostsComponent {...(root.dataset)} />
     </header>
   </div>
 }
@@ -21,9 +21,9 @@ function Feed() {
       <p>
         Edit <code>src/App.js</code> and save to reload.
       </p>
-      <FeedComponent {...(root.dataset)}/>
+      <FeedComponent {...(root.dataset)} />
     </header>
   </div>
 }
 
-export default Posts && Feed 
+export { Posts, Feed }

@@ -1,4 +1,4 @@
-export function ProfileLink( props ) {
+export function ProfileLink(props) {
     const handleProfileLink = () => {
         window.location.href = `/profiles/${props.username}`
     }

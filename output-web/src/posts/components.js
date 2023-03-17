@@ -64,7 +64,7 @@ export function PostsComponent({ username, permission }) {
     )
 }
 
-function PostsList({ posts, onRepost, username }) {
+export function PostsList({ posts, onRepost, username }) {
     return (
         <>
             {posts.map((post) => {
@@ -74,7 +74,7 @@ function PostsList({ posts, onRepost, username }) {
     )
 }
 
-function Post({ post, onRepost, isRepost, hideActions, repostVia, username }) {
+export function Post({ post, onRepost, isRepost, hideActions, repostVia, username }) {
 
     const [actionData, setAction] = useState(post)
     const path = window.location.pathname
@@ -114,7 +114,7 @@ function Post({ post, onRepost, isRepost, hideActions, repostVia, username }) {
     )
 }
 
-function Repost({ post, repostVia }) {
+export function Repost({ post, repostVia }) {
     const repostProps = {
         isRepost: true,
         hideActions: true,
@@ -126,7 +126,7 @@ function Repost({ post, repostVia }) {
     return post.is_repost === true ? <Post className={' '} {...repostProps} /> : null
 }
 
-function Button({ data, action, onAction, username }) {
+export function Button({ data, action, onAction, username }) {
 
     const likes = data.likes ? data.likes : 0
     const [likeDisplay, toggleDisplay] = useState(likes === 1 ? 'Like' : 'Likes')
@@ -170,7 +170,7 @@ function Button({ data, action, onAction, username }) {
     }
 }
 
-function PostForm({ onAdd, permission }) {
+export function PostForm({ onAdd, permission }) {
 
     const inputRef = useRef()
     const canPost = permission === 'yes' ? true : false

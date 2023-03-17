@@ -63,3 +63,13 @@ export function postAction(post_id, content, action, callback, username) {
     const data = { id: post_id, content: content, action: action, username: username }
     backendLookup('POST', '/posts/action/', callback, data)
 }
+
+export function loadFeed(callback, next) {
+    let endpoint = '/posts/'
+    if (next !== null && next !== undefined) {
+        console.log(next)
+        endpoint = next.replace('http://localhost:8000/api', '')
+        console.log(endpoint)
+    }
+    backendLookup('GET', endpoint, callback)
+}

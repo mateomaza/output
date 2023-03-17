@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './App.css'
-import { Posts, Feed} from './App';
 import reportWebVitals from './reportWebVitals';
+import { Posts, Feed } from './App';
 import { PostDetail } from './posts';
 
 const posts = ReactDOM.createRoot(document.getElementById('posts'));
