@@ -12,7 +12,7 @@ class PublicProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['username', 'first_name', 'last_name', 'id',
-                  'bio', 'location', 'followers_count', 'following_count']
+                  'bio', 'location', 'followers_count', 'following_count', 'is_following']
 
     def get_username(self, obj):
         return obj.user.username
@@ -28,3 +28,11 @@ class PublicProfileSerializer(serializers.ModelSerializer):
 
     def get_following_count(self, obj):
         return obj.user.following.count()
+
+    def get_is_following(self, obj):
+        is_following = False
+        context = self.context
+        request = context.get("request")
+        if request:
+            is_following = request.user in obj.followers.all()
+        return is_following

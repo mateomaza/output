@@ -69,3 +69,14 @@ export function loadFeed(callback, next) {
     }
     backendLookup('GET', endpoint, callback)
 }
+
+
+export function loadProfile(username, callback) {
+    backendLookup("GET", `/profiles/${username}/`, callback)
+}
+
+
+export function followToggle(username, action, callback) {
+    const data = { action: `${action && action}`.toLowerCase() }
+    backendLookup("POST", `/profiles/${username}/follow`, callback, data)
+}
