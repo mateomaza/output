@@ -148,9 +148,6 @@ export function Button({ data, action, onAction, username }) {
         postAction(data.id, data.content, action, handleBackend, username)
     }
     const handleDisplay = () => {
-        if (!username) {
-            return
-        }
         if (likeDisplay === 'Like') {
             toggleDisplay('Likes')
         }

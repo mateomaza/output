@@ -20,7 +20,7 @@ export function FeedComponent({ username, permission }) {
         }
         loadFeed(callback)
 
-    }, [username])
+    }, [])
 
     const addPost = (content) => {
         createPost(content, (response, status) => {
@@ -51,7 +51,7 @@ export function FeedComponent({ username, permission }) {
     return (
         <div>
             <PostForm onAdd={addPost} permission={permission} />
-            <PostsList posts={posts} onRepost={handleRepost} username={username} />
+            <PostsList posts={posts} onRepost={handleRepost} username={username}/>
             {next !== null && <InfiniteScroll
                 children={''}
                 pageStart={0}

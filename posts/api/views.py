@@ -21,12 +21,6 @@ def get_paginated_queryset(qs, request):
     serializer = PostSerializer(paginated_qs, many=True)
     return paginator.get_paginated_response(serializer.data)
 
-@authentication_classes([SessionAuthentication])
-@api_view(['GET'])
-def posts_feed(request):
-    qs = Post.objects.by_feed(request.user)
-    return get_paginated_queryset(qs, request)
-
 
 @api_view(['GET'])
 def posts_list(request):
@@ -34,6 +28,16 @@ def posts_list(request):
     username = request.GET.get('username')
     if username != None:
         qs = qs.by_username(username)
+    return get_paginated_queryset(qs, request)
+
+
+@authentication_classes([SessionAuthentication])
+@api_view(['GET'])
+def posts_feed(request):
+    if not request.user.is_authenticated:
+        mateo = User.objects.first()
+        request.user = mateo
+    qs = Post.objects.by_feed(request.user)
     return get_paginated_queryset(qs, request)
 
 
@@ -63,10 +67,9 @@ def post_create(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 def post_action(request):
-    user = request.user
-    if not user.is_authenticated:
-        user.id = 0
-        return Response({'message': 'You must login!'}, status=401)
+    if not request.user.is_authenticated:
+        mateo = User.objects.first()
+        request.user = mateo
     action_serializer = ActionSerializer(data=request.data)
     if action_serializer.is_valid(raise_exception=True):
         data = action_serializer.validated_data
@@ -79,14 +82,14 @@ def post_action(request):
         obj = qs.first()
         post_serializer = PostSerializer(obj)
         if action == 'like':
-            obj.likes.add(user)
+            obj.likes.add(request.user)
             return Response(post_serializer.data, status=200)
         if action == 'unlike':
-            obj.likes.remove(user)
+            obj.likes.remove(request.user)
             return Response(post_serializer.data, status=200)
         if action == 'repost':
             new_post = Post.objects.create(
-                user=user, repost=obj, content=content)
+                user=request.user, repost=obj, content=content)
             serializer = PostSerializer(new_post)
             return Response(serializer.data, status=201)
 

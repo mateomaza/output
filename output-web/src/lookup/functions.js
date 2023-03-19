@@ -44,9 +44,7 @@ export function loadPosts(username, callback, next) {
         endpoint = `/posts/?username=${username}`
     }
     if (next !== null && next !== undefined) {
-        console.log(next)
         endpoint = next.replace('http://localhost:8000/api', '')
-        console.log(endpoint)
     }
     backendLookup('GET', endpoint, callback)
 }
@@ -65,11 +63,9 @@ export function postAction(post_id, content, action, callback, username) {
 }
 
 export function loadFeed(callback, next) {
-    let endpoint = '/posts/'
+    let endpoint = '/posts/feed/'
     if (next !== null && next !== undefined) {
-        console.log(next)
         endpoint = next.replace('http://localhost:8000/api', '')
-        console.log(endpoint)
     }
     backendLookup('GET', endpoint, callback)
 }
