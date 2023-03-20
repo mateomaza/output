@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import './App.css'
 import reportWebVitals from './reportWebVitals';
-import { Posts, Feed } from './App';
+import { Posts, Feed, Profiles } from './App';
 import { PostDetail } from './posts';
 
 const posts = ReactDOM.createRoot(document.getElementById('posts'));
@@ -32,6 +32,14 @@ detailElements.forEach((element) => {
     </React.StrictMode>
   );
 })
+
+const profiles = ReactDOM.createRoot(document.getElementById('profiles'));
+
+profiles.render(
+  <React.StrictMode>
+    <Profiles />
+  </React.StrictMode>
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

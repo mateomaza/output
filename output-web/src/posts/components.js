@@ -68,25 +68,26 @@ export function PostsList({ posts, onRepost, username }) {
     return (
         <>
             {posts.map((post) => {
-                return <Post post={post} key={post.id} onRepost={onRepost} username={username} />
+                return <Post post={post} key={post.id} onRepost={onRepost}/>
             })}
         </>
     )
 }
 
-export function Post({ post, onRepost, isRepost, hideActions, repostVia, username }) {
+export function Post({ post, onRepost, isRepost, hideActions, repostVia}) {
 
-    const [actionData, setAction] = useState(post)
+    const [data, setData] = useState(post)
     const path = window.location.pathname
     const match = path.match(/(?<post_id>\d+)/)
     const url_id = match !== null ? match.groups.post_id : null
     const isDetail = `${url_id}` === `${post.id}`
 
-    const handleAction = (newAction, status) => {
+    const handleAction = (response, status) => {
         if (status === 200) {
-            setAction(newAction)
-        } else if (status === 201 && onRepost) {
-            onRepost(newAction)
+            setData(response)
+        }
+        if (status === 201 && onRepost) {
+            onRepost(response)
         }
     }
     const handlePostLink = () => {
@@ -103,10 +104,10 @@ export function Post({ post, onRepost, isRepost, hideActions, repostVia, usernam
                 <p>{post.content}</p>
                 <Repost post={post} repostVia={post.profile} />
             </div>
-            <div className='btn btn-group'>
-                {(actionData && hideActions !== true) && <>
-                    <Button data={actionData} action={'like'} onAction={handleAction} username={username} />
-                    <Button data={actionData} action={'repost'} onAction={handleAction} username={username} />
+            <div className='btn btn-group g-5'>
+                {(data && hideActions !== true) && <>
+                    <Button post={data} action={'like'} onAction={handleAction} />
+                    <Button post={data} action={'repost'} onAction={handleAction}  />
                 </>}
                 {isDetail === false && <button onClick={handlePostLink}>View</button>}
             </div>
@@ -126,44 +127,31 @@ export function Repost({ post, repostVia }) {
     return post.is_repost === true ? <Post className={' '} {...repostProps} /> : null
 }
 
-export function Button({ data, action, onAction, username }) {
+export function Button({ post, action, onAction }) {
 
-    const likes = data.likes ? data.likes : 0
-    const [likeDisplay, toggleDisplay] = useState(likes === 1 ? 'Like' : 'Likes')
-    const [hasLiked, setLiked] = useState(false)
+    const likes = post.likes ? post.likes : 0
+
+    if (action === 'like') {
+        action = (post && post.has_liked) ? 'unlike' : 'like'
+    }
 
     const handleBackend = (response, status) => {
-        if ((status === 200 || status === 201) && onAction) {
+        if (status === 200 && onAction) {
+            onAction(response, status)
+        }
+        if (status === 201 && onAction) {
             onAction(response, status)
         }
     }
-    const handleClick = () => {
-        if (action === 'like') {
-            setLiked(true)
-        }
-        if (action === 'like' && hasLiked === true) {
-            action = 'unlike'
-            setLiked(false)
-        }
-        postAction(data.id, data.content, action, handleBackend, username)
-    }
-    const handleDisplay = () => {
-        if (likeDisplay === 'Like') {
-            toggleDisplay('Likes')
-        }
-        if (likeDisplay === 'Likes' && likes === 0) {
-            toggleDisplay('Like')
-        }
-        if (likeDisplay === 'Likes' && likes === 2 && hasLiked === true) {
-            toggleDisplay('Like')
-        }
-    }
-    if (action === 'like') {
-        return <button className='btn btn-primary btn-sm' onClick={() => { handleClick(); handleDisplay(); }}>
-            {likes}&nbsp;{likeDisplay}</button>
+    const handleClick = () => postAction(post.id, post.content, action, handleBackend)
+    
+    if (action === 'like' || action === 'unlike') {
+        return <button className='btn btn-primary btn-sm' onClick={handleClick}>
+            {likes}&nbsp;{post.likes === 1 ? 'Like' : 'Likes'}</button>
 
     } else if (action === 'repost') {
         return <button className='btn btn-primary btn-sm' onClick={handleClick}>Repost</button>
+        
     }
 }
 

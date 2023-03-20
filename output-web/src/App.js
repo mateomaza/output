@@ -1,6 +1,7 @@
 import './App.css';
-import { PostsComponent } from './posts/components';
+import { PostsComponent } from './posts';
 import { FeedComponent } from './feed';
+import { ProfilesComponent } from './profiles';
 
 const root = document.getElementById('root')
 
@@ -26,4 +27,15 @@ function Feed() {
   </div>
 }
 
-export { Posts, Feed }
+function Profiles() {
+  return <div className="App">
+    <header className="App-header">
+      <p>
+        Edit <code>src/App.js</code> and save to reload.
+      </p>
+      <ProfilesComponent {...(root.dataset)} />
+    </header>
+  </div>
+}
+
+export { Posts, Feed, Profiles }

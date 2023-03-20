@@ -37,15 +37,17 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_likes(self, obj):
         return obj.likes.count()
-    
+
     def get_has_liked(self, obj):
         user = None
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             user = request.user
-        users_like = obj.likes.all()
-        print(user)
-        has_liked = user in users_like
+        qs = PostLike.objects.filter(post=obj)
+        user_like = qs.filter(user=user)
+        has_liked = False
+        if user_like:
+            has_liked = True
         return has_liked
 
 

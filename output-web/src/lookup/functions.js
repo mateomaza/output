@@ -39,7 +39,7 @@ function backendLookup(method, endpoint, callback, data) {
 }
 
 export function loadPosts(username, callback, next) {
-    let endpoint = '/posts/'
+    let endpoint = '/posts'
     if (username) {
         endpoint = `/posts/?username=${username}`
     }
@@ -57,13 +57,13 @@ export function createPost(content, callback) {
     backendLookup('POST', '/posts/create/', callback, content)
 }
 
-export function postAction(post_id, content, action, callback, username) {
-    const data = { id: post_id, content: content, action: action, username: username }
+export function postAction(post_id, content, action, callback) {
+    const data = { id: post_id, content: content, action: action }
     backendLookup('POST', '/posts/action/', callback, data)
 }
 
 export function loadFeed(callback, next) {
-    let endpoint = '/posts/feed/'
+    let endpoint = '/posts/feed'
     if (next !== null && next !== undefined) {
         endpoint = next.replace('http://localhost:8000/api', '')
     }
@@ -72,11 +72,11 @@ export function loadFeed(callback, next) {
 
 
 export function loadProfile(username, callback) {
-    backendLookup("GET", `/profiles/${username}/`, callback)
+    backendLookup("GET", `/profiles/${username}`, callback)
 }
 
 
-export function followToggle(username, action, callback) {
+export function profileFollow(username, action, callback) {
     const data = { action: `${action && action}`.toLowerCase() }
-    backendLookup("POST", `/profiles/${username}/follow`, callback, data)
+    backendLookup("POST", `/profiles/${username}/follow/`, callback, data)
 }

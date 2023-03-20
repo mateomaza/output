@@ -1,3 +1,38 @@
+import { useEffect, useState } from 'react'
+import { loadProfile, profileFollow } from '../lookup/functions'
+import { ProfileBadge } from './badges/components'
+
+export function ProfilesComponent({ username }) 
+{
+    const [didLookup, setDidLookup] = useState(false)
+    const [profile, setProfile] = useState(null)
+    const [profileLoading, setProfileLoading] = useState(false)
+
+    const handleLookup = (response, status) => {
+        if (status === 200) {
+            setProfile(response)
+        }
+    }
+    useEffect(() => {
+        if (didLookup === false) {
+            loadProfile(username, handleLookup)
+            setDidLookup(true)
+        }
+    }, [username, didLookup, setDidLookup])
+
+    const handleFollow = (action) => {
+        profileFollow(username, action, (response, status) => {
+            if (status === 200) {
+                setProfile(response)
+            }
+            setProfileLoading(false)
+        })
+        setProfileLoading(true)
+
+    }
+    return didLookup === false ? '...' : profile ? <ProfileBadge profile={profile} onFollow={handleFollow} profileLoading={profileLoading} /> : null
+}
+
 export function ProfileLink(props) {
     const handleProfileLink = () => {
         window.location.href = `/profiles/${props.username}`

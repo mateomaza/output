@@ -31,9 +31,11 @@ class PublicProfileSerializer(serializers.ModelSerializer):
         return obj.user.following.count()
 
     def get_is_following(self, obj):
+        user = None
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
         is_following = False
-        context = self.context
-        request = context.get('request')
         if request:
-            is_following = request.user in obj.followers.all()
+            is_following = user in obj.followers.all()
         return is_following

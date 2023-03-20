@@ -18,12 +18,15 @@ def get_paginated_queryset(qs, request):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_qs = paginator.paginate_queryset(qs, request)
-    serializer = PostSerializer(paginated_qs, many=True)
+    serializer = PostSerializer(paginated_qs, many=True, context={'request': request})
     return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(['GET'])
 def posts_list(request):
+    if not request.user.is_authenticated:
+        mateo = User.objects.first()
+        request.user = mateo
     qs = Post.objects.all()
     username = request.GET.get('username')
     if username != None:
@@ -31,8 +34,10 @@ def posts_list(request):
     return get_paginated_queryset(qs, request)
 
 
-@authentication_classes([SessionAuthentication])
+from django.contrib.auth import get_user_model
+User = get_user_model()
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication])
 def posts_feed(request):
     if not request.user.is_authenticated:
         mateo = User.objects.first()
@@ -41,17 +46,19 @@ def posts_feed(request):
     return get_paginated_queryset(qs, request)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def post_detail(request, post_id):
+    if not request.user.is_authenticated:
+        mateo = User.objects.first()
+        request.user = mateo
     qs = Post.objects.filter(id=post_id)
     if not qs.exists():
-        return Response({}, status=404)
+        return Response({'detail': 'Post not found'}, status=404)
     obj = qs.first()
-    serializer = PostSerializer(instance=obj, ) 
+    serializer = PostSerializer(instance=obj, context={'request': request}) 
     return Response(serializer.data, status=200)
 
-from django.contrib.auth import get_user_model
-User = get_user_model()
+
 @api_view(['POST'])
 def post_create(request):
     if not request.user.is_authenticated:
@@ -80,7 +87,7 @@ def post_action(request):
         if not qs.exists():
             return Response({}, status=404)
         obj = qs.first()
-        post_serializer = PostSerializer(obj)
+        post_serializer = PostSerializer(obj, context={'request': request})
         if action == 'like':
             obj.likes.add(request.user)
             return Response(post_serializer.data, status=200)
@@ -90,7 +97,7 @@ def post_action(request):
         if action == 'repost':
             new_post = Post.objects.create(
                 user=request.user, repost=obj, content=content)
-            serializer = PostSerializer(new_post)
+            serializer = PostSerializer(new_post, context={'request': request})
             return Response(serializer.data, status=201)
 
 
