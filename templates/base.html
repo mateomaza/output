@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,13 +18,15 @@
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
     <title>{% block head_title %} {% endblock head_title %}</title>
 </head>
+
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     {% include 'components/navbar.html' %}
-    <div id="feed">
+    <div id="base">
         {% block content %} {% endblock content %}
     </div>
     {% include 'react/base_embed.html' %}
     {% include 'react/js.html' %}
 </body>
+
 </html>

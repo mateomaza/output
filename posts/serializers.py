@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 from profiles.serializers import PublicProfileSerializer
-from .models import Post
+from .models import Post, PostLike
 
 max_length = settings.MAX_POST_LENGTH
 post_actions = settings.POST_ACTION_OPTIONS
@@ -28,14 +28,25 @@ class PostSerializer(serializers.ModelSerializer):
     profile = PublicProfileSerializer(source='user.profile', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     original = CreateSerializer(source='repost', read_only=True)
+    has_liked = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post
         fields = ['profile', 'id', 'content', 'likes',
-                  'is_repost', 'original', 'timestamp']
+                  'is_repost', 'original', 'timestamp', 'has_liked']
 
     def get_likes(self, obj):
         return obj.likes.count()
+    
+    def get_has_liked(self, obj):
+        user = None
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
+        users_like = obj.likes.all()
+        print(user)
+        has_liked = user in users_like
+        return has_liked
 
 
 class ActionSerializer(serializers.Serializer):

@@ -26,7 +26,7 @@ urlpatterns = [
     path('logout/', logout_view),
     path('register/', register_view),
     path('', local_posts_list),
-    path('<int:post_id>', local_post_detail),
+    path('<int:post_id>/', local_post_detail),
     re_path(r'profiles?/', include('profiles.urls')),
     path('api/posts/', include('posts.api.urls')),
     re_path(r'api/profiles?/', include('profiles.api.urls')),

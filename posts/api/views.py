@@ -47,7 +47,7 @@ def post_detail(request, post_id):
     if not qs.exists():
         return Response({}, status=404)
     obj = qs.first()
-    serializer = PostSerializer(obj)
+    serializer = PostSerializer(instance=obj, ) 
     return Response(serializer.data, status=200)
 
 from django.contrib.auth import get_user_model

@@ -10,15 +10,14 @@ def profile_detail(request, username):
     if not qs.exists():
         raise Http404
     obj = qs.first()
-    is_following = False
     if request.user.is_authenticated:
         is_following = request.user in obj.followers.all()
     context = {
-        "username": username,
-        "profile": obj,
-        "is_following": is_following
+        'username': username,
+        'profile': obj,
+        'is_following': is_following
     }
-    return render(request, "profiles/detail.html", context)
+    return render(request, 'profiles/detail.html', context)
 
 def profile_update(request):
     user = request.user
