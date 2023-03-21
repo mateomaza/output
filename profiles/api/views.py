@@ -13,7 +13,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication])
-def user_follow(request, username):
+def profile_follow(request, username):
     if not request.user.is_authenticated:
         mateo = User.objects.first()
         request.user = mateo
@@ -32,3 +32,6 @@ def user_follow(request, username):
                 obj.followers.remove(user)
     serializer = PublicProfileSerializer(instance=obj, context={'request': request})
     return Response(serializer.data, status=200)
+
+def profile_posts(request, username):
+    pass

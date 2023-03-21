@@ -6,11 +6,9 @@ from .models import Post, PostLike
 
 allowed_hosts = settings.ALLOWED_HOSTS
 
-from django.contrib.auth import get_user_model
-User = get_user_model()
+
 def local_posts_list(request):
     return render(request, 'posts/list.html')
-
 
 
 def local_post_detail(request, post_id):

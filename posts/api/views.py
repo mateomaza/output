@@ -46,6 +46,10 @@ def posts_feed(request):
     return get_paginated_queryset(qs, request)
 
 
+def posts_global_feed():
+    return
+
+
 @api_view(['GET', 'POST'])
 def post_detail(request, post_id):
     if not request.user.is_authenticated:

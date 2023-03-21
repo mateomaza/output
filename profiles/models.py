@@ -6,6 +6,17 @@ from django.dispatch import receiver
 User = settings.AUTH_USER_MODEL
 
 
+class ProfileManager(models.Manager):
+    def get_queryset(self, **kwargs):
+        return super().get_queryset(**kwargs).filter(
+            profile__username=self.kwargs['username']
+        )
+        
+    def by_profile(self, user):
+        return self.get_queryset().by_profile(user.profile)
+        
+
+
 class FollowerRelation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default='')
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE)

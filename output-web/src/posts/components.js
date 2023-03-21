@@ -52,29 +52,31 @@ export function PostsComponent({ username, permission }) {
     return (
         <div>
             <PostForm onAdd={addPost} permission={permission} />
-            <PostsList posts={posts} onRepost={handleRepost} username={username} />
+            <PostsList posts={posts} onRepost={handleRepost} />
             {next !== null && <InfiniteScroll
                 children={''}
                 pageStart={0}
                 loadMore={handleNext}
                 hasMore={true || false}
-                loader={<div className="loader" key={0}>Loading ...</div>}>
+                loader={<div className='loader' key={0}>Loading ...</div>}>
             </InfiniteScroll>}
         </div>
     )
 }
 
-export function PostsList({ posts, onRepost, username }) {
+export function PostsList({ posts, onRepost}) {
     return (
-        <>
+        <div className='d-flex flex-column justify-content-evenly'>
             {posts.map((post) => {
-                return <Post post={post} key={post.id} onRepost={onRepost}/>
+                return <Post post={post} key={post.id} onRepost={onRepost} />
             })}
-        </>
+        </div>
+
+
     )
 }
 
-export function Post({ post, onRepost, isRepost, hideActions, repostVia}) {
+export function Post({ post, onRepost, isRepost, hideActions, repostVia }) {
 
     const [data, setData] = useState(post)
     const path = window.location.pathname
@@ -94,22 +96,28 @@ export function Post({ post, onRepost, isRepost, hideActions, repostVia}) {
         window.location.href = post.id
     }
     return (
-        <div className='col-10 col-md-6 mx-auto my-5 py-5 border bg-white text-dark'>
-            <ProfilePicture profile={post.profile} />
-            <div>
-                {isRepost === true && <span>Repost via <ProfileDisplay profile={repostVia} /></span>}
-                <p>
-                    <ProfileDisplay profile={post.profile} includeName />
-                </p>
-                <p>{post.content}</p>
-                <Repost post={post} repostVia={post.profile} />
-            </div>
-            <div className='btn btn-group g-5'>
-                {(data && hideActions !== true) && <>
-                    <Button post={data} action={'like'} onAction={handleAction} />
-                    <Button post={data} action={'repost'} onAction={handleAction}  />
-                </>}
-                {isDetail === false && <button onClick={handlePostLink}>View</button>}
+        <div className='mx-auto mt-2 mb-5 bg-white text-dark w-75'>
+            <div className='border border-dark'>
+                <div className='mb-3'>
+                    {isRepost === true && <span className='border-bottom'>Repost via <ProfileDisplay profile={repostVia}/></span>}
+                </div>
+                <div>
+                    <div className='d-flex p-3'>
+                        <ProfilePicture profile={post.profile} />
+                        <p className='border-bottom'>
+                            <ProfileDisplay profile={post.profile} includeName />
+                        </p>
+                    </div>
+                    <p className='mt-3 mb-5 text-center'>{post.content}</p>
+                    <Repost post={post} repostVia={post.profile} />
+                </div>
+                <div className='btn btn-group mb-3'>
+                    {(data && hideActions !== true) && <>
+                        <Button post={data} action={'like'} onAction={handleAction} />
+                        <Button post={data} action={'repost'} onAction={handleAction} />
+                    </>}
+                    {isDetail === false && <button className='align-end' onClick={handlePostLink}>View</button>}
+                </div>
             </div>
         </div>
     )
@@ -144,14 +152,14 @@ export function Button({ post, action, onAction }) {
         }
     }
     const handleClick = () => postAction(post.id, post.content, action, handleBackend)
-    
+
     if (action === 'like' || action === 'unlike') {
         return <button className='btn btn-primary btn-sm' onClick={handleClick}>
             {likes}&nbsp;{post.likes === 1 ? 'Like' : 'Likes'}</button>
 
     } else if (action === 'repost') {
         return <button className='btn btn-primary btn-sm' onClick={handleClick}>Repost</button>
-        
+
     }
 }
 
@@ -172,10 +180,13 @@ export function PostForm({ onAdd, permission }) {
     }
     return (
         <>
-            {canPost === true && <div className='col-12 mb-3'>
+            {canPost === true && <div className='col-12 mx-auto mb-3 p-5' style={{ width: '800px' }}>
                 <form onSubmit={handleSubmit}>
-                    <textarea ref={inputRef} className='form-control' name='post'></textarea>
-                    <button type='submit' className='btn btn-primary my-3'>Post</button>
+                    <div className='d-flex'>
+                        <p className='align-self-center text-white fw-bolder'>280 characters maximum ⇢</p>
+                        <textarea ref={inputRef} className='form-control mx-3' name='post' style={{ height: '150px' }}></textarea>
+                        <button type='submit' className='btn btn-primary mx-3 align-self-center' style={{ height: '60px' }}>Post</button>
+                    </div>
                 </form>
             </div>}
         </>
@@ -201,5 +212,5 @@ export function PostDetail({ id, className }) {
         }
     }, [id, lookup, setLookup])
 
-    return post === null ? null : <Post post={post} className={className} />
+    return post === null ? null : <Post post={post} className='text-center' />
 }

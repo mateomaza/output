@@ -1,10 +1,10 @@
 from django.urls import path
 from .views import (
-    user_follow
+    profile_follow
 )
 """
 CLIENT
 Base Endpoint r'/api/profiles?/'
 """
-urlpatterns = [path('<str:username>/follow/', user_follow),
-               path('<str:username>/', user_follow)]
+urlpatterns = [path('<str:username>/follow/', profile_follow),
+               path('<str:username>/', profile_follow)]

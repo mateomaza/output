@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { loadProfile, profileFollow } from '../lookup/functions'
 import { ProfileBadge } from './badges/components'
 
-export function ProfilesComponent({ username }) 
-{
+export function ProfilesComponent({ username }) {
     const [didLookup, setDidLookup] = useState(false)
     const [profile, setProfile] = useState(null)
     const [profileLoading, setProfileLoading] = useState(false)
@@ -41,6 +40,7 @@ export function ProfileLink(props) {
 }
 
 export function ProfileDisplay({ profile, includeName }) {
+
     const nameDisplay = includeName === true ? `${profile.first_name} ${profile.last_name} ` : null
 
     return <>
