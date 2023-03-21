@@ -6,17 +6,6 @@ from django.dispatch import receiver
 User = settings.AUTH_USER_MODEL
 
 
-class ProfileManager(models.Manager):
-    def get_queryset(self, **kwargs):
-        return super().get_queryset(**kwargs).filter(
-            profile__username=self.kwargs['username']
-        )
-        
-    def by_profile(self, user):
-        return self.get_queryset().by_profile(user.profile)
-        
-
-
 class FollowerRelation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default='')
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
@@ -29,11 +18,10 @@ class Profile(models.Model):
     bio = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    followers = models.ManyToManyField(
-        User, related_name='following', blank=True)
+    followers = models.ManyToManyField(User, related_name='following', blank=True)
 
 
 @receiver(post_save, sender=User)
-def user_did_save(sender, instance, created, *args, **kwargs):
+def user_did_save(sender, instance, created, **kwargs):
     if created:
         Profile.objects.get_or_create(user=instance)

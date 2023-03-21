@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import get_user_model
+from django.db.models import Count
 
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import SessionAuthentication
@@ -12,21 +14,20 @@ from ..forms import PostForm
 from ..serializers import PostSerializer, CreateSerializer, ActionSerializer
 
 allowed_hosts = settings.ALLOWED_HOSTS
+User = get_user_model()
 
 
 def get_paginated_queryset(qs, request):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_qs = paginator.paginate_queryset(qs, request)
-    serializer = PostSerializer(paginated_qs, many=True, context={'request': request})
+    serializer = PostSerializer(
+        paginated_qs, many=True, context={'request': request})
     return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(['GET'])
 def posts_list(request):
-    if not request.user.is_authenticated:
-        mateo = User.objects.first()
-        request.user = mateo
     qs = Post.objects.all()
     username = request.GET.get('username')
     if username != None:
@@ -34,40 +35,47 @@ def posts_list(request):
     return get_paginated_queryset(qs, request)
 
 
-from django.contrib.auth import get_user_model
-User = get_user_model()
+@api_view(['GET'])
+def profile_posts(request, username):
+    qs = User.objects.filter(username=username)
+    obj = qs.first()
+    if obj == None:
+        return Response({}, status=404)
+    posts = obj.posts.all()
+    return get_paginated_queryset(posts, request)
+
+
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 def posts_feed(request):
     if not request.user.is_authenticated:
-        mateo = User.objects.first()
-        request.user = mateo
+        return Response({'message': 'You must login!'}, status=401)
     qs = Post.objects.by_feed(request.user)
     return get_paginated_queryset(qs, request)
 
 
-def posts_global_feed():
-    return
+@api_view(['GET'])
+def posts_global_feed(request):
+    qs = Post.objects.annotate(
+        like_count=Count('likes')).order_by('-like_count')
+    return get_paginated_queryset(qs, request)
 
 
 @api_view(['GET', 'POST'])
 def post_detail(request, post_id):
-    if not request.user.is_authenticated:
-        mateo = User.objects.first()
-        request.user = mateo
     qs = Post.objects.filter(id=post_id)
     if not qs.exists():
         return Response({'detail': 'Post not found'}, status=404)
     obj = qs.first()
-    serializer = PostSerializer(instance=obj, context={'request': request}) 
+    serializer = PostSerializer(instance=obj, context={'request': request})
     return Response(serializer.data, status=200)
 
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication])
 def post_create(request):
     if not request.user.is_authenticated:
-        mateo = User.objects.first()
-        request.user = mateo
+        return Response({'message': 'You must login!'}, status=401)
     serializer = CreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
@@ -79,8 +87,7 @@ def post_create(request):
 @authentication_classes([SessionAuthentication])
 def post_action(request):
     if not request.user.is_authenticated:
-        mateo = User.objects.first()
-        request.user = mateo
+        return Response({'message': 'You must login!'}, status=401)
     action_serializer = ActionSerializer(data=request.data)
     if action_serializer.is_valid(raise_exception=True):
         data = action_serializer.validated_data

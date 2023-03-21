@@ -38,9 +38,9 @@ class PostLike(models.Model):
 
 class Post(models.Model):
     # Maps to SQL Data
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default='')
+    user = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE, default='')
     repost = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
-    likes = models.ManyToManyField(User, related_name='user_likes', through=PostLike, blank=True)
+    likes = models.ManyToManyField(User, related_name='post_user', through=PostLike, blank=True)
     content = models.TextField(max_length=max_length, default='')
     image = models.FileField(upload_to='images/', blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

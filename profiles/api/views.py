@@ -32,6 +32,3 @@ def profile_follow(request, username):
                 obj.followers.remove(user)
     serializer = PublicProfileSerializer(instance=obj, context={'request': request})
     return Response(serializer.data, status=200)
-
-def profile_posts(request, username):
-    pass
