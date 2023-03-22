@@ -1,9 +1,11 @@
 import './App.css';
 import { PostsComponent } from './posts';
-import { FeedComponent } from './feed';
+import { FeedComponent, GlobalFeedComponent } from './feed';
 import { ProfilesComponent } from './profiles';
+/*import { ProfilePostsComponent } from './profiles/posts';*/
 
 const root = document.getElementById('root')
+
 
 function Posts() {
   return <div className="App">
@@ -21,13 +23,20 @@ function Feed() {
   </div>
 }
 
-function Profiles() {
+function GlobalFeed() {
   return <div className="App">
-    <div>
-      <ProfilesComponent {...(root.dataset)} />
-      <PostsComponent {...(root.dataset)}/>
+    <div className='bg-dark'>
+      <GlobalFeedComponent {...(root.dataset)} />
     </div>
   </div>
 }
 
-export { Posts, Feed, Profiles }
+function Profiles() {
+  return <div className="App">
+    <div className='bg-dark'>
+      <ProfilesComponent {...(root.dataset)} />
+    </div>
+  </div>
+}
+
+export { Posts, Feed, GlobalFeed, Profiles }

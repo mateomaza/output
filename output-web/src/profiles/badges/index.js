@@ -1,6 +1,5 @@
-import { BadgeComponent, ProfileBadge } from "./components";
+import { ProfileBadge } from "./components";
 
 export {
-    BadgeComponent,
     ProfileBadge
 }

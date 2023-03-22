@@ -12,13 +12,13 @@ export function ProfileBadge({ profile, onFollow, profileLoading }) {
             onFollow(currentAction)
         }
     }
-    return profile ? <div>
+    return profile ? <div className='bg-white border border-info rounded col-4 my-5 p-5 mx-auto'>
         <ProfilePicture profile={profile} hideLink />
-        <p><ProfileDisplay profile={profile} includeFullName hideLink /></p>
-        <p><DisplayCount>{profile.follower_count}</DisplayCount> {profile.follower_count === 1 ? 'follower' : 'followers'} </p>
-        <p><DisplayCount>{profile.following_count}</DisplayCount> following</p>
+        <div><ProfileDisplay profile={profile} includeFullName hideLink /></div>
+        <p className='font'><DisplayCount>{profile.follower_count}</DisplayCount> {profile.follower_count === 1 ? 'follower' : 'followers'} </p>
+        <p className='font'><DisplayCount>{profile.following_count}</DisplayCount> following</p>
         <p>{profile.location}</p>
         <p>{profile.bio}</p>
-        <button className='btn btn-primary' onClick={handleToggle}>{currentAction}</button>
+        <button className='btn btn-primary font2' onClick={handleToggle}>{currentAction}</button>
     </div> : null
 }

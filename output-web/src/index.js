@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import './App.css'
 import reportWebVitals from './reportWebVitals';
-import { Posts, Feed, Profiles } from './App';
+import { Posts, Feed, GlobalFeed, Profiles } from './App';
 import { PostDetail } from './posts';
 
 const posts = ReactDOM.createRoot(document.getElementById('posts'));
@@ -22,11 +22,19 @@ feed.render(
   </React.StrictMode>
 );
 
-const detailRoot = ReactDOM.createRoot(document.getElementById('details'))
+const global = ReactDOM.createRoot(document.getElementById('global'));
+
+global.render(
+  <React.StrictMode>
+    <GlobalFeed />
+  </React.StrictMode>
+);
+
+const details = ReactDOM.createRoot(document.getElementById('details'))
 const detailElements = document.querySelectorAll('.post-detail')
 
 detailElements.forEach((element) => {
-  detailRoot.render(
+  details.render(
     <React.StrictMode>
       <PostDetail {...(element.dataset)} />
     </React.StrictMode>

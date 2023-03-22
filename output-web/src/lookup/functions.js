@@ -38,7 +38,7 @@ function backendLookup(method, endpoint, callback, data) {
     xhr.send(parsedData)
 }
 
-export function loadPosts(username, callback, next) {
+export function loadPosts(callback, username, next) {
     let endpoint = '/posts'
     if (username) {
         endpoint = `/posts/?username=${username}`
@@ -70,13 +70,29 @@ export function loadFeed(callback, next) {
     backendLookup('GET', endpoint, callback)
 }
 
-
-export function loadProfile(username, callback) {
-    backendLookup("GET", `/profiles/${username}`, callback)
+export function loadGlobalFeed(callback, next) {
+    let endpoint = '/posts/feed/global'
+    if (next !== null && next !== undefined) {
+        endpoint = next.replace('http://localhost:8000/api', '')
+    }
+    backendLookup('GET', endpoint, callback)
 }
 
 
-export function profileFollow(username, action, callback) {
+export function loadProfile(callback, username) {
+    backendLookup("GET", `/profiles/${username}`, callback)
+}
+
+export function loadProfilePosts(callback, username, next) {
+    let endpoint = `/posts/${username}/profile`
+    if (next !== null && next !== undefined) {
+        endpoint = next.replace('http://localhost:8000/api', '')
+    }
+    backendLookup("GET", endpoint, callback)
+}
+
+
+export function profileFollow(action, username, callback) {
     const data = { action: `${action && action}`.toLowerCase() }
     backendLookup("POST", `/profiles/${username}/follow/`, callback, data)
 }
