@@ -1,53 +1,70 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import './App.css'
+import './App.css';
 import reportWebVitals from './reportWebVitals';
-import { Posts, Feed, GlobalFeed, Profiles } from './App';
+import { Posts, Feed, GlobalFeed, Profile } from './App';
 import { PostDetail } from './posts';
 
-const posts = ReactDOM.createRoot(document.getElementById('posts'));
 
-posts.render(
-  <React.StrictMode>
-    <Posts />
-  </React.StrictMode>
-);
+const root = ReactDOM.createRoot(document.getElementById("root"))
+const profiles = ReactDOM.createRoot(document.getElementById("profiles"))
 
-const feed = ReactDOM.createRoot(document.getElementById('feed'));
+const posts = document.getElementById('posts')
 
-feed.render(
-  <React.StrictMode>
-    <Feed />
-  </React.StrictMode>
-);
+if (posts && !profiles) {
+  root.render(
+    <React.StrictMode>
+      <Posts />
+    </React.StrictMode>
+  )
+}
 
-const global = ReactDOM.createRoot(document.getElementById('global'));
 
-global.render(
-  <React.StrictMode>
-    <GlobalFeed />
-  </React.StrictMode>
-);
+const feed = document.getElementById('feed')
 
-const details = ReactDOM.createRoot(document.getElementById('details'))
+if (feed && !profiles) {
+  root.render(
+    <React.StrictMode>
+      <Feed />
+    </React.StrictMode>
+  )
+}
+
+
+const global = document.getElementById('global');
+
+if (global && !profiles) {
+  root.render(
+    <React.StrictMode>
+      <GlobalFeed />
+    </React.StrictMode>
+  )
+}
+
+
 const detailElements = document.querySelectorAll('.post-detail')
 
 detailElements.forEach((element) => {
-  details.render(
+  root.render(
     <React.StrictMode>
       <PostDetail {...(element.dataset)} />
     </React.StrictMode>
   );
 })
 
-const profiles = ReactDOM.createRoot(document.getElementById('profiles'));
+
+
 
 profiles.render(
   <React.StrictMode>
-    <Profiles />
+    <Profile {...(root.dataset)} />
   </React.StrictMode>
-);
+)
+
+
+
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

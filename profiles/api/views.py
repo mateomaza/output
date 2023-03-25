@@ -9,8 +9,10 @@ from ..serializers import PublicProfileSerializer
 
 allowed_hosts = settings.ALLOWED_HOSTS
 
+
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication])
 def profile_follow(request, username):
@@ -30,5 +32,6 @@ def profile_follow(request, username):
                 obj.followers.add(user)
             if action == 'unfollow':
                 obj.followers.remove(user)
-    serializer = PublicProfileSerializer(instance=obj, context={'request': request})
+    serializer = PublicProfileSerializer(
+        instance=obj, context={'request': request})
     return Response(serializer.data, status=200)

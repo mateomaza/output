@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" class="bg-dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app, then integrated to Next.js"
-    />
-    <link rel="stylesheet" href="../src/index.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Output</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    
-    <div id="posts"></div>
-    <div id="feed"></div>
-    <div id="global"></div>  
-    <div id="details" ></div> 
-    <div id="profiles"></div> 
-        
-    <div id="root" data-username="mateo" data-permission="yes"></div>
-    <!--
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app, then integrated to Next.js" />
+  <link rel="stylesheet" href="../src/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Output</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+
+  <div id="root" data-username="messi" data-permission="yes"></div>
+
+  <div id="profiles"></div>
+  <div class="d-none" id="posts"></div>
+  <div class="d-none" id="feed"></div>
+  <div class="d-none" id="global"></div>
+  <div class="d-none" id="details"></div>
+  <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -33,18 +32,19 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script>
-      var path = window.location.pathname
-      var idRegex = /(?<post_id>\d+)/
-      var match = path.match(idRegex)
-      if (match) {
-        post_id = match.groups.post_id
-        var root = document.getElementById('root')
-        root.className = 'd-none'
-        var detailElement = `<div class="post-detail" data-id=${post_id} data-class-name="col-6 mx-auto"></div>`
-        var details = document.getElementById('details')
-        details.innerHTML = detailElement
-      }
-    </script>
-  </body>
+  <script>
+    var path = window.location.pathname
+    var idRegex = /(?<post_id>\d+)/
+    var match = path.match(idRegex)
+    if (match) {
+      var posts = document.getElementById("posts")
+      posts.className = 'd-none'
+      post_id = match.groups.post_id
+      var detailElement = `<div class="post-detail" data-id=${post_id} data-class-name="col-6 mx-auto"></div>`
+      var details = document.getElementById('details')
+      details.innerHTML = detailElement
+    }
+  </script>
+</body>
+
 </html>

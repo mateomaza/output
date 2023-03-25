@@ -62,7 +62,8 @@ export function postAction(post_id, content, action, callback) {
     backendLookup('POST', '/posts/action/', callback, data)
 }
 
-export function loadFeed(callback, next) {
+export function loadFeed(callback, username, next) {
+    username = null
     let endpoint = '/posts/feed'
     if (next !== null && next !== undefined) {
         endpoint = next.replace('http://localhost:8000/api', '')
@@ -70,7 +71,8 @@ export function loadFeed(callback, next) {
     backendLookup('GET', endpoint, callback)
 }
 
-export function loadGlobalFeed(callback, next) {
+export function loadGlobalFeed(callback, username, next) {
+    username = null
     let endpoint = '/posts/feed/global'
     if (next !== null && next !== undefined) {
         endpoint = next.replace('http://localhost:8000/api', '')

@@ -1,11 +1,10 @@
 import './App.css';
 import { PostsComponent } from './posts';
 import { FeedComponent, GlobalFeedComponent } from './feed';
-import { ProfilesComponent } from './profiles';
+import { ProfileComponent } from './profiles';
 /*import { ProfilePostsComponent } from './profiles/posts';*/
 
 const root = document.getElementById('root')
-
 
 function Posts() {
   return <div className="App">
@@ -31,12 +30,12 @@ function GlobalFeed() {
   </div>
 }
 
-function Profiles() {
+function Profile() {
   return <div className="App">
     <div className='bg-dark'>
-      <ProfilesComponent {...(root.dataset)} />
+      <ProfileComponent {...(root.dataset)} />
     </div>
   </div>
 }
 
-export { Posts, Feed, GlobalFeed, Profiles }
+export { Posts, Feed, GlobalFeed, Profile }

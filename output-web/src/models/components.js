@@ -12,7 +12,6 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
     const [posts, setPosts] = useState([])
     const [next, setNext] = useState(null)
     
-
     useEffect(() => {
         const callback = (response, status) => {
             if (status === 200) {
@@ -52,7 +51,7 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
                     alert('An error has occured, please try again.')
                 }
             }
-            loadFunction(callback, next, username)
+            loadFunction(callback, username, next)
         }
     }
     return (

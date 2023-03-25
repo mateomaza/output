@@ -4,7 +4,7 @@ import { ProfileBadge } from './badges/'
 import { ProfilePostsComponent } from './posts'
 import { PostsList } from '../posts/'
 
-export function ProfilesComponent({ username }) {
+export function ProfileComponent({ username }) {
 
     const [didLookup, setDidLookup] = useState(false)
     const [profile, setProfile] = useState(null)
@@ -34,7 +34,7 @@ export function ProfilesComponent({ username }) {
     if (didLookup === true && profile) {
         return <>
             <ProfileBadge profile={profile} onFollow={handleFollow} profileLoading={profileLoading} />
-            <ProfilePostsComponent username={username}/>
+            <ProfilePostsComponent username={username} />
         </>
     } else {
         return '...'

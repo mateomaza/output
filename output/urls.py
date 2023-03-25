@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from posts.views import local_posts_list, local_post_detail
+from posts.views import global_feed, personal_feed, local_posts_list, local_post_detail
 from accounts.views import login_view, logout_view, register_view
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,7 +25,9 @@ urlpatterns = [
     path('login/', login_view),
     path('logout/', logout_view),
     path('register/', register_view),
-    path('', local_posts_list),
+    path('', global_feed),
+    path('feed/', personal_feed),
+    path('list/', local_posts_list),
     path('<int:post_id>/', local_post_detail),
     re_path(r'profiles?/', include('profiles.urls')),
     path('api/posts/', include('posts.api.urls')),

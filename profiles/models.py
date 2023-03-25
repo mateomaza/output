@@ -18,7 +18,8 @@ class Profile(models.Model):
     bio = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now_add=True)
-    followers = models.ManyToManyField(User, related_name='following', blank=True)
+    followers = models.ManyToManyField(
+        User, related_name='following', blank=True)
 
 
 @receiver(post_save, sender=User)

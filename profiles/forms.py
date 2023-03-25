@@ -4,10 +4,12 @@ from .models import Profile
 
 User = get_user_model()
 
+
 class ProfileForm(forms.ModelForm):
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
     email = forms.CharField(required=False)
+
     class Meta:
         model = Profile
         fields = ['bio', 'location']

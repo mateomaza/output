@@ -26,7 +26,7 @@ code {
 }
 
 .font3 {
-  font: caption;
+  font: OCR A Std, monospace;
 }
 
 .font4 {
@@ -36,3 +36,5 @@ code {
 .font5 {
   font: 0.7em "Fira Sans", sans-serif;
 }
+
+

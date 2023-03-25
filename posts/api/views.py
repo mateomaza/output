@@ -39,19 +39,6 @@ def posts_list(request):
 
 
 @api_view(['GET'])
-def profile_posts(request, username):
-    if not request.user.is_authenticated:
-        mateo = User.objects.first()
-        request.user = mateo
-    qs = User.objects.filter(username=username)
-    obj = qs.first()
-    if obj == None:
-        return Response({}, status=404)
-    posts = obj.posts.all()
-    return get_paginated_queryset(posts, request)
-
-
-@api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 def posts_feed(request):
     if not request.user.is_authenticated:
@@ -73,15 +60,31 @@ def posts_global_feed(request):
 
 @api_view(['GET', 'POST'])
 def post_detail(request, post_id):
+    try:
+        if not request.user.is_authenticated:
+            mateo = User.objects.first()
+            request.user = mateo
+        qs = Post.objects.filter(id=post_id)
+        if not qs.exists():
+            return Response({'detail': 'Post not found'}, status=404)
+        obj = qs.first()
+        serializer = PostSerializer(instance=obj, context={'request': request})
+        return Response(serializer.data, status=200)
+    except IndexError:
+        return Response({'message': "Post doesn't exist"}, status=404)
+
+
+@api_view(['GET'])
+def profile_posts(request, username):
     if not request.user.is_authenticated:
         mateo = User.objects.first()
         request.user = mateo
-    qs = Post.objects.filter(id=post_id)
-    if not qs.exists():
-        return Response({'detail': 'Post not found'}, status=404)
+    qs = User.objects.filter(username=username)
     obj = qs.first()
-    serializer = PostSerializer(instance=obj, context={'request': request})
-    return Response(serializer.data, status=200)
+    if obj == None:
+        return Response({}, status=404)
+    posts = obj.posts.all()
+    return get_paginated_queryset(posts, request)
 
 
 @api_view(['POST'])

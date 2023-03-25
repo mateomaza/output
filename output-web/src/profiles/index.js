@@ -1,7 +1,7 @@
-import { ProfilesComponent, ProfileLink, ProfileDisplay, ProfilePicture } from "./components";
+import { ProfileComponent, ProfileLink, ProfileDisplay, ProfilePicture } from "./components";
 
 export {
-    ProfilesComponent,
+    ProfileComponent,
     ProfileLink,
     ProfileDisplay,
     ProfilePicture
