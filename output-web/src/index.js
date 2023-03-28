@@ -8,11 +8,13 @@ import { PostDetail } from './posts';
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
-const profiles = ReactDOM.createRoot(document.getElementById("profiles"))
 
 const posts = document.getElementById('posts')
+const feed = document.getElementById('feed')
+const global = document.getElementById('global');
+const profile = document.getElementById('profile')
 
-if (posts && !profiles) {
+if (posts) {
   root.render(
     <React.StrictMode>
       <Posts />
@@ -20,10 +22,7 @@ if (posts && !profiles) {
   )
 }
 
-
-const feed = document.getElementById('feed')
-
-if (feed && !profiles) {
+if (feed && !posts && !global && !profile) {
   root.render(
     <React.StrictMode>
       <Feed />
@@ -31,10 +30,7 @@ if (feed && !profiles) {
   )
 }
 
-
-const global = document.getElementById('global');
-
-if (global && !profiles) {
+if (global && !feed && !posts && !profile) {
   root.render(
     <React.StrictMode>
       <GlobalFeed />
@@ -42,6 +38,13 @@ if (global && !profiles) {
   )
 }
 
+if (profile && !feed && !global && !posts) {
+  root.render(
+    <React.StrictMode>
+      <Profile />
+    </React.StrictMode>
+  )
+}
 
 const detailElements = document.querySelectorAll('.post-detail')
 
@@ -52,19 +55,6 @@ detailElements.forEach((element) => {
     </React.StrictMode>
   );
 })
-
-
-
-
-profiles.render(
-  <React.StrictMode>
-    <Profile {...(root.dataset)} />
-  </React.StrictMode>
-)
-
-
-
-
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

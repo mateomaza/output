@@ -19,22 +19,26 @@ code {
 }
 
 .font {
-  font: italic small-caps bold 16px/2 cursive;
+  font: bold 17px/1 sans-serif;
 }
 .font2 {
   font: small-caps 12px/1 sans-serif;
 }
 
 .font3 {
-  font: OCR A Std, monospace;
+  font:status-bar
 }
 
 .font4 {
-  font: 1.0em "Fira Sans", sans-serif;
+  font: italic small-caps bold 16px/2 cursive;
 }
 
 .font5 {
   font: 0.7em "Fira Sans", sans-serif;
+}
+
+.font6 {
+  font: bold 14px/1 sans-serif;
 }
 
 

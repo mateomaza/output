@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react'
-import { loadProfile, profileFollow } from '../lookup/'
+import { loadProfile, profileFollow, currentProfile } from '../lookup/'
 import { ProfileBadge } from './badges/'
 import { ProfilePostsComponent } from './posts'
-import { PostsList } from '../posts/'
+
 
 export function ProfileComponent({ username }) {
 
     const [didLookup, setDidLookup] = useState(false)
     const [profile, setProfile] = useState(null)
     const [profileLoading, setProfileLoading] = useState(false)
+    const [current, setCurrent] = useState(null)
 
     const handleLookup = (response, status) => {
-        if (status === 200) {
+        if (status === 200 ) {
             setProfile(response)
+        }
+        if (status === 202) {
+            setCurrent(response)
         }
     }
     useEffect(() => {
         if (didLookup === false) {
             loadProfile(handleLookup, username)
+            currentProfile(handleLookup)
             setDidLookup(true)
         }
     }, [username, didLookup, setDidLookup])
@@ -31,10 +36,16 @@ export function ProfileComponent({ username }) {
         })
         setProfileLoading(true)
     }
-    if (didLookup === true && profile) {
+    const handleUpdate = () => {
+        window.location.href = '/profiles/update'
+    }
+    if (didLookup === true && profile && current) {
         return <>
-            <ProfileBadge profile={profile} onFollow={handleFollow} profileLoading={profileLoading} />
-            <ProfilePostsComponent username={username} />
+            <ProfileBadge profile={profile} current={current} onFollow={handleFollow} profileLoading={profileLoading} />
+            {profile.username === current.username && <button className='btn font2 mb-3' onClick={handleUpdate}>Update</button>}
+            <div className='mt-5'>
+                <ProfilePostsComponent username={username} />
+            </div>
         </>
     } else {
         return '...'
@@ -62,8 +73,4 @@ export function ProfilePicture({ profile }) {
     return <ProfileLink username={profile.username}>
         <span className='mx-3 px-3 py-2 rounded-circle bg-dark text-white'>{profile.username[0]}</span>
     </ProfileLink>
-}
-
-export function ProfilePosts({ profilePosts }) {
-    return <PostsList posts={profilePosts} />
 }

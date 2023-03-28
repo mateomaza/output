@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Output</title>
-    <script defer="defer" src="/static/js/main.91b70a06.js"></script>
-    <link href="/static/css/main.1543e9a9.css" rel="stylesheet">
+    <script defer="defer" src="/static/js/main.f8811d5f.js"></script>
+    <link href="/static/css/main.6da7ad0c.css" rel="stylesheet">
 </head>
 
 <body>
@@ -20,7 +20,7 @@
         <div id="feed"></div>
         <div id="global"></div>
         <div id="details"></div>
-        <div class="profiles"></div>
+        <div id="profile"></div>
     </div>
     <script>
         var path = window.location.pathname, idRegex = /(?<post_id>\d+)/, match = path.match(idRegex); if (match) { var posts = document.getElementById("posts"); posts.className = "d-none", post_id = match.groups.post_id; var detailElement = `<div class="post-detail" data-id=${post_id} data-class-name="col-6 mx-auto"></div>`, details = document.getElementById("details"); details.innerHTML = detailElement }

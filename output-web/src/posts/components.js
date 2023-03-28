@@ -48,11 +48,11 @@ export function Post({ post, onRepost, isRepost, hideActions, hideContent, repos
                 <div>
                     <div className='d-flex p-1 mt-4'>
                         <ProfilePicture profile={post.profile} />
-                        <p className='border-bottom font4'>
+                        <p className='border-bottom font6'>
                             {isRepost === true ? `${post.profile.first_name} ${post.profile.last_name} ` : <ProfileDisplay profile={post.profile} includeName />}
                         </p>
                     </div>
-                    <p className='my-5 mx-5 text-center font4'>{post.content}</p>
+                    <p className='my-5 mx-5 text-center'>{post.content}</p>
                     <Repost post={post} repostVia={post.profile} />
                 </div>
                 <div className='btn btn-group mb-3 col-12 d-flex justify-content-end'>
@@ -141,7 +141,7 @@ export function PostForm({ onAdd, permission }) {
             {canPost === true && <div className='col-12 mx-auto mb-3 p-5' style={{ width: '800px' }}>
                 <form onSubmit={handleSubmit}>
                     <div className='d-flex'>
-                        <p className='align-self-center font text-white my-5'>280 characters maximum ⇢</p>
+                        <p className='align-self-center font4 text-white my-5'>280 characters maximum ⇢</p>
                         <textarea ref={inputRef} className='form-control mx-3' name='post' style={{ height: '150px' }}></textarea>
                         <button type='submit' className='btn btn-primary mx-3 align-self-center font2' style={{ height: '60px' }}>Post</button>
                     </div>

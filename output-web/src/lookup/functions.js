@@ -21,7 +21,7 @@ function backendLookup(method, endpoint, callback, data) {
     const csrftoken = getCookie('csrftoken')
     xhr.responseType = 'json'
     xhr.open(method, url)
-    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8")
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=utf8')
     if (csrftoken) {
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
         xhr.setRequestHeader('X-CSRFToken', csrftoken)
@@ -82,7 +82,7 @@ export function loadGlobalFeed(callback, username, next) {
 
 
 export function loadProfile(callback, username) {
-    backendLookup("GET", `/profiles/${username}`, callback)
+    backendLookup('GET', `/profiles/${username}`, callback)
 }
 
 export function loadProfilePosts(callback, username, next) {
@@ -90,11 +90,15 @@ export function loadProfilePosts(callback, username, next) {
     if (next !== null && next !== undefined) {
         endpoint = next.replace('http://localhost:8000/api', '')
     }
-    backendLookup("GET", endpoint, callback)
+    backendLookup('GET', endpoint, callback)
 }
 
 
 export function profileFollow(action, username, callback) {
     const data = { action: `${action && action}`.toLowerCase() }
-    backendLookup("POST", `/profiles/${username}/follow/`, callback, data)
+    backendLookup('POST', `/profiles/${username}/follow/`, callback, data)
+}
+
+export function currentProfile(callback) {
+    backendLookup('GET', '/profiles/request/current', callback)
 }

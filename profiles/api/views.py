@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.conf import settings
 
 from rest_framework.decorators import api_view, authentication_classes
@@ -10,8 +11,8 @@ from ..serializers import PublicProfileSerializer
 allowed_hosts = settings.ALLOWED_HOSTS
 
 
-from django.contrib.auth import get_user_model
 User = get_user_model()
+
 
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication])
@@ -35,3 +36,16 @@ def profile_follow(request, username):
     serializer = PublicProfileSerializer(
         instance=obj, context={'request': request})
     return Response(serializer.data, status=200)
+
+
+@api_view(['GET'])
+def current_profile(request):
+    user = request.user
+    if not request.user.is_authenticated:
+        mateo = User.objects.first()
+        user = mateo
+    qs = Profile.objects.filter(user=user)
+    obj = qs.first()
+    serializer = PublicProfileSerializer(
+        instance=obj, context={'request': request})
+    return Response(serializer.data, status=202)
