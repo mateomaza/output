@@ -24,7 +24,7 @@ def profile_detail(request, username):
 def profile_update(request):
     user = request.user
     profile = user.profile
-    if not user.is_authenticated:
+    if not request.user.is_authenticated:
         return redirect('/login?next=/profile/update')
     data = {
         'first_name': user.first_name,

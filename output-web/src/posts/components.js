@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import axios from 'axios'
 
 import { PostsModel } from '../models'
 import { loadPosts, postAction, loadDetail } from '../lookup'
@@ -10,23 +11,24 @@ export function PostsComponent({ username, permission }) {
     return <PostsModel username={username} permission={permission} loadFunction={loadPosts} />
 }
 
-export function PostsList({ posts, onRepost }) {
+export function PostsList({ posts, current, onRepost }) {
     return (
         <div className='d-flex flex-column justify-content-evenly'>
             {posts.map((post) => {
-                return <Post post={post} key={post.id} onRepost={onRepost} />
+                return <Post post={post} key={post.id} current={current} onRepost={onRepost} />
             })}
         </div>
     )
 }
 
-export function Post({ post, onRepost, isRepost, hideActions, hideContent, repostVia }) {
+export function Post({ post, current, onRepost, isRepost, hideActions }) {
 
     const [data, setData] = useState(post)
     const path = window.location.pathname
     const match = path.match(/(?<post_id>\d+)/)
     const url_id = match !== null ? match.groups.post_id : null
     const isDetail = `${url_id}` === `${post.id}`
+
     if (post.original) {
         post.content = ''
     }
@@ -44,16 +46,21 @@ export function Post({ post, onRepost, isRepost, hideActions, hideContent, repos
     return (
         <div className='mx-auto mt-2 mb-5 bg-white text-dark w-75 rounded'>
             <div className='border border-info rounded'>
-                {isRepost === true && <div className='border-bottom font5 mb-3'>Repost via <ProfileDisplay profile={repostVia} /></div>}
+                <div className='d-flex justify-content-end p-1'>
+
+                </div>
+                {isRepost === true && <div className='border-bottom font5 mb-3'>Repost via <ProfileDisplay profile={post.profile} /></div>}
                 <div>
-                    <div className='d-flex p-1 mt-4'>
+                    <div className='d-flex mt-3'>
                         <ProfilePicture profile={post.profile} />
                         <p className='border-bottom font6'>
                             {isRepost === true ? `${post.profile.first_name} ${post.profile.last_name} ` : <ProfileDisplay profile={post.profile} includeName />}
                         </p>
+                        {isRepost !== true && post.profile.username === current.username
+                        && <DeleteButton post={post} />}
                     </div>
-                    <p className='my-5 mx-5 text-center'>{post.content}</p>
-                    <Repost post={post} repostVia={post.profile} />
+                    <p className='my-5 mx-5 text-center font4'>{post.content}</p>
+                    <Repost post={post} />
                 </div>
                 <div className='btn btn-group mb-3 col-12 d-flex justify-content-end'>
                     {(data && hideActions !== true) && <>
@@ -68,17 +75,15 @@ export function Post({ post, onRepost, isRepost, hideActions, hideContent, repos
 }
 
 
-export function Repost({ post, repostVia }) {
+export function Repost({ post }) {
     const repostProps = {
         isRepost: true,
         hideActions: true,
         hideUsername: true,
-        repostVia: repostVia,
         post: post.original,
         key: post.id
-
     }
-    return post.is_repost === true ? <Post className={' '} {...repostProps} hideContent /> : null
+    return post.is_repost === true ? <Post className={' '} {...repostProps} /> : null
 }
 
 export function Button({ post, action, onAction }) {
@@ -87,6 +92,8 @@ export function Button({ post, action, onAction }) {
     const likeClass = 'btn btn-primary btn-sm font2 rounded'
     const unlikeClass = 'btn btn-white btn-sm font2 border-dark rounded'
     const [buttonClass, setButtonClass] = useState((post && post.has_liked) ? likeClass : unlikeClass)
+
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     if (action === 'like') {
         action = (post && post.has_liked) ? 'unlike' : 'like'
@@ -116,9 +123,51 @@ export function Button({ post, action, onAction }) {
             &nbsp;{post.likes === 1 ? 'LIKE' : 'LIKES'}</button>
 
     } else if (action === 'repost') {
-        return <button className='btn btn-white btn-sm font2 border-dark rounded ml-1' onClick={handleClick}>REPOST</button>
-
+        return (
+            <>
+                {!showConfirmation && (
+                    <button className='btn btn-white btn-sm font2 border-dark rounded ml-1' onClick={() => setShowConfirmation(true)}>REPOST</button>
+                )}
+                {showConfirmation && (
+                    <dialog>
+                        <p className='font6'>Are you sure you want to repost this?</p>
+                        <button className='btn btn-white btn-sm font2 border-dark rounded mr-1' onClick={handleClick}>Yes</button>
+                        <button className='btn btn-white btn-sm font2 border-dark rounded' onClick={() => setShowConfirmation(false)}>No</button>
+                    </dialog>
+                )}
+            </>)
     }
+}
+
+
+export function DeleteButton({ post }) {
+
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
+    const handleDelete = () => {
+        axios.post(`http://localhost:8000/api/posts/${post.id}/delete/`)
+            .then(response => {
+                setShowConfirmation(true);
+                window.location.reload()
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+    return (
+        <>
+            {!showConfirmation && (
+                <button className='btn btn-danger btn-sm font2 border-dark rounded ml-auto mr-2 mb-auto' onClick={() => setShowConfirmation(true)}>X</button>
+            )}
+            {showConfirmation && (
+                <dialog>
+                    <p className='font6'>Are you sure you want to delete this post?</p>
+                    <button className='btn btn-white btn-sm font2 border-dark rounded mr-1' onClick={handleDelete}>Yes</button>
+                    <button className='btn btn-white btn-sm font2 border-dark rounded' onClick={() => setShowConfirmation(false)}>No</button>
+                </dialog>
+            )}
+        </>
+    );
 }
 
 export function PostForm({ onAdd, permission }) {
@@ -141,8 +190,8 @@ export function PostForm({ onAdd, permission }) {
             {canPost === true && <div className='col-12 mx-auto mb-3 p-5' style={{ width: '800px' }}>
                 <form onSubmit={handleSubmit}>
                     <div className='d-flex'>
-                        <p className='align-self-center font4 text-white my-5'>280 characters maximum ⇢</p>
-                        <textarea ref={inputRef} className='form-control mx-3' name='post' style={{ height: '150px' }}></textarea>
+                        <p className='align-self-center font7 text-white my-5'>280 characters maximum ⇢</p>
+                        <textarea ref={inputRef} className='form-control mx-3 font4' name='post' style={{ height: '150px' }}></textarea>
                         <button type='submit' className='btn btn-primary mx-3 align-self-center font2' style={{ height: '60px' }}>Post</button>
                     </div>
                 </form>

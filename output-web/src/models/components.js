@@ -2,7 +2,7 @@ import { PostsList, PostForm, } from '../posts'
 
 import { useState, useEffect } from 'react'
 
-import { createPost } from '../lookup'
+import { createPost, currentProfile } from '../lookup'
 
 import InfiniteScroll from 'react-infinite-scroller'
 
@@ -11,17 +11,20 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
 
     const [posts, setPosts] = useState([])
     const [next, setNext] = useState(null)
+    const [current, setCurrent] = useState(null)
     
     useEffect(() => {
         const callback = (response, status) => {
             if (status === 200) {
                 setPosts(response.results)
                 setNext(response.next)
-            } else {
-                alert('An error has occured, please try again.')
+            } 
+            if (status === 202) {
+                setCurrent(response)
             }
         }
         loadFunction(callback, username)
+        currentProfile(callback)
 
     }, [username, loadFunction])
 
@@ -57,13 +60,13 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
     return (
         <div>
             {!hideForm && <PostForm onAdd={handleAdd} permission={permission} />}
-            <PostsList posts={posts} onRepost={handleRepost} />
+            <PostsList posts={posts} current={current} onRepost={handleRepost} />
             {next !== null && <InfiniteScroll
                 children={''}
                 pageStart={0}
                 loadMore={handleNext}
                 hasMore={true || false}
-                loader={<div className='loader' key={0}>Loading ...</div>}>
+                loader={<div className='loader' key={0}></div>}>
             </InfiniteScroll>}
         </div>
     )

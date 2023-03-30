@@ -9,10 +9,8 @@ import { PostDetail } from './posts';
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 
-const posts = document.getElementById('posts')
-const feed = document.getElementById('feed')
-const global = document.getElementById('global');
-const profile = document.getElementById('profile')
+
+const posts = document.getElementById("posts")
 
 if (posts) {
   root.render(
@@ -22,15 +20,9 @@ if (posts) {
   )
 }
 
-if (feed && !posts && !global && !profile) {
-  root.render(
-    <React.StrictMode>
-      <Feed />
-    </React.StrictMode>
-  )
-}
+const global = document.getElementById("global")
 
-if (global && !feed && !posts && !profile) {
+if (global) {
   root.render(
     <React.StrictMode>
       <GlobalFeed />
@@ -38,12 +30,27 @@ if (global && !feed && !posts && !profile) {
   )
 }
 
-if (profile && !feed && !global && !posts) {
+const feed = document.getElementById("feed")
+
+if (feed) {
   root.render(
     <React.StrictMode>
-      <Profile />
+      <Feed />
     </React.StrictMode>
   )
+}
+
+const profiles = document.getElementById("profiles")
+const profileElements = document.querySelectorAll('.profile')
+
+if (profiles) {
+  profileElements.forEach((element) => {
+    root.render(
+      <React.StrictMode>
+        <Profile {...(element.dataset)} />
+      </React.StrictMode>
+    );
+  })
 }
 
 const detailElements = document.querySelectorAll('.post-detail')
