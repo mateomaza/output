@@ -1,5 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework.validators import FileExtensionValidator, MaxFileSizeValidator, MaxImageDimensionsValidator
 from profiles.serializers import PublicProfileSerializer
 from .models import Post, PostLike
 
@@ -10,13 +11,19 @@ post_actions = settings.POST_ACTION_OPTIONS
 class CreateSerializer(serializers.ModelSerializer):
     profile = PublicProfileSerializer(source='user.profile', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
+    image_url = serializers.CharField(read_only=True)
 
     class Meta:
         model = Post
-        fields = ['profile', 'id', 'content', 'likes', 'timestamp']
+        fields = ['profile', 'id', 'content', 'likes', 'timestamp', 'image_url']
 
     def get_likes(self, obj):
         return obj.likes.count()
+    
+    def create_imaeg(self, validated_data):
+        image_url = self.context.get('image_url', '')
+        post = Post.objects.create(resized_image=image_url, **validated_data)
+        return post
 
     def validate_content(self, value):
         if len(value) > max_length:
@@ -29,11 +36,15 @@ class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     original = CreateSerializer(source='repost', read_only=True)
     has_liked = serializers.SerializerMethodField(read_only=True)
+    image = serializers.ImageField(validators=[
+        FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png', 'gif', 'webp']),
+        MaxFileSizeValidator(5 * 1024 * 1024),
+    ])
 
     class Meta:
         model = Post
         fields = ['profile', 'id', 'content', 'likes',
-                  'is_repost', 'original', 'timestamp', 'has_liked']
+                  'is_repost', 'original', 'timestamp', 'has_liked', 'image']
 
     def get_likes(self, obj):
         return obj.likes.count()

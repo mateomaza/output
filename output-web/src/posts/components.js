@@ -4,7 +4,7 @@ import axios from 'axios'
 import { PostsModel } from '../models'
 import { loadPosts, postAction, loadDetail } from '../lookup'
 import { ProfileDisplay, ProfilePicture } from '../profiles'
-import { DisplayCount } from '../utils'
+import { DisplayCount, getCookie, MyDropzone } from '../utils'
 
 
 export function PostsComponent({ username, permission }) {
@@ -57,7 +57,7 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
                             {isRepost === true ? `${post.profile.first_name} ${post.profile.last_name} ` : <ProfileDisplay profile={post.profile} includeName />}
                         </p>
                         {isRepost !== true && post.profile.username === current.username
-                        && <DeleteButton post={post} />}
+                            && <DeleteButton post={post} />}
                     </div>
                     <p className='my-5 mx-5 text-center font4'>{post.content}</p>
                     <Repost post={post} />
@@ -115,6 +115,9 @@ export function Button({ post, action, onAction }) {
         if (action === 'unlike') {
             setButtonClass(unlikeClass)
         }
+        if (action === 'repost') {
+            setShowConfirmation(false)
+        }
     }
 
     if (action === 'like' || action === 'unlike') {
@@ -143,9 +146,14 @@ export function Button({ post, action, onAction }) {
 export function DeleteButton({ post }) {
 
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const csrftoken = getCookie('csrftoken')
 
     const handleDelete = () => {
-        axios.post(`http://localhost:8000/api/posts/${post.id}/delete/`)
+        axios.post(`http://localhost:8000/api/posts/${post.id}/delete/`, {
+            headers: {
+                'X-CSRFToken': csrftoken,
+            }
+        })
             .then(response => {
                 setShowConfirmation(true);
                 window.location.reload()
@@ -192,6 +200,9 @@ export function PostForm({ onAdd, permission }) {
                     <div className='d-flex'>
                         <p className='align-self-center font7 text-white my-5'>280 characters maximum ⇢</p>
                         <textarea ref={inputRef} className='form-control mx-3 font4' name='post' style={{ height: '150px' }}></textarea>
+                        <div>
+                            <MyDropzone></MyDropzone>
+                        </div>
                         <button type='submit' className='btn btn-primary mx-3 align-self-center font2' style={{ height: '60px' }}>Post</button>
                     </div>
                 </form>

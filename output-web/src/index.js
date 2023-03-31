@@ -32,13 +32,7 @@ if (global) {
 
 const feed = document.getElementById("feed")
 
-if (feed) {
-  root.render(
-    <React.StrictMode>
-      <Feed />
-    </React.StrictMode>
-  )
-}
+
 
 const profiles = document.getElementById("profiles")
 const profileElements = document.querySelectorAll('.profile')
@@ -62,6 +56,14 @@ detailElements.forEach((element) => {
     </React.StrictMode>
   );
 })
+
+if (feed) {
+  root.render(
+    <React.StrictMode>
+      <Feed />
+    </React.StrictMode>
+  )
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

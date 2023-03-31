@@ -44,7 +44,8 @@ class Post(models.Model):
     likes = models.ManyToManyField(
         User, related_name='post_user', through=PostLike, blank=True)
     content = models.TextField(max_length=max_length, default='')
-    image = models.FileField(upload_to='images/', blank=True, null=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
+    resized_image = models.URLField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     objects = PostManager()
@@ -58,3 +59,6 @@ class Post(models.Model):
 
     def __str__(self):
         return self.content
+    
+    def save(self, *args, **kwargs):
+        resized_image = get_resized_image(self.image)

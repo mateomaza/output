@@ -1,5 +1,8 @@
-import { DisplayCount } from "./components";
+import { DisplayCount, getCookie, MyDropzone, Dropzone } from "./components";
 
 export {
-    DisplayCount
+    DisplayCount,
+    getCookie,
+    MyDropzone,
+    Dropzone
 }

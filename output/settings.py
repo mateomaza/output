@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +30,10 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.10']
 LOGIN_URL = '/login'
 MAX_POST_LENGTH = 280
 POST_ACTION_OPTIONS = ['like', 'unlike', 'repost']
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 
 # Application definition

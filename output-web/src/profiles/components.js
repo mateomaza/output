@@ -54,7 +54,7 @@ export function ProfileComponent({ username }) {
 
 export function ProfileLink(props) {
     const handleProfileLink = () => {
-        window.location.href = `/profiles/${props.username}`
+        window.location.href = `/profiles/${props.username}/detail`
     }
     return <span className='pointer' onClick={handleProfileLink}>{props.children}</span>
 }

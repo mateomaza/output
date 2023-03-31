@@ -37,7 +37,6 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
             }
         })
     }
-    
     const handleRepost = (repost) => {
         if (!noRepost) {
             setPosts([repost, ...posts])
