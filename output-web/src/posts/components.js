@@ -4,7 +4,7 @@ import axios from 'axios'
 import { PostsModel } from '../models'
 import { loadPosts, postAction, loadDetail } from '../lookup'
 import { ProfileDisplay, ProfilePicture } from '../profiles'
-import { DisplayCount, getCookie, MyDropzone } from '../utils'
+import { DisplayCount, getCookie, Dropzone } from '../utils'
 
 
 export function PostsComponent({ username, permission }) {
@@ -59,7 +59,8 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
                         {isRepost !== true && post.profile.username === current.username
                             && <DeleteButton post={post} />}
                     </div>
-                    <p className='my-5 mx-5 text-center font4'>{post.content}</p>
+                    {post.content && <p className='my-5 mx-5 text-center font4'>{post.content}</p>}
+                    {post.image && <img src={post.resized_image} alt='Post'></img>}
                     <Repost post={post} />
                 </div>
                 <div className='btn btn-group mb-3 col-12 d-flex justify-content-end'>
@@ -201,7 +202,7 @@ export function PostForm({ onAdd, permission }) {
                         <p className='align-self-center font7 text-white my-5'>280 characters maximum ⇢</p>
                         <textarea ref={inputRef} className='form-control mx-3 font4' name='post' style={{ height: '150px' }}></textarea>
                         <div>
-                            <MyDropzone></MyDropzone>
+                            <Dropzone></Dropzone>
                         </div>
                         <button type='submit' className='btn btn-primary mx-3 align-self-center font2' style={{ height: '60px' }}>Post</button>
                     </div>

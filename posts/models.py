@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
+from .api.images import resize_image
 
 
 max_length = settings.MAX_POST_LENGTH
@@ -61,4 +62,6 @@ class Post(models.Model):
         return self.content
     
     def save(self, *args, **kwargs):
-        resized_image = get_resized_image(self.image)
+        resized_image_url = resize_image(self.image)
+        self.resized_image = resized_image_url
+        super().save(*args, **kwargs)

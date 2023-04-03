@@ -1,7 +1,6 @@
 import numeral from 'numeral'
 import { useDropzone } from 'react-dropzone'
-import { useState } from 'react';
-import axios from 'axios';
+import { useCallback } from 'react'
 
 
 export function DisplayCount(props) {
@@ -24,63 +23,33 @@ export function getCookie(name) {
     return cookieValue;
 }
 
-export function MyDropzone() {
-    const [files, setFiles] = useState([]);
+const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
 
-    const { getRootProps, getInputProps } = useDropzone({
-        accept: 'image/*',
-        onDrop: acceptedFiles => {
-            setFiles(acceptedFiles.map(file => Object.assign(file, {
-                preview: URL.createObjectURL(file)
-            })));
-        }
+    const response = await fetch('/api/posts/create/', {
+        method: 'POST',
+        body: formData,
     });
 
-    const thumbs = files.map(file => (
-        <div key={file.name}>
-            <div>
-                <img
-                    src={file.preview}
-                    alt={file.name}
-                />
-            </div>
-            <div>
-                {file.name}
-            </div>
-        </div>
-    ));
+    const data = await response.json();
+    return data.url;
+}
+
+export const Dropzone = () => {
+    const onDrop = useCallback(async (acceptedFiles) => {
+        const file = acceptedFiles[0];
+        const url = await uploadImage(file);
+        console.log(url);
+    }, []);
+
+    const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
     return (
         <div {...getRootProps()}>
             <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here, or click to select files</p>
-            <div>{thumbs}</div>
+            <p>Drag and drop an image here, or click to select an image</p>
         </div>
     );
-}
+};
 
-export function Dropzone() {
-    const [uploadedFile, setUploadedFile] = useState(null);
-
-    const handleDrop = async (files) => {
-        const formData = new FormData();
-        formData.append('image', files[0]);
-        const response = await axios.post('/api/upload/', formData);
-        setUploadedFile(response.data);
-    };
-
-    return (
-        <MyDropzone onDrop={handleDrop}>
-            {({ getRootProps, getInputProps }) => (
-                <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    {uploadedFile ? (
-                        <img src={uploadedFile} alt="Uploaded file" />
-                    ) : (
-                        <p>Drag and drop an image here, or click to select a file</p>
-                    )}
-                </div>
-            )}
-        </MyDropzone>
-    );
-}

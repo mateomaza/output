@@ -3,9 +3,6 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import get_user_model
 from django.db.models import Count
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from PIL import Image
 
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import SessionAuthentication
@@ -15,6 +12,7 @@ from rest_framework.pagination import PageNumberPagination
 from ..models import Post
 from ..forms import PostForm
 from ..serializers import PostSerializer, CreateSerializer, ActionSerializer
+from .images import resize_image
 
 allowed_hosts = settings.ALLOWED_HOSTS
 User = get_user_model()
@@ -108,19 +106,6 @@ def post_create(request):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)
     return Response({}, status=400)
-
-
-@api_view(['POST'])
-def resize_image(request):
-    if request.FILES['image']:
-        image_file = request.FILES['image']
-        image = Image.open(image_file)
-        resized_image = image.resize((800, 800))
-        filename = f"{settings.MEDIA_ROOT}/resized/{image_file.name}"
-        path = default_storage.save(filename, ContentFile(resized_image))
-        url = f"{settings.MEDIA_URL}{path}"
-        return Response({'url': url})
-    return Response({'error': 'No image uploaded'}, status=400)
 
 
 @api_view(['POST'])

@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from rest_framework.validators import FileExtensionValidator, MaxFileSizeValidator, MaxImageDimensionsValidator
+from rest_framework.validators import FileExtensionValidator, MaxFileSizeValidator
 from profiles.serializers import PublicProfileSerializer
 from .models import Post, PostLike
 
@@ -22,7 +22,7 @@ class CreateSerializer(serializers.ModelSerializer):
     
     def create_imaeg(self, validated_data):
         image_url = self.context.get('image_url', '')
-        post = Post.objects.create(resized_image=image_url, **validated_data)
+        post = Post.objects.create(image_url=image_url, **validated_data)
         return post
 
     def validate_content(self, value):
@@ -36,7 +36,7 @@ class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     original = CreateSerializer(source='repost', read_only=True)
     has_liked = serializers.SerializerMethodField(read_only=True)
-    image = serializers.ImageField(validators=[
+    image = serializers.ImageField(allow_empty_file=True, validators=[
         FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png', 'gif', 'webp']),
         MaxFileSizeValidator(5 * 1024 * 1024),
     ])
