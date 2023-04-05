@@ -20,7 +20,7 @@ class CreateSerializer(serializers.ModelSerializer):
     def get_likes(self, obj):
         return obj.likes.count()
     
-    def create_imaeg(self, validated_data):
+    def create_image(self, validated_data):
         image_url = self.context.get('image_url', '')
         post = Post.objects.create(image_url=image_url, **validated_data)
         return post
@@ -36,15 +36,12 @@ class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     original = CreateSerializer(source='repost', read_only=True)
     has_liked = serializers.SerializerMethodField(read_only=True)
-    image = serializers.ImageField(allow_empty_file=True, validators=[
-        FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png', 'gif', 'webp']),
-        MaxFileSizeValidator(5 * 1024 * 1024),
-    ])
-
+    image_url = serializers.ImageField(read_only=True)
+    
     class Meta:
         model = Post
         fields = ['profile', 'id', 'content', 'likes',
-                  'is_repost', 'original', 'timestamp', 'has_liked', 'image']
+                  'is_repost', 'original', 'timestamp', 'has_liked', 'image_url']
 
     def get_likes(self, obj):
         return obj.likes.count()
