@@ -4,7 +4,7 @@ from django.db.models import Q
 from .api.images import resize_image
 
 
-max_length = settings.MAX_POST_LENGTH
+MAX_LENGTH = settings.MAX_POST_LENGTH
 User = settings.AUTH_USER_MODEL
 
 
@@ -44,7 +44,7 @@ class Post(models.Model):
     repost = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
     likes = models.ManyToManyField(
         User, related_name='post_user', through=PostLike, blank=True)
-    content = models.TextField(max_length=max_length, default='')
+    content = models.TextField(max_length=MAX_LENGTH, default='')
     image = models.ImageField(upload_to='images/', null=True, blank=True)
     resized_image = models.URLField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -63,5 +63,6 @@ class Post(models.Model):
     
     def save(self, *args, **kwargs):
         resized_image_url = resize_image(self.image)
-        self.resized_image = resized_image_url
+        if resized_image_url is not None:
+            self.resized_image = resized_image_url
         super().save(*args, **kwargs)

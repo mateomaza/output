@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 from .models import Post, PostLike
 
-allowed_hosts = settings.ALLOWED_HOSTS
+ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 
 def global_feed(request):

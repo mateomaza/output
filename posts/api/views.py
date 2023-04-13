@@ -12,9 +12,8 @@ from rest_framework.pagination import PageNumberPagination
 from ..models import Post
 from ..forms import PostForm
 from ..serializers import PostSerializer, CreateSerializer, ActionSerializer
-from .images import resize_image
 
-allowed_hosts = settings.ALLOWED_HOSTS
+ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 User = get_user_model()
 
 
@@ -94,14 +93,7 @@ def post_create(request):
     if not request.user.is_authenticated:
         mateo = User.objects.first()
         request.user = mateo
-    image_file = request.FILES.get('image', None)
-    if image_file:
-        response = resize_image(request)
-        if response.status_code == 201:
-            image_url = response.data.get('url', '')
-        else:
-            return response
-    serializer = CreateSerializer(data=request.data, context={'image_url': image_url})
+    serializer = CreateSerializer(data=request.data, files=request.FILES)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)

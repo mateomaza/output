@@ -4,29 +4,24 @@ from rest_framework.validators import FileExtensionValidator, MaxFileSizeValidat
 from profiles.serializers import PublicProfileSerializer
 from .models import Post, PostLike
 
-max_length = settings.MAX_POST_LENGTH
-post_actions = settings.POST_ACTION_OPTIONS
+MAX_LENGTH = settings.MAX_POST_LENGTH
+POST_ACTIONS = settings.POST_ACTION_OPTIONS
 
 
 class CreateSerializer(serializers.ModelSerializer):
     profile = PublicProfileSerializer(source='user.profile', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
-    image_url = serializers.CharField(read_only=True)
+    image = serializers.ImageField()
 
     class Meta:
         model = Post
-        fields = ['profile', 'id', 'content', 'likes', 'timestamp', 'image_url']
+        fields = ['profile', 'id', 'content', 'likes', 'timestamp', 'image']
 
     def get_likes(self, obj):
         return obj.likes.count()
-    
-    def create_image(self, validated_data):
-        image_url = self.context.get('image_url', '')
-        post = Post.objects.create(image_url=image_url, **validated_data)
-        return post
 
     def validate_content(self, value):
-        if len(value) > max_length:
+        if len(value) > MAX_LENGTH:
             raise serializers.ValidationError('This post is too long!')
         return value
 
@@ -36,12 +31,12 @@ class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     original = CreateSerializer(source='repost', read_only=True)
     has_liked = serializers.SerializerMethodField(read_only=True)
-    image_url = serializers.ImageField(read_only=True)
+    resized_image = serializers.ImageField(read_only=True)
     
     class Meta:
         model = Post
         fields = ['profile', 'id', 'content', 'likes',
-                  'is_repost', 'original', 'timestamp', 'has_liked', 'image_url']
+                  'is_repost', 'original', 'timestamp', 'has_liked', 'resized_image']
 
     def get_likes(self, obj):
         return obj.likes.count()
@@ -57,6 +52,11 @@ class PostSerializer(serializers.ModelSerializer):
         if user_like:
             has_liked = True
         return has_liked
+    
+    def get_resized_image(self, obj):
+        if obj.resized_image:
+            return self.context['request'].build_absolute_uri(obj.resized_image)
+        return None
 
 
 class ActionSerializer(serializers.Serializer):
@@ -66,6 +66,6 @@ class ActionSerializer(serializers.Serializer):
 
     def validate_action(self, value):
         value = value.lower().strip()
-        if not value in post_actions:
+        if not value in POST_ACTIONS:
             raise serializers.ValidationError('This is not a valid action')
         return value
