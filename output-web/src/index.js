@@ -20,6 +20,7 @@ if (posts) {
   )
 }
 
+
 const global = document.getElementById("global")
 
 if (global) {
@@ -30,14 +31,22 @@ if (global) {
   )
 }
 
+
 const feed = document.getElementById("feed")
 
+if (feed) {
+  root.render(
+    <React.StrictMode>
+      <Feed />
+    </React.StrictMode>
+  )
+}
 
 
 const profiles = document.getElementById("profiles")
 const profileElements = document.querySelectorAll('.profile')
 
-if (profiles) {
+if (profiles && !feed) {
   profileElements.forEach((element) => {
     root.render(
       <React.StrictMode>
@@ -46,6 +55,7 @@ if (profiles) {
     );
   })
 }
+
 
 const detailElements = document.querySelectorAll('.post-detail')
 
@@ -57,13 +67,6 @@ detailElements.forEach((element) => {
   );
 })
 
-if (feed) {
-  root.render(
-    <React.StrictMode>
-      <Feed />
-    </React.StrictMode>
-  )
-}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

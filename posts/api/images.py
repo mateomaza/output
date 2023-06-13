@@ -1,16 +1,7 @@
-
-
-from django.conf import settings
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-
-import magic
-import pyclamd
+import mimetypes
 import imghdr
+import pyclamd
 from PIL import Image
-
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -20,6 +11,14 @@ from googleapiclient.http import MediaFileUpload
 
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_FORMATS = ('JPEG', 'PNG', 'GIF', 'BMP', 'TIFF', 'SVG')
+
+
+
+
+def get_drive_service():
+    credentials = Credentials.from_authorized_user_file(r'C:\Users\Usuario\Documents\GitHub\keys\holi-storage-8de9a8a45d7c.json')
+    service = build('drive', 'v3', credentials=credentials)
+    return service
 
 
 def resize_image(image_file):
@@ -32,17 +31,26 @@ def resize_image(image_file):
         resized_image = image.resize((800, 800))
     except Exception as e:
         return None
-    filename = f'{settings.MEDIA_ROOT}/resized/resized_{image_file.name}'
-    path = default_storage.save(filename, ContentFile(resized_image))
-    url = f'{settings.MEDIA_URL}{path}'
-    return url
+    drive_service = get_drive_service()
+    file_metadata = {'name': f'resized_{image_file.name}'}
+    mime_type, _ = mimetypes.guess_type(image_file.name)
+    media = MediaFileUpload(resized_image, mimetype=mime_type)
+    try:
+        file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+        file_id = file.get ('id')
+        url = f'https://drive.google.com/uc?id={file_id}'
+        return url
+    except HttpError as e:
+        return None
 
 
 def validate_image(image_file):
     file_format = imghdr.what(image_file)
+    if not file_format or not file_format.startswith('image/'):
+        raise ValueError('Invalid file format. Only image files are allowed.')
     if file_format not in ALLOWED_FORMATS:
         raise ValueError(f'Invalid image format. Only {", ".join(ALLOWED_FORMATS)} files are allowed.')
-    mime_type = magic.Magic(mime=True).from_buffer(image_file.read())
+    mime_type, _ = mimetypes.guess_type(image_file.name)
     if 'image' not in mime_type:
         raise ValueError('Invalid file type. Only image files are allowed.')
     if image_file.size > MAX_FILE_SIZE:
@@ -52,13 +60,20 @@ def validate_image(image_file):
         Image.open(image_file).verify()
     except:
         raise ValueError('Invalid image format.')
-    with magic.Magic() as m:
-        image_file.seek(0)
-        file_type = m.id_buffer(image_file.read())
-        if not file_type.startswith('image/'):
-            raise ValueError('Invalid file type. Only image files are allowed.')
     clamd = pyclamd.ClamdUnixSocket()
     image_file.seek(0)
     scan_result = clamd.scan_stream(image_file.read())
+    scan_test = clamd.scan_stream(r'C:\Users\Usuario\Documents\GitHub\virus_test.bat')
     if scan_result:
         raise ValueError('Virus detected in the image.')
+    if scan_test:
+        raise ValueError('Fake virus detected lol')
+    
+
+image_path = r'C:\Users\Usuario\Documents\GitHub\images\jpg.jpg'
+with open(image_path, 'rb') as image_file:
+    url = resize_image(image_file)
+    if url:
+        print(f"Image uploaded to Google Drive: {url}")
+    else:
+        print("Image upload failed.")

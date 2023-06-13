@@ -1,6 +1,5 @@
 from django.conf import settings
 from rest_framework import serializers
-from rest_framework.validators import FileExtensionValidator, MaxFileSizeValidator
 from profiles.serializers import PublicProfileSerializer
 from .models import Post, PostLike
 
