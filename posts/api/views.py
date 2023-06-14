@@ -93,7 +93,7 @@ def post_create(request):
     if not request.user.is_authenticated:
         mateo = User.objects.first()
         request.user = mateo
-    serializer = CreateSerializer(data=request.data, files=request.FILES)
+    serializer = CreateSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)

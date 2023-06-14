@@ -198,15 +198,13 @@ export function PostForm({ onAdd, permission }) {
         <>
             {canPost === true && <div className='col-12 mx-auto mb-3 p-5' style={{ width: '800px' }}>
                 <form onSubmit={handleSubmit}>
-                    <div className='d-flex'>
+                    <div className='d-flex mb-5'>
                         <p className='align-self-center font7 text-white my-5'>280 characters maximum ⇢</p>
                         <textarea ref={inputRef} className='form-control mx-3 font4' name='post' style={{ height: '150px' }}></textarea>
-                        <div>
-                            <Dropzone></Dropzone>
-                        </div>
                         <button type='submit' className='btn btn-primary mx-3 align-self-center font2' style={{ height: '60px' }}>Post</button>
                     </div>
                 </form>
+                <Dropzone></Dropzone>
             </div>}
         </>
     )
