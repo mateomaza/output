@@ -166,7 +166,7 @@ export function DeleteButton({ post }) {
     return (
         <>
             {!showConfirmation && (
-                <button className='btn btn-danger btn-sm font2 border-dark rounded ml-auto mr-2 mb-auto' onClick={() => setShowConfirmation(true)}>X</button>
+                <button className='btn btn-danger btn-sm font2 border-dark rounded ml-auto mr-2 mb-5' onClick={() => setShowConfirmation(true)}>X</button>
             )}
             {showConfirmation && (
                 <dialog>
@@ -198,9 +198,9 @@ export function PostForm({ onAdd, permission }) {
         <>
             {canPost === true && <div className='col-12 mx-auto mb-3 p-5' style={{ width: '800px' }}>
                 <form onSubmit={handleSubmit}>
-                    <div className='d-flex mb-5'>
+                    <div className='d-flex mb-3'>
                         <p className='align-self-center font7 text-white my-5'>280 characters maximum ⇢</p>
-                        <textarea ref={inputRef} className='form-control mx-3 font4' name='post' style={{ height: '150px' }}></textarea>
+                        <textarea ref={inputRef} className='form-control mx-3 ml-5 font8' name='post' style={{ height: '150px' }}></textarea>
                         <button type='submit' className='btn btn-primary mx-3 align-self-center font2' style={{ height: '60px' }}>Post</button>
                     </div>
                 </form>
@@ -209,6 +209,7 @@ export function PostForm({ onAdd, permission }) {
         </>
     )
 }
+
 
 export function PostDetail({ id }) {
 

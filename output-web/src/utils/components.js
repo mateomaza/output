@@ -1,23 +1,23 @@
-import numeral from "numeral";
-import { useDropzone } from "react-dropzone";
-import { useState, useCallback } from "react";
+import numeral from 'numeral';
+import { useDropzone } from 'react-dropzone';
+import { useState, useCallback } from 'react';
 
 export function DisplayCount(props) {
   return (
     <span className={props.className}>
-      {numeral(props.children).format("0a")}
+      {numeral(props.children).format('0a')}
     </span>
   );
 }
 
 export function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
       // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === name + "=") {
+      if (cookie.substring(0, name.length + 1) === name + '=') {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
       }
@@ -28,9 +28,9 @@ export function getCookie(name) {
 
 const uploadImage = async (file) => {
   const formData = new FormData();
-  formData.append("image", file);
-  const response = await fetch("http://localhost:8000/api/posts/create/", {
-    method: "POST",
+  formData.append('image', file);
+  const response = await fetch('http://localhost:8000/api/posts/create/', {
+    method: 'POST',
     body: formData,
   });
   const data = await response.json();
@@ -48,15 +48,17 @@ export const Dropzone = () => {
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
-  console.log(preview)
+  console.log(preview);
 
   return (
-    <div {...getRootProps()}>
+    <div {...getRootProps()} className='d-flex justify-content-center'>
       <input {...getInputProps()} />
       {preview ? (
-        <img src={preview} alt='Preview' style={{ width: '40%'}}></img>
+        <img src={preview} alt='Preview' className='mt-4 border' style={{ width: '45%' }}></img>
       ) : (
-        <p>Drag and drop an image here, or click to select an image</p>
+        <div className='d-flex justify-content-center border rounded p-2 col-5 pointer2' style={{ height: '25px' }}>
+          <p className='font9 text-white'>Drag and drop an image here, or click to select one</p>
+        </div>
       )}
     </div>
   );

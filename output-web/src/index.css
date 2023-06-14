@@ -18,9 +18,15 @@ code {
   color:midnightblue;
 }
 
+.pointer2 {
+  cursor: pointer !important;
+  background-color:dimgray;
+}
+
 .font {
   font: bold 15px/1 sans-serif;
 }
+
 .font2 {
   font: small-caps 12px/1 sans-serif;
 }
@@ -43,6 +49,15 @@ code {
 
 .font7 {
   font: italic small-caps bold 16px/2 cursive;
+}
+
+.font8 {
+  font: italic 15px/3 cursive;
+  font-weight: bold
+}
+
+.font9 {
+  font: 11px/1 sans-serif;
 }
 
 
