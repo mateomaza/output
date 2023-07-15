@@ -12,7 +12,8 @@ def login_view(request):
     context = {
         'form': form,
         'btn_label': "Login",
-        'title': 'Login'
+        'title': 'Login',
+        'google': True
     }
     return render(request, 'accounts/auth.html', context)
 
@@ -41,3 +42,7 @@ def register_view(request):
         'title': 'Register'
     }
     return render(request, 'accounts/auth.html', context)
+
+
+def decision_view(request):
+    return render(request, 'accounts/decision.html')

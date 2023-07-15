@@ -2,7 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 
 from .models import Profile
-from .forms import ProfileForm
+from .forms import ProfileForm, UserForm
 
 
 def profile_detail(request, username):
@@ -29,23 +29,22 @@ def profile_update(request):
     data = {
         'first_name': user.first_name,
         'last_name': user.last_name,
-        'email': user.email,
         'bio': profile.bio,
         'location': profile.location
     }
-    form = ProfileForm(request.POST or None, instance=profile, initial=data)
-    if form.is_valid():
-        profile_obj = form.save(commit=False)
-        first_name = form.cleaned_data.get('first_name')
+    user_form = UserForm(request.POST or None, instance=user)
+    profile_form = ProfileForm(request.POST or None, instance=profile, initial=data)
+    if profile_form.is_valid():
+        profile_obj = profile_form.save(commit=False)
+        first_name = profile_form.cleaned_data.get('first_name')
         user.first_name = first_name
-        last_name = form.cleaned_data.get('last_name')
+        last_name = profile_form.cleaned_data.get('last_name')
         user.last_name = last_name
-        email = form.cleaned_data.get('email')
-        user.email = email
         profile_obj.save()
         user.save()
     context = {
-        'form': form,
+        'user_form': user_form,
+        'profile_form': profile_form,
         'btn_label': 'Save',
         'title': 'Update profile'
     }

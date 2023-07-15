@@ -29,3 +29,6 @@ yarn-error.log*
 *.egg-info
 .*
 *.egg
+
+# confidential
+/output/secrets.py

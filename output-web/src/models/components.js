@@ -28,8 +28,8 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
 
     }, [username, loadFunction])
 
-    const handleAdd = (content) => {
-        createPost(content, (response, status) => {
+    const handleAdd = (data) => {
+        createPost(data, (response, status) => {
             if (status === 201) {
                 setPosts([response, ...posts])
             } else {

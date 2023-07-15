@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+
+<h2>Profile Update</h2>
+<p>By default, your username is set to your email + 8 random numbers, and your password is randomly generated with a secure algorithm, 
+    do you want to modify them right now? (You can always do it if you want.)</p>
+<form method="POST" action="{% url 'profile_update' %}">
+  {% csrf_token %}
+  <button type="submit">Yes, update profile</button>
+</form>
+<a href="{% url 'home' %}">No, continue to home page</a>
+
+{% endblock content %}

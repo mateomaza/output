@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.10']
 LOGIN_URL = '/login'
 MAX_POST_LENGTH = 280
 POST_ACTION_OPTIONS = ['like', 'unlike', 'repost']
+AUTH_USER_MODEL = 'accounts.User'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -51,7 +52,7 @@ INSTALLED_APPS = [
     # Internal
     'accounts',
     'profiles',
-    'posts',
+    'posts'
 ]
 
 MIDDLEWARE = [

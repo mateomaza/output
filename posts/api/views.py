@@ -13,6 +13,7 @@ from ..models import Post
 from ..forms import PostForm
 from ..serializers import PostSerializer, CreateSerializer, ActionSerializer
 
+
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 User = get_user_model()
 
@@ -112,6 +113,7 @@ def post_action(request):
         post_id = data.get('id')
         action = data.get('action')
         content = data.get('content')
+        image = data.get('image')
         qs = Post.objects.filter(id=post_id)
         if not qs.exists():
             return Response({}, status=404)
@@ -125,7 +127,7 @@ def post_action(request):
             return Response(post_serializer.data, status=200)
         if action == 'repost':
             new_post = Post.objects.create(
-                user=request.user, repost=obj, content=content)
+                user=request.user, repost=obj, content=content, image=image)
             serializer = PostSerializer(new_post, context={'request': request})
             return Response(serializer.data, status=201)
 

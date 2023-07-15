@@ -10,7 +10,6 @@ POST_ACTIONS = settings.POST_ACTION_OPTIONS
 class CreateSerializer(serializers.ModelSerializer):
     profile = PublicProfileSerializer(source='user.profile', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
-    image = serializers.ImageField()
 
     class Meta:
         model = Post
@@ -30,7 +29,7 @@ class PostSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     original = CreateSerializer(source='repost', read_only=True)
     has_liked = serializers.SerializerMethodField(read_only=True)
-    resized_image = serializers.ImageField(read_only=True)
+    resized_image = serializers.URLField(read_only=True)
     
     class Meta:
         model = Post
@@ -62,6 +61,7 @@ class ActionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     action = serializers.CharField()
     content = serializers.CharField(allow_blank=True, required=False)
+    image = serializers.URLField(allow_blank=True, required=False)
 
     def validate_action(self, value):
         value = value.lower().strip()

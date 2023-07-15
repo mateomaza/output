@@ -3,11 +3,15 @@
 {% block content %}
 
 <div class="col-10 col-md-4 mx-auto">
-    <h1>{{ title }}</h1>
+    <h2 class="mt-3 mb-5">{{ title }}</h2>
     {% if description %}
     <p>{{ description }}</p>
     {% endif %}
     {% include 'components/form.html' with form=form btn_label=btn_label %}
+    {% if google %}
+    <a href="{% url 'google-auth' %}" class="btn btn-outline-primary btn-link btn-sm mt-5">Login with Google</a>
+    {% endif %}
 </div>
+
 
 {% endblock content %}
