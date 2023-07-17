@@ -1,8 +1,12 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 
 from .models import Profile
 from .forms import ProfileForm, UserForm
+
+
+User = get_user_model()
 
 
 def profile_detail(request, username):
@@ -26,14 +30,23 @@ def profile_update(request):
     profile = user.profile
     if not request.user.is_authenticated:
         return redirect('/login?next=/profile/update')
-    data = {
+    user_data = {
+        'username': user.username
+    }
+    profile_data = {
         'first_name': user.first_name,
         'last_name': user.last_name,
         'bio': profile.bio,
         'location': profile.location
     }
-    user_form = UserForm(request.POST or None, instance=user)
-    profile_form = ProfileForm(request.POST or None, instance=profile, initial=data)
+    user_form = UserForm(request.POST or None, instance=user, initial=user_data)
+    profile_form = ProfileForm(request.POST or None, instance=profile, initial=profile_data)
+    if user_form.is_valid():
+        password = user_form.cleaned_data.get('password1')
+        if password:
+            user_obj.set_password(password)
+        user_obj = user_form.save(commit=False)
+        user_obj.save()
     if profile_form.is_valid():
         profile_obj = profile_form.save(commit=False)
         first_name = profile_form.cleaned_data.get('first_name')

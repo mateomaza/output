@@ -20,3 +20,20 @@ class UserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if not username:
+            return username
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("This username is already taken.")
+        return username
+    
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+        if not password1:
+            return password1
+        return password1
+
+    
+    
