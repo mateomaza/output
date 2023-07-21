@@ -1,50 +1,108 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <div class="col-10 col-md-4 mx-auto">
-    <h1>{{ title }}</h1>
-    {% if description %}
-    <p>{{ description }}</p>
-    {% endif %}
-    {% include 'components/form.html' with form=profile_form btn_label=btn_label %}
-    <div class="mt-5">
-        <button type="button" class="btn btn-primary" id="updateButton" data-toggle="modal" data-target="#updateModal">
-            Update username & password
-        </button>
-          <!-- Modal -->
-          <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="updateModalLabel">Update username & password</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Render the ProfileUpdateForm within the modal -->
-                    <form id="updateForm" method="POST" action="{% url 'profile_update' %}">
-                        {% csrf_token %}
-                        {{ user_form.as_p }}
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </form>
-                </div>
-              </div>
-            </div>
+  <h1>{{ title }}</h1>
+  {% if description %}
+  <p>{{ description }}</p>
+  {% endif %} {% include 'components/form.html' with form=profile_form btn_label=btn_label %}
+  <div class="mt-5">
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="updateButton"
+      data-toggle="modal"
+      data-target="#updateModal"
+    >
+      Update username & password
+    </button>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="updateModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="updateModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateModalLabel">
+              Update username & password
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
+          <div class="modal-body">
+            <!-- Render the ProfileUpdateForm within the modal -->
+            <form
+              id="updateForm"
+              method="POST"
+              action="{% url 'profile_update' %}"
+            >
+              {% csrf_token %} {{ user_form.as_p }}
+              <button type="submit" class="btn btn-primary">
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
-    // JavaScript code to handle the modal and form submission
-    document.getElementById('updateButton').addEventListener('click', function() {
-      $('#updateModal').modal('show');
+  // JavaScript code to handle the modal and form submission
+  document
+    .getElementById("updateButton")
+    .addEventListener("click", function () {
+      $("#updateModal").modal("show");
     });
-  
-    document.getElementById('updateForm').addEventListener('submit', function() {
-      // Handle form submission here, e.g., perform AJAX request or traditional form submission
-      // You can access the form fields and their values using JavaScript
+
+  document
+    .getElementById("updateForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Perform an AJAX request to submit the form data
+      var form = event.target;
+      var formData = new FormData(form);
+
+      // Send the AJAX request
+      var request = new XMLHttpRequest();
+      request.open(form.method, form.action);
+      request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+      request.onload = function () {
+        if (request.status === 200) {
+          // Handle a successful response, e.g., close the modal or display a success message
+          $("#updateModal").modal("hide");
+        } else if (request.status === 400) {
+          // Handle a validation error response
+          var response = JSON.parse(request.responseText);
+          if (response.hasOwnProperty("username")) {
+            // Display the username error message in the form
+            var usernameField = form.querySelector("#id_username");
+            var usernameError = response.username[0]; // Assuming the error message is a string
+            usernameField.setCustomValidity(usernameError);
+            usernameField.reportValidity();
+          }
+          if (response.hasOwnProperty('password')) {
+            var passwordField = form.querySelector('#id_password1'); // or #id_password2, depending on your form
+            var passwordError = response.password[0]; // Assuming the error message is a string
+            passwordField.setCustomValidity(passwordError);
+            passwordField.reportValidity();
+}
+          
+        }
+      };
+      request.send(formData);
     });
 </script>
 

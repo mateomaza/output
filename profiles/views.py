@@ -42,9 +42,6 @@ def profile_update(request):
     user_form = UserForm(request.POST or None, instance=user, initial=user_data)
     profile_form = ProfileForm(request.POST or None, instance=profile, initial=profile_data)
     if user_form.is_valid():
-        password = user_form.cleaned_data.get('password1')
-        if password:
-            user_obj.set_password(password)
         user_obj = user_form.save(commit=False)
         user_obj.save()
     if profile_form.is_valid():
