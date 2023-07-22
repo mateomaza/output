@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserChangeForm
+from django.utils.safestring import SafeString
+from django.contrib.auth.forms import UserChangeForm, ReadOnlyPasswordHashField, ReadOnlyPasswordHashWidget
 from .models import Profile
 
 User = get_user_model()
@@ -16,6 +17,34 @@ class ProfileForm(forms.ModelForm):
         fields = ['bio', 'location']
 
 
+class CustomReadOnlyPasswordHashWidget(ReadOnlyPasswordHashWidget):
+    def render(self, name, value, attrs=None, renderer=None):
+        rendered = super().render(name, value, attrs, renderer)
+        if value and 'type="password"' in rendered:
+            # Password is set and the widget is rendered as a password field.
+            # Clear the displayed password value by returning a new widget without the value.
+            return SafeString(rendered.replace('value="', 'value=""'))
+        return rendered
+    
+
+class UserChangeForm(forms.ModelForm):
+    password = ReadOnlyPasswordHashField(label='', help_text='')
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+        f = self.fields.get('user_permissions', None)
+        if f is not None:
+            f.queryset = f.queryset.select_related('content_type')
+        self.fields['password'].widget.attrs['value'] = ''
+        
+
+    def clean_password(self):
+        return self.initial["password"]
+    
 class UserForm(UserChangeForm):
 
     password1 = forms.CharField(

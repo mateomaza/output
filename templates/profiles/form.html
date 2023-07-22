@@ -15,7 +15,6 @@
     >
       Update username & password
     </button>
-    <!-- Modal -->
     <div
       class="modal fade"
       id="updateModal"
@@ -40,7 +39,6 @@
             </button>
           </div>
           <div class="modal-body">
-            <!-- Render the ProfileUpdateForm within the modal -->
             <form
               id="updateForm"
               method="POST"
@@ -93,17 +91,20 @@
             usernameField.setCustomValidity(usernameError);
             usernameField.reportValidity();
           }
-          if (response.hasOwnProperty('password')) {
-            var passwordField = form.querySelector('#id_password1'); // or #id_password2, depending on your form
+          if (response.hasOwnProperty("password")) {
+            var passwordField = form.querySelector("#id_password1"); // or #id_password2, depending on your form
             var passwordError = response.password[0]; // Assuming the error message is a string
             passwordField.setCustomValidity(passwordError);
             passwordField.reportValidity();
-}
-          
+          }
         }
       };
       request.send(formData);
     });
+  $(document).ready(function () {
+    // Find the element with the "No password set" text and hide it
+    $('#id_password').hide();
+  });
 </script>
 
 {% endblock content %}
