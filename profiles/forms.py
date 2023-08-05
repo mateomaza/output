@@ -18,35 +18,11 @@ class ProfileForm(forms.ModelForm):
         fields = ['bio', 'location']
 
 
-class CustomReadOnlyPasswordHashWidget(ReadOnlyPasswordHashWidget):
-    def render(self, name, value, attrs=None, renderer=None):
-        rendered = super().render(name, value, attrs, renderer)
-        if value and 'type="password"' in rendered:
-            # Password is set and the widget is rendered as a password field.
-            # Clear the displayed password value by returning a new widget without the value.
-            return SafeString(rendered.replace('value="', 'value=""'))
-        return rendered
-    
-
 class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField(label='', help_text='')
-
     class Meta:
         model = User
         fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(UserChangeForm, self).__init__(*args, **kwargs)
-        f = self.fields.get('user_permissions', None)
-        if f is not None:
-            f.queryset = f.queryset.select_related('content_type')
-        self.fields['password'].widget.attrs['value'] = ''
-        
-
-    def clean_password(self):
-        if self['password'].is_hidden:
-            return None
-        return self.initial.get("password")
     
 class UserForm(UserChangeForm):
 

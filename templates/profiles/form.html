@@ -13,7 +13,7 @@
       data-toggle="modal"
       data-target="#updateModal"
     >
-      Update username & password
+      Update username or password
     </button>
     <div
       class="modal fade"
@@ -73,7 +73,7 @@
       formData.set("Content-Type", "application/json");
 
       var request = new XMLHttpRequest();
-      console.log(form.action)
+      console.log(form.action);
       request.open(form.method, form.action);
       request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       request.onload = function () {
@@ -83,13 +83,13 @@
           var response = JSON.parse(request.responseText);
           if (response.hasOwnProperty("username")) {
             var usernameField = form.querySelector("#id_username");
-            var usernameError = response.username[0]; 
+            var usernameError = response.username[0];
             usernameField.setCustomValidity(usernameError);
             usernameField.reportValidity();
           }
           if (response.hasOwnProperty("password")) {
-            var passwordField = form.querySelector("#id_password1"); 
-            var passwordError = response.password[0]; 
+            var passwordField = form.querySelector("#id_password1");
+            var passwordError = response.password[0];
             passwordField.setCustomValidity(passwordError);
             passwordField.reportValidity();
           }
@@ -97,8 +97,11 @@
       };
       request.send(formData);
     });
+  document.getElementById("id_username").addEventListener("input", function () {
+    this.setCustomValidity("");
+  });
   $(document).ready(function () {
-    $('#id_password').hide();
+    $("#id_password").hide();
   });
 </script>
 

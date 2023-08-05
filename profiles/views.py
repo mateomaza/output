@@ -30,37 +30,36 @@ def profile_update(request):
     profile = user.profile
     if not request.user.is_authenticated:
         return redirect('/login?next=/profile/update')
-    user_data = {
-        'username': user.username
-    }
     profile_data = {
         'first_name': user.first_name,
         'last_name': user.last_name,
         'bio': profile.bio,
         'location': profile.location
     }
-    user_form = UserForm(request.POST or None, instance=user, initial=user_data)
+    user_data = {
+        'username': user.username
+    }
     profile_form = ProfileForm(request.POST or None, instance=profile, initial=profile_data)
-    if user_form.is_valid():
-        username = user_form.cleaned_data.get('username')
-        print(username)
-        if User.objects.filter(username=username).exists():
-            return JsonResponse({'error': 'This username is already taken.'}, status=400)
-        else:
+    user_form = UserForm(request.POST or None, instance=user, initial=user_data)
+    if request.method == 'POST':
+        if profile_form.is_valid():
+            profile_obj = profile_form.save(commit=False)
+            first_name = profile_form.cleaned_data.get('first_name')
+            user.first_name = first_name
+            last_name = profile_form.cleaned_data.get('last_name')
+            user.last_name = last_name
+            profile_obj.save()
+            user.save()
+        if user_form.is_valid():
             user_obj = user_form.save(commit=False)
             user_obj.save()
-            return JsonResponse({'success': 'User profile updated successfully'})
-    if profile_form.is_valid():
-        profile_obj = profile_form.save(commit=False)
-        first_name = profile_form.cleaned_data.get('first_name')
-        user.first_name = first_name
-        last_name = profile_form.cleaned_data.get('last_name')
-        user.last_name = last_name
-        profile_obj.save()
-        user.save()
+            return JsonResponse({'message': 'Profile updated successfully'}) 
+        else:
+            errors = user_form.errors 
+            return JsonResponse(errors, status=400)    
     context = {
-        'user_form': user_form,
         'profile_form': profile_form,
+        'user_form': user_form,
         'btn_label': 'Save',
         'title': 'Update profile'
     }
