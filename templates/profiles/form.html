@@ -57,7 +57,6 @@
 </div>
 
 <script>
-  // JavaScript code to handle the modal and form submission
   document
     .getElementById("updateButton")
     .addEventListener("click", function () {
@@ -67,33 +66,30 @@
   document
     .getElementById("updateForm")
     .addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevent the default form submission
+      event.preventDefault();
 
-      // Perform an AJAX request to submit the form data
       var form = event.target;
       var formData = new FormData(form);
+      formData.set("Content-Type", "application/json");
 
-      // Send the AJAX request
       var request = new XMLHttpRequest();
+      console.log(form.action)
       request.open(form.method, form.action);
       request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       request.onload = function () {
         if (request.status === 200) {
-          // Handle a successful response, e.g., close the modal or display a success message
           $("#updateModal").modal("hide");
         } else if (request.status === 400) {
-          // Handle a validation error response
           var response = JSON.parse(request.responseText);
           if (response.hasOwnProperty("username")) {
-            // Display the username error message in the form
             var usernameField = form.querySelector("#id_username");
-            var usernameError = response.username[0]; // Assuming the error message is a string
+            var usernameError = response.username[0]; 
             usernameField.setCustomValidity(usernameError);
             usernameField.reportValidity();
           }
           if (response.hasOwnProperty("password")) {
-            var passwordField = form.querySelector("#id_password1"); // or #id_password2, depending on your form
-            var passwordError = response.password[0]; // Assuming the error message is a string
+            var passwordField = form.querySelector("#id_password1"); 
+            var passwordError = response.password[0]; 
             passwordField.setCustomValidity(passwordError);
             passwordField.reportValidity();
           }
@@ -102,7 +98,6 @@
       request.send(formData);
     });
   $(document).ready(function () {
-    // Find the element with the "No password set" text and hide it
     $('#id_password').hide();
   });
 </script>

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.safestring import SafeString
+from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserChangeForm, ReadOnlyPasswordHashField, ReadOnlyPasswordHashWidget
 from .models import Profile
 
@@ -43,7 +44,9 @@ class UserChangeForm(forms.ModelForm):
         
 
     def clean_password(self):
-        return self.initial["password"]
+        if self['password'].is_hidden:
+            return None
+        return self.initial.get("password")
     
 class UserForm(UserChangeForm):
 
@@ -84,6 +87,8 @@ class UserForm(UserChangeForm):
         return password2
 
     def save(self, commit=True):
+        if self.errors:
+            raise ValidationError("The form has validation errors and cannot be saved.")
         user = super().save(commit=False)
         password = self.cleaned_data.get('password1')
         if password:

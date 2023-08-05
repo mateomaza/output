@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 
@@ -42,8 +42,14 @@ def profile_update(request):
     user_form = UserForm(request.POST or None, instance=user, initial=user_data)
     profile_form = ProfileForm(request.POST or None, instance=profile, initial=profile_data)
     if user_form.is_valid():
-        user_obj = user_form.save(commit=False)
-        user_obj.save()
+        username = user_form.cleaned_data.get('username')
+        print(username)
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'error': 'This username is already taken.'}, status=400)
+        else:
+            user_obj = user_form.save(commit=False)
+            user_obj.save()
+            return JsonResponse({'success': 'User profile updated successfully'})
     if profile_form.is_valid():
         profile_obj = profile_form.save(commit=False)
         first_name = profile_form.cleaned_data.get('first_name')
