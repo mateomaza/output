@@ -88,7 +88,7 @@
             usernameField.reportValidity();
           }
           if (response.hasOwnProperty("password")) {
-            var passwordField = form.querySelector("#id_password1");
+            var passwordField = form.querySelector("#id_password2");
             var passwordError = response.password[0];
             passwordField.setCustomValidity(passwordError);
             passwordField.reportValidity();

@@ -54,7 +54,7 @@ def profile_update(request):
             user_obj = user_form.save(commit=False)
             user_obj.save()
             return JsonResponse({'message': 'Profile updated successfully'}) 
-        else:
+        if not user_form.is_valid():
             errors = user_form.errors 
             return JsonResponse(errors, status=400)    
     context = {
