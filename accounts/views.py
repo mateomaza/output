@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import CustomUserCreationForm
 
 
 def login_view(request):
@@ -32,7 +33,7 @@ def logout_view(request):
 
 
 def register_view(request):
-    form = UserCreationForm(request.POST or None)
+    form = CustomUserCreationForm(request.POST or None)
     if form.is_valid():
         user = form.save(commit=True)
         user.set_password(form.cleaned_data.get('password1'))
