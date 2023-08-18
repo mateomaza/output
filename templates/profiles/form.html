@@ -27,7 +27,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="updateModalLabel">
-              Update username & password
+              Update username or password
             </h5>
             <button
               type="button"
@@ -81,17 +81,29 @@
           $("#updateModal").modal("hide");
         } else if (request.status === 400) {
           var response = JSON.parse(request.responseText);
+          var usernameField = form.querySelector("#id_username");
+          usernameField.setCustomValidity(""); 
+          usernameField.reportValidity();
           if (response.hasOwnProperty("username")) {
-            var usernameField = form.querySelector("#id_username");
             var usernameError = response.username[0];
             usernameField.setCustomValidity(usernameError);
             usernameField.reportValidity();
           }
+          var password1Field = form.querySelector("#id_password1");
+          password1Field.setCustomValidity("");
+          password1Field.reportValidity();
+          if (response.hasOwnProperty("password1")) {
+            var password1Error = response.password1[0];
+            password1Field.setCustomValidity(password1Error);
+            password1Field.reportValidity();
+          }
+          var password2Field = form.querySelector("#id_password2");
+          password2Field.setCustomValidity("");
+          password2Field.reportValidity();
           if (response.hasOwnProperty("password2")) {
-            var passwordField = form.querySelector("#id_password2");
-            var passwordError = response.password[0];
-            passwordField.setCustomValidity(passwordError);
-            passwordField.reportValidity();
+            var password2Error = response.password2[0];
+            password2Field.setCustomValidity(password2Error);
+            password2Field.reportValidity();
           }
         }
       };

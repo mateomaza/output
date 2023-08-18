@@ -55,8 +55,8 @@ def profile_update(request):
             user_obj.save()
             return JsonResponse({'message': 'Profile updated successfully'}) 
         if not user_form.is_valid():
-            errors = user_form.errors 
-            return JsonResponse(errors, status=400)    
+            errors = user_form.errors
+            return JsonResponse(errors, status=400)
     context = {
         'profile_form': profile_form,
         'user_form': user_form,
