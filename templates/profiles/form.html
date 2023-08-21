@@ -73,37 +73,28 @@
       formData.set("Content-Type", "application/json");
 
       var request = new XMLHttpRequest();
-      console.log(form.action);
       request.open(form.method, form.action);
       request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       request.onload = function () {
         if (request.status === 200) {
           $("#updateModal").modal("hide");
+          console.log(response.password_change)
+          if (response.password_change) {
+            window.location.href = "/login";
+          }
         } else if (request.status === 400) {
           var response = JSON.parse(request.responseText);
-          var usernameField = form.querySelector("#id_username");
-          usernameField.setCustomValidity(""); 
-          usernameField.reportValidity();
           if (response.hasOwnProperty("username")) {
+            var usernameField = form.querySelector("#id_username");
             var usernameError = response.username[0];
             usernameField.setCustomValidity(usernameError);
             usernameField.reportValidity();
           }
-          var password1Field = form.querySelector("#id_password1");
-          password1Field.setCustomValidity("");
-          password1Field.reportValidity();
-          if (response.hasOwnProperty("password1")) {
-            var password1Error = response.password1[0];
-            password1Field.setCustomValidity(password1Error);
-            password1Field.reportValidity();
-          }
-          var password2Field = form.querySelector("#id_password2");
-          password2Field.setCustomValidity("");
-          password2Field.reportValidity();
           if (response.hasOwnProperty("password2")) {
-            var password2Error = response.password2[0];
-            password2Field.setCustomValidity(password2Error);
-            password2Field.reportValidity();
+            var passwordField = form.querySelector("#id_password2");
+            var passwordError = response.password2[0];
+            passwordField.setCustomValidity(passwordError);
+            passwordField.reportValidity();
           }
         }
       };
@@ -112,6 +103,11 @@
   document.getElementById("id_username").addEventListener("input", function () {
     this.setCustomValidity("");
   });
+  document
+    .getElementById("id_password2")
+    .addEventListener("input", function () {
+      this.setCustomValidity("");
+    });
   $(document).ready(function () {
     $("#id_password").hide();
   });

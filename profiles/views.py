@@ -53,7 +53,11 @@ def profile_update(request):
         if user_form.is_valid():
             user_obj = user_form.save(commit=False)
             user_obj.save()
-            return JsonResponse({'message': 'Profile updated successfully'}) 
+            if 'password1' in user_form.cleaned_data and 'password2' in user_form.cleaned_data:
+                response_data = {'message': 'Profile updated successfully', 'password_change': True}
+            else:
+                response_data = {'message': 'Profile updated successfully', 'password_change': False} 
+            return JsonResponse(response_data, status=200)
         if not user_form.is_valid():
             errors = user_form.errors
             return JsonResponse(errors, status=400)

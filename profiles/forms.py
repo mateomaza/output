@@ -49,19 +49,14 @@ class UserForm(UserChangeForm):
             if User.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken.")
         return username
-    
-    def clean_password1(self):
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
-        if password2 and not password1:
-            raise forms.ValidationError("Password needs to be set first.")
-        return password1
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password1 and not password2:
-            raise forms.ValidationError("Password needs to be confirmed.")
+            raise forms.ValidationError("If you want to change your password, you need to fill both fields.")
+        if password2 and not password1:
+            raise forms.ValidationError("If you want to change your password, you need to fill both fields.")
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords do not match.")
         return password2
