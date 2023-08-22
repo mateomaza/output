@@ -78,9 +78,10 @@
       request.onload = function () {
         if (request.status === 200) {
           $("#updateModal").modal("hide");
-          console.log(response.password_change)
+          var response = JSON.parse(request.responseText);
           if (response.password_change) {
-            window.location.href = "/login";
+            var redirectUrl = '/login/?password_changed=true'
+            window.location.href = redirectUrl
           }
         } else if (request.status === 400) {
           var response = JSON.parse(request.responseText);

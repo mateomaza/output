@@ -39,8 +39,10 @@ def profile_update(request):
     user_data = {
         'username': user.username
     }
-    profile_form = ProfileForm(request.POST or None, instance=profile, initial=profile_data)
-    user_form = UserForm(request.POST or None, instance=user, initial=user_data)
+    profile_form = ProfileForm(
+        request.POST or None, instance=profile, initial=profile_data)
+    user_form = UserForm(request.POST or None,
+                         instance=user, initial=user_data)
     if request.method == 'POST':
         if profile_form.is_valid():
             profile_obj = profile_form.save(commit=False)
@@ -54,9 +56,15 @@ def profile_update(request):
             user_obj = user_form.save(commit=False)
             user_obj.save()
             if 'password1' in user_form.cleaned_data and 'password2' in user_form.cleaned_data:
-                response_data = {'message': 'Profile updated successfully', 'password_change': True}
+                response_data = {
+                    "message": "Profile updated successfully",
+                    "password_change": True
+                }
             else:
-                response_data = {'message': 'Profile updated successfully', 'password_change': False} 
+                response_data = {
+                    "message": "Profile updated successfully",
+                    "password_change": False
+                }
             return JsonResponse(response_data, status=200)
         if not user_form.is_valid():
             errors = user_form.errors

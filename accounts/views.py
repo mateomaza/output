@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
@@ -16,6 +17,9 @@ def login_view(request):
         'title': 'Login',
         'google': True
     }
+    password_changed = request.GET.get('password_changed')
+    if password_changed:
+        messages.info(request, "You've successfully updated your password. Please log in again.")
     return render(request, 'accounts/auth.html', context)
 
 
