@@ -21,6 +21,10 @@ class UserChangeForm(forms.ModelForm):
         fields = '__all__'
 
 class UserForm(UserChangeForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None) 
+        super().__init__(*args, **kwargs)
+
     username = forms.CharField(
         label="Username",
         strip=False,
@@ -48,38 +52,53 @@ class UserForm(UserChangeForm):
         model = User
         fields = ['username', 'password1', 'password2']
 
+    def clean_current_password(self):
+        current_password = self.cleaned_data.get("current_password")
+        try:
+            self.clean_username()
+        except forms.ValidationError as e:
+            if "Current password is required when changing the username." in e.messages:
+                self.add_error('current_password', e)
+            if "Current password is incorrect." in e.messages:
+                self.add_error('current_password', e)
+        try:
+            self.clean_password2()
+        except forms.ValidationError as e:
+            if "Current password is required when changing the password." in e.messages:
+                self.add_error('current_password', e)
+            if "Current password is incorrect." in e.messages:
+                self.add_error('current_password', e)
+        return current_password
+
     def clean_username(self):
         username = self.cleaned_data.get('username')
+        current_password = self.cleaned_data.get("current_password")
         if self.has_changed() and 'username' in self.changed_data:
             if User.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken.")
+            if not current_password:
+                raise forms.ValidationError("Current password is required when changing the username.")
+            if not self.user.check_password(current_password):
+                raise forms.ValidationError("Current password is incorrect.")
         return username
     
-    def clean_current_password(self):
-        current_password = self.cleaned_data.get("current_password")
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
-        if self.has_changed() and 'username' in self.changed_data and not current_password:
-            raise forms.ValidationError("Current password is missing.")
-        if password1 and password2 and not current_password:
-            raise forms.ValidationError("Current password is missing.")
-        if self.has_changed() and 'username' in self.changed_data and not self.user.check_password(current_password):
-            raise forms.ValidationError("Current password is incorrect.")
-        if password1 and password2 and not self.user.check_password(current_password):
-            raise forms.ValidationError("Current password is incorrect.")
-        return current_password
-
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
+        current_password = self.cleaned_data.get("current_password")
         if password2 and not password1:
-            raise forms.ValidationError("If you want to change your password, you need to fill both fields.")
+            raise forms.ValidationError("Both fields are required to update the password")
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords do not match.")
-        try:
-            validate_password(password2, self.user)
-        except ValidationError as e:
-            raise forms.ValidationError(e)
+        if password1 and password2:
+            try:
+                validate_password(password2, self.user)
+            except ValidationError as e:
+                raise forms.ValidationError(e)
+        if password1 and password2 and not current_password:
+            raise forms.ValidationError("Current password is required when changing the password.")
+        if password1 and password2 and not self.user.check_password(current_password):
+            raise forms.ValidationError("Current password is incorrect.")
         return password2
 
     def save(self, commit=True):

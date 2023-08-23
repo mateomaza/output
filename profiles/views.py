@@ -39,10 +39,8 @@ def profile_update(request):
     user_data = {
         'username': user.username
     }
-    profile_form = ProfileForm(
-        request.POST or None, instance=profile, initial=profile_data)
-    user_form = UserForm(request.POST or None,
-                         instance=user, initial=user_data)
+    profile_form = ProfileForm(request.POST or None, instance=profile, initial=profile_data)
+    user_form = UserForm(request.POST or None, instance=user, initial=user_data, user=request.user)
     if request.method == 'POST':
         if profile_form.is_valid():
             profile_obj = profile_form.save(commit=False)
