@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserChangeForm, ReadOnlyPasswordHashField
+from django.contrib.auth.password_validation import validate_password
 from .models import Profile
 
 User = get_user_model()
@@ -25,6 +26,12 @@ class UserForm(UserChangeForm):
         strip=False,
         required=False,
     )
+    current_password = forms.CharField(
+        label="Current Password",
+        strip=False,
+        widget=forms.PasswordInput,
+        required=False,
+    )
     password1 = forms.CharField(
         label="Password",
         strip=False,
@@ -41,30 +48,44 @@ class UserForm(UserChangeForm):
         model = User
         fields = ['username', 'password1', 'password2']
 
+
+
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if not username:
-            raise forms.ValidationError("Username cannot be empty.")
         if self.has_changed() and 'username' in self.changed_data:
             if User.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken.")
         return username
+    
+    def clean_current_password(self):
+        current_password = self.cleaned_data.get("current_password")
+        username = self.cleaned_data.get('username')
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if username or password1 and password2:
+            if not current_password:
+                raise forms.ValidationError("Current password is incorrect.")
+            if not self.user.check_password(current_password):
+                raise forms.ValidationError("Current password is incorrect.")
+        return current_password
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        if password1 and not password2:
-            raise forms.ValidationError("If you want to change your password, you need to fill both fields.")
+        
         if password2 and not password1:
             raise forms.ValidationError("If you want to change your password, you need to fill both fields.")
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords do not match.")
+        try:
+            validate_password(password2, self.user)
+        except ValidationError as e:
+            raise forms.ValidationError(e)
         return password2
 
     def save(self, commit=True):
         if self.errors:
-            raise ValidationError(
-                "The form has validation errors and cannot be saved.")
+            raise ValidationError("The form has validation errors and cannot be saved.")
         user = super().save(commit=False)
         password = self.cleaned_data.get('password1')
         if password:
