@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 
 <div class="col-10 col-md-4 mx-auto">
-  <h1>{{ title }}</h1>
+  <h1 class="my-4">{{ title }}</h1>
   {% if description %}
   <p>{{ description }}</p>
   {% endif %} {% include 'components/form.html' with form=profile_form btn_label=btn_label %}
@@ -25,7 +25,7 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header mb-3">
             <h5 class="modal-title" id="updateModalLabel">
               Update username or password
             </h5>

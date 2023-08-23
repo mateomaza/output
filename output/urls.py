@@ -19,11 +19,8 @@ from accounts.views import login_view, logout_view, register_view, decision_view
 from accounts.google import google_auth, google_callback
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.conf.urls.static import static
 
-User = get_user_model()
-admin.site.register(User)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

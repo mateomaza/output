@@ -29,11 +29,11 @@ class UserForm(UserChangeForm):
     current_password = forms.CharField(
         label="Current Password",
         strip=False,
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(attrs={'id': 'current-password-field'}),
         required=False,
     )
     password1 = forms.CharField(
-        label="Password",
+        label="New Password",
         strip=False,
         widget=forms.PasswordInput,
         required=False,
@@ -48,8 +48,6 @@ class UserForm(UserChangeForm):
         model = User
         fields = ['username', 'password1', 'password2']
 
-
-
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if self.has_changed() and 'username' in self.changed_data:
@@ -59,20 +57,21 @@ class UserForm(UserChangeForm):
     
     def clean_current_password(self):
         current_password = self.cleaned_data.get("current_password")
-        username = self.cleaned_data.get('username')
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        if username or password1 and password2:
-            if not current_password:
-                raise forms.ValidationError("Current password is incorrect.")
-            if not self.user.check_password(current_password):
-                raise forms.ValidationError("Current password is incorrect.")
+        if self.has_changed() and 'username' in self.changed_data and not current_password:
+            raise forms.ValidationError("Current password is missing.")
+        if password1 and password2 and not current_password:
+            raise forms.ValidationError("Current password is missing.")
+        if self.has_changed() and 'username' in self.changed_data and not self.user.check_password(current_password):
+            raise forms.ValidationError("Current password is incorrect.")
+        if password1 and password2 and not self.user.check_password(current_password):
+            raise forms.ValidationError("Current password is incorrect.")
         return current_password
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        
         if password2 and not password1:
             raise forms.ValidationError("If you want to change your password, you need to fill both fields.")
         if password1 and password2 and password1 != password2:
