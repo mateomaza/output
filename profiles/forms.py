@@ -33,7 +33,7 @@ class UserForm(UserChangeForm):
     current_password = forms.CharField(
         label="Current Password",
         strip=False,
-        widget=forms.PasswordInput(attrs={'id': 'current-password-field'}),
+        widget=forms.PasswordInput,
         required=False,
     )
     password1 = forms.CharField(
