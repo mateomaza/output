@@ -35,8 +35,8 @@ urlpatterns = [
     re_path(r'profiles?/', include('profiles.urls')),
     path('api/posts/', include('posts.api.urls')),
     re_path(r'api/profiles?/', include('profiles.api.urls')),
-    path('auth/google/', google_auth, name='google-auth'),
-    path('auth/google/callback/', google_callback, name='google-login')
+    path('auth/google/login/', google_auth, name='google-login'),
+    path('auth/google/callback/', google_callback, name='google-callback')
 ]
 
 if settings.DEBUG:

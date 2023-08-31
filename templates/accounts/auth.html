@@ -9,7 +9,7 @@
     {% endif %}
     {% include 'components/form.html' with form=form btn_label=btn_label %}
     {% if google %}
-    <a href="{% url 'google-auth' %}" class="btn btn-outline-primary btn-link btn-sm mt-5 mb-5">Login with Google</a>
+    <a href="{% url 'google-login' %}" class="btn btn-outline-primary btn-link btn-sm mt-5 mb-5">Login with Google</a>
     {% endif %}
     {% if messages %}
     {% for message in messages %}

@@ -1,7 +1,8 @@
 from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth import password_validation
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 import output.secrets
@@ -9,17 +10,14 @@ import requests
 import random
 import string
 
-
 User = get_user_model()
 CLIENT_ID = '964996014175-2b6i3nd3lgmhfr96v61vkl09kua804m0.apps.googleusercontent.com'
 CLIENT_SECRET = output.secrets.CLIENT_SECRET
-
 
 def google_auth(request):
     redirect_uri = 'http://localhost:8000/auth/google/callback'
     auth_url = get_google_auth_url(redirect_uri)
     return redirect(auth_url)
-
 
 def google_callback(request):
     code = request.GET.get('code')
@@ -33,13 +31,11 @@ def google_callback(request):
         login(request, user)
         return redirect('/decision')
 
-
 def get_google_auth_url(redirect_uri):
     client_id = CLIENT_ID
     scope = 'openid email profile'
     auth_url = f'https://accounts.google.com/o/oauth2/v2/auth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}&response_type=code&prompt=select_account'
     return auth_url
-
 
 def exchange_code_for_tokens(code, redirect_uri):
     client_id = CLIENT_ID
@@ -60,7 +56,6 @@ def exchange_code_for_tokens(code, redirect_uri):
     else:
         raise Exception('Failed to exchange code for tokens')
 
-
 def authenticate_with_google(tokens):
     access_token = tokens['access_token']
     id_token_value = tokens['id_token']
@@ -72,8 +67,10 @@ def authenticate_with_google(tokens):
     except User.DoesNotExist:
         user = None
     random_string = ''.join(random.choices(string.digits, k=8))
-    username = email.split('@')[0] + random_string
-    password = make_password(None)
+    while not UnicodeUsernameValidator().validate(username):
+        username = email.split('@')[0] + random_string
+    while not password_validation.validate_password(password):
+        password = User.objects.make_random_password()
     user = User.objects.create_user(username=username, email=email, password=password)
     user.google_access_token = access_token
     user.save()

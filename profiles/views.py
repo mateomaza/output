@@ -53,7 +53,9 @@ def profile_update(request):
         if user_form.is_valid():
             user_obj = user_form.save(commit=False)
             user_obj.save()
-            if 'password1' in user_form.cleaned_data and 'password2' in user_form.cleaned_data:
+            password1 = user_form.cleaned_data.get('password1')
+            password2 = user_form.cleaned_data.get('password2')
+            if password1 and password2:
                 response_data = {
                     "message": "Profile updated successfully",
                     "password_change": True
