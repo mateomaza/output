@@ -57,36 +57,37 @@ class UserForm(UserChangeForm):
     )
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        email = cleaned_data.get('email')
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        current_password = cleaned_data.get('current_password')
+        if current_password and not any(field in self.changed_data for field in ['username', 'email', 'password1', 'password2']):
+            self.add_error('current_password', "Form did not proceed as no changes were made.")
+        if password2 == current_password:
+            self.add_error('password2', "New password cannot be the same as the current password.")
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        current_password = self.cleaned_data.get("current_password")
         if self.has_changed() and 'username' in self.changed_data:
             if User.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken.")
-            if not current_password:
-                raise forms.ValidationError("Current password is required when changing the username.")
-            if not self.user.check_password(current_password):
-                raise forms.ValidationError("Current password is incorrect.")
         return username
     
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        current_password = self.cleaned_data.get("current_password")
         if self.has_changed() and 'email' in self.changed_data:
             if User.objects.filter(email=email).exists():
                 raise forms.ValidationError("This email is already in use.")
-            if not current_password:
-                raise forms.ValidationError("Current password is required when changing the email.")
-            if not self.user.check_password(current_password):
-                raise forms.ValidationError("Current password is incorrect.")
         return email
     
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        current_password = self.cleaned_data.get("current_password")
         if password1 and not password2:
             raise forms.ValidationError("Both fields are required to update the password")
         if password2 and not password1:
@@ -98,19 +99,21 @@ class UserForm(UserChangeForm):
                 validate_password(password2, self.user)
             except ValidationError as e:
                 raise forms.ValidationError(e)
-        if password1 and password2 and not current_password:
-            raise forms.ValidationError("Current password is required when changing the password.")
-        if password1 and password2 and not self.user.check_password(current_password):
-            raise forms.ValidationError("Current password is incorrect.")
-        if password1 and password2 and password2 == current_password:
-            raise forms.ValidationError("New password cannot be the same as the current password.")
         return password2
+    
+    def clean_current_password(self):
+        current_password = self.cleaned_data.get('current_password')
+        if not current_password:
+            raise ValidationError("Current password is required for any changes.")
+        if not self.user.check_password(current_password):
+            raise ValidationError("Current password is incorrect.")
+        return current_password
 
     def save(self, commit=True):
         if self.errors:
             raise ValidationError("The form has validation errors and cannot be saved.")
         user = super().save(commit=False)
-        password = self.cleaned_data.get('password1')
+        password = self.cleaned_data.get('password2')
         if password:
             user.set_password(password)
         if commit:

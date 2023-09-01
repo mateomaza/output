@@ -121,6 +121,12 @@
             passwordField.setCustomValidity(passwordError);
             passwordField.reportValidity();
           }
+          if (response.hasOwnProperty("current_password")) {
+            var currentPasswordField = form.querySelector("#id_current_password");
+            var currentPasswordError = response.current_password[0];
+            currentPasswordField.setCustomValidity(currentPasswordError);
+            currentPasswordField.reportValidity();
+          }
         }
       };
       request.send(formData);
@@ -129,9 +135,6 @@
     this.setCustomValidity("");
   });
   document.getElementById("id_email").addEventListener("input", function () {
-    this.setCustomValidity("");
-  });
-  document.getElementById("id_password1").addEventListener("input", function () {
     this.setCustomValidity("");
   });
   document.getElementById("id_password2").addEventListener("input", function () {
