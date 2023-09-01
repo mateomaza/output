@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
+from django.contrib.auth.password_validation import validate_password
 from .models import User
 from django import forms
 

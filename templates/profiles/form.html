@@ -131,9 +131,15 @@
   document.getElementById("id_email").addEventListener("input", function () {
     this.setCustomValidity("");
   });
+  document.getElementById("id_password1").addEventListener("input", function () {
+    this.setCustomValidity("");
+  });
   document.getElementById("id_password2").addEventListener("input", function () {
-      this.setCustomValidity("");
-    });
+    this.setCustomValidity("");
+  });
+  document.getElementById("id_current_password").addEventListener("input", function () {
+    this.setCustomValidity("");
+  });
   $(document).ready(function () {
     $("#id_password").hide();
   });

@@ -29,7 +29,7 @@ def google_callback(request):
         return redirect('/') 
     else:
         login(request, user)
-        return redirect('/decision')
+        return redirect('/set_password')
 
 def get_google_auth_url(redirect_uri):
     client_id = CLIENT_ID
@@ -75,13 +75,6 @@ def authenticate_with_google(tokens):
             break
         except Exception: 
             pass
-    while True:
-        password = User.objects.make_random_password()
-        try:
-            password_validation.validate_password(password, user)
-            break
-        except password_validation.ValidationError: 
-            pass
-    user = User.objects.create_user(username=username, email=email, password=password)
+    user = User.objects.create_user(username=username, email=email)
     user.google_access_token = access_token
     user.save()
