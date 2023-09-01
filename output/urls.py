@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path, re_path, include
 from posts.views import global_feed, personal_feed, local_posts_list, local_post_detail
-from accounts.views import login_view, logout_view, register_view, decision_view
+from accounts.views import login_view, logout_view, register_view, decision_view, set_password
 from accounts.google import google_auth, google_callback
 from django.conf import settings
 from django.contrib import admin
@@ -36,7 +36,8 @@ urlpatterns = [
     path('api/posts/', include('posts.api.urls')),
     re_path(r'api/profiles?/', include('profiles.api.urls')),
     path('auth/google/login/', google_auth, name='google-login'),
-    path('auth/google/callback/', google_callback, name='google-callback')
+    path('auth/google/callback/', google_callback, name='google-callback'),
+    path('set_password/', set_password)
 ]
 
 if settings.DEBUG:

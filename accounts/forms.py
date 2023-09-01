@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, SetPasswordForm
 from .models import User
 from django import forms
 
@@ -13,3 +13,6 @@ class CustomUserCreationForm(UserCreationForm):
         if email and User.objects.filter(email=email).exists():
             raise forms.ValidationError("This email address is already in use.")
         return email
+
+class PasswordSetForm(SetPasswordForm):
+    pass

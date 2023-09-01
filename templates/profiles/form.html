@@ -109,6 +109,12 @@
             usernameField.setCustomValidity(usernameError);
             usernameField.reportValidity();
           }
+          if (response.hasOwnProperty("email")) {
+            var emailField = form.querySelector("#id_email");
+            var emailError = response.email[0];
+            emailField.setCustomValidity(emailError);
+            emailField.reportValidity();
+          }
           if (response.hasOwnProperty("password2")) {
             var passwordField = form.querySelector("#id_password2");
             var passwordError = response.password2[0];
@@ -120,6 +126,9 @@
       request.send(formData);
     });
   document.getElementById("id_username").addEventListener("input", function () {
+    this.setCustomValidity("");
+  });
+  document.getElementById("id_email").addEventListener("input", function () {
     this.setCustomValidity("");
   });
   document.getElementById("id_password2").addEventListener("input", function () {

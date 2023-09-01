@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
+from django.contrib import admin
+
 
 
 class User(AbstractUser):
@@ -10,3 +12,5 @@ class User(AbstractUser):
     email = models.CharField(max_length=420, blank=True)
     google_access_token = models.CharField(
         max_length=420, blank=True, null=True, unique=True)
+    
+admin.site.register(User)

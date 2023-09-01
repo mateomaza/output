@@ -62,7 +62,7 @@ class UserForm(UserChangeForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         current_password = self.cleaned_data.get("current_password")
-        if self.has_changed():
+        if self.has_changed() and 'username' in self.changed_data:
             if User.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken.")
             if not current_password:
@@ -74,7 +74,7 @@ class UserForm(UserChangeForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         current_password = self.cleaned_data.get("current_password")
-        if self.has_changed():
+        if self.has_changed() and 'email' in self.changed_data:
             if User.objects.filter(email=email).exists():
                 raise forms.ValidationError("This email is already in use.")
             if not current_password:

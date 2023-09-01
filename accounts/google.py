@@ -67,10 +67,21 @@ def authenticate_with_google(tokens):
     except User.DoesNotExist:
         user = None
     random_string = ''.join(random.choices(string.digits, k=8))
-    while not UnicodeUsernameValidator().validate(username):
+    validator = UnicodeUsernameValidator()
+    while True:
         username = email.split('@')[0] + random_string
-    while not password_validation.validate_password(password):
+        try:
+            validator(username)
+            break
+        except Exception: 
+            pass
+    while True:
         password = User.objects.make_random_password()
+        try:
+            password_validation.validate_password(password, user)
+            break
+        except password_validation.ValidationError: 
+            pass
     user = User.objects.create_user(username=username, email=email, password=password)
     user.google_access_token = access_token
     user.save()
