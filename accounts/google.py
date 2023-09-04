@@ -2,7 +2,6 @@ from django.shortcuts import redirect
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from django.contrib.auth import password_validation
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 import output.secrets

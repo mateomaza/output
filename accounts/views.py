@@ -22,6 +22,7 @@ def login_view(request):
         messages.info(request, "You've successfully updated your password. Please log in again.")
     return render(request, 'accounts/auth.html', context)
 
+@login_required
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
@@ -46,9 +47,6 @@ def register_view(request):
         'title': 'Register'
     }
     return render(request, 'accounts/auth.html', context)
-
-def decision_view(request):
-    return render(request, 'accounts/decision.html')
 
 @login_required
 def set_password(request):

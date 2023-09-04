@@ -1,0 +1,29 @@
+<form>
+    <input type="text" id="search-input" placeholder="Search users...">
+</form>
+
+<div id="search-results">
+</div>
+
+<script>
+    document.getElementById('search-input').addEventListener('input', function () {
+        const username = this.value;
+        fetch(`/api/profiles/search/?username=${username}/`)
+            .then(response => response.json())
+            .then(data => {
+                const results = document.getElementById('search-results');
+                results.innerHTML = '';
+                console.log(data)
+                if (data.length === 0) {
+                    results.innerHTML = 'No users found.';
+                } else {
+                    data.forEach(user => {
+                        console.log(user)
+                        const userItem = document.createElement('div');
+                        userItem.textContent = user.username;
+                        results.appendChild(userItem);
+                    });
+                }
+            });
+    });
+</script>

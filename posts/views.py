@@ -1,14 +1,14 @@
 from django.conf import settings
 from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
 from .models import Post, PostLike
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
-
 def global_feed(request):
     return render(request, 'feed/global.html')
 
+@login_required
 def personal_feed(request):
     return render(request, 'feed/personal.html')
 

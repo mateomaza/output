@@ -61,9 +61,6 @@ class UserForm(UserChangeForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        username = cleaned_data.get('username')
-        email = cleaned_data.get('email')
-        password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
         current_password = cleaned_data.get('current_password')
         if current_password and not any(field in self.changed_data for field in ['username', 'email', 'password1', 'password2']):
@@ -119,3 +116,6 @@ class UserForm(UserChangeForm):
         if commit:
             user.save()
         return user
+    
+class ProfileSearchForm(forms.Form):
+    username = forms.CharField(max_length=69, required=False, label='Search by Username')

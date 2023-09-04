@@ -1,9 +1,10 @@
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 from .models import Profile
-from .forms import ProfileForm, UserForm
+from .forms import ProfileForm, UserForm, ProfileSearchForm
 
 
 User = get_user_model()
@@ -24,7 +25,16 @@ def profile_detail(request, username):
     }
     return render(request, 'profiles/detail.html', context)
 
+def profile_search(request):
+    query = request.GET.get('username', '')
+    print(query)
+    results = User.objects.filter(username__icontains=query)
+    user_data = [{'username': user.username} for user in results]
+    if not user_data:
+        return JsonResponse([], safe=False)
+    return JsonResponse(user_data, safe=False)
 
+@login_required
 def profile_update(request):
     user = request.user
     profile = user.profile
