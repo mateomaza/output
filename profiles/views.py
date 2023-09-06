@@ -26,12 +26,12 @@ def profile_detail(request, username):
     return render(request, 'profiles/detail.html', context)
 
 def profile_search(request):
-    query = request.GET.get('username', '')
-    print(query)
-    results = User.objects.filter(username__icontains=query)
-    user_data = [{'username': user.username} for user in results]
-    if not user_data:
-        return JsonResponse([], safe=False)
+    query = request.GET.get('query', '').strip()
+    if query:
+        results = User.objects.filter(username__icontains=query)
+        user_data = [{'username': user.username} for user in results]
+    else:
+        user_data = []
     return JsonResponse(user_data, safe=False)
 
 @login_required

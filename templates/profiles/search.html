@@ -1,29 +1,51 @@
-<form>
-    <input type="text" id="search-input" placeholder="Search users...">
-</form>
+<div>
+  <form>
+    <input type="text" id="search-input" placeholder="Search users..." />
+  </form>
+  <div id="search-results">
+    {% for user in results %}
+    <div class="profile-badge-container">
+      <div id="profile-badge-{{ user.username }}"></div>
+    </div>
+    <script>
+      var userData = {
+        username: "{{ user.username }}",
+      };
 
-<div id="search-results">
+      ReactDOM.render(
+        <ProfileBadge profile={userData} />,
+        document.getElementById("profile-badge-{{ user.username }}")
+      );
+    </script>
+    {% empty %}
+    {% endfor %}
+  </div>
 </div>
-
 <script>
-    document.getElementById('search-input').addEventListener('input', function () {
-        const username = this.value;
-        fetch(`/api/profiles/search/?username=${username}/`)
-            .then(response => response.json())
-            .then(data => {
-                const results = document.getElementById('search-results');
-                results.innerHTML = '';
-                console.log(data)
-                if (data.length === 0) {
-                    results.innerHTML = 'No users found.';
-                } else {
-                    data.forEach(user => {
-                        console.log(user)
-                        const userItem = document.createElement('div');
-                        userItem.textContent = user.username;
-                        results.appendChild(userItem);
-                    });
-                }
+  document
+    .getElementById("search-input")
+    .addEventListener("input", function () {
+      const username = this.value;
+      fetch(`profiles/search/?query=${username}`)
+        .then((response) => response.json())
+        .then((data) => {
+          const results = document.getElementById("search-results");
+          results.innerHTML = "";
+          if (data.length > 0) {
+            data.forEach((user) => {
+              const userItem = document.createElement("div");
+              userItem.textContent = user.username;
+              results.appendChild(userItem);
+              var userData = {
+        username: "{{ user.username }}",
+      };
+
+      ReactDOM.render(
+        <ProfileBadge profile={userData} />,
+        document.getElementById("profile-badge-{{ user.username }}")
+      );
             });
+          }
+        });
     });
 </script>
