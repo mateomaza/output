@@ -49,10 +49,12 @@ INSTALLED_APPS = [
     # Third-party
     'rest_framework',
     'corsheaders',
+    'channels',
     # Internal
     'accounts',
     'profiles',
-    'posts'
+    'posts',
+    'messages'
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middlewares.PasswordSettingMiddleware',
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"  # Use Redis in production
+    },
+}
 
 ROOT_URLCONF = 'output.urls'
 

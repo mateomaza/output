@@ -41,7 +41,9 @@ Long term todos:
 
 
 !!!
--ONLY ALLOW USERS TO CHANGE THEIR USERNAME ONCE PER WEEK (DONE)
+
+-PAGINATION FOR USER SEARCH BAR
+-! profile pictures
 -IMPLEMENT EMAIL VERIFICATION
 -REQUIRE EMAIL VERIFICATION FOR POSTING IMAGES
 -GOOGLE DRIVE CONFIGURATION
@@ -49,7 +51,9 @@ Long term todos:
 USER SEARCH BAR (PROGRESS) ->
 Security: Make sure to validate and sanitize any user input before using it in a fetch URL to prevent security vulnerabilities like SQL injection or cross-site scripting (XSS) attacks.
 
--ONLINE MESSAGES ?
+-ONLINE MESSAGES (PROGRESS) =>
+Remember to configure your server to support WebSocket connections if you're deploying your project in a production environment.
+
 -FORCE GOOGLE OAUTH JUST CREATED USERS TO SET THE PASSWORD BEFORE DOING ANYTHING ELSE (DONE)
--PAGINATION FOR USER SEARCH BAR
--! profile pictures
+-ONLY ALLOW USERS TO CHANGE THEIR USERNAME ONCE PER WEEK (DONE)
+
