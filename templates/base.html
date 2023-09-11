@@ -29,6 +29,7 @@
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     {% include 'components/navbar.html' %}
+    {% include 'components/redirect_modal.html' %}
     <div id="root" data-username="{{ username }}" data-permission="yes">
         {% block content %} {% endblock content %}
     </div>

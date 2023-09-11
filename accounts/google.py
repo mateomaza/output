@@ -57,17 +57,14 @@ def exchange_code_for_tokens(code, redirect_uri):
 
 def authenticate_with_google(tokens):
     access_token = tokens['access_token']
-    print(access_token)
     id_token_value = tokens['id_token']
     id_info = id_token.verify_oauth2_token(id_token_value, google_requests.Request(), CLIENT_ID)
     email = id_info['email']
-    try:
-        user = User.objects.get(email=email)
+    user = User.objects.get(email=email)
+    if user is not None:
         user.google_access_token = access_token
         user.save()
         return user
-    except User.DoesNotExist:
-        user = None
     random_string = ''.join(random.choices(string.digits, k=8))
     validator = UnicodeUsernameValidator()
     while True:
