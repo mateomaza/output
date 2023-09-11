@@ -1,4 +1,5 @@
 from django import forms
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserChangeForm, ReadOnlyPasswordHashField
@@ -8,6 +9,11 @@ from .models import Profile
 User = get_user_model()
 
 class ProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in self.fields:
+            self.fields[field_name].widget.attrs.update({'autocomplete': 'off'})
+
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
     class Meta:
@@ -26,6 +32,7 @@ class UserForm(UserChangeForm):
         super().__init__(*args, **kwargs)
         for field_name in self.fields:
             self.fields[field_name].widget.attrs.update({'class': 'field-margin'})
+            self.fields[field_name].widget.attrs.update({'autocomplete': 'off'})
 
     username = forms.CharField(
         label="Username",
@@ -70,7 +77,10 @@ class UserForm(UserChangeForm):
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
+        user = self.instance
         if self.has_changed() and 'username' in self.changed_data:
+            if (timezone.now() - user.username_last_updated).days < 7:
+                raise forms.ValidationError("You can only update your username once per week.")
             if User.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken.")
         return username

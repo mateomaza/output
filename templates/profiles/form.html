@@ -46,6 +46,7 @@
             >
               {% csrf_token %} 
               {{ user_form.username.label_tag }} {{user_form.username }}<br>
+              <p><small><em>You can only edit yor username once per week.</em></small></p>
               {{ user_form.email.label_tag }} {{user_form.email }}<br>
               {{ user_form.password1.label_tag }} {{user_form.password1 }}<br>
               {{ user_form.password2.label_tag }} {{user_form.password2 }}<br>
@@ -131,6 +132,9 @@
       };
       request.send(formData);
     });
+  $('#updateModal').on('hidden.bs.modal', function () {
+    location.reload();
+  });
   document.getElementById("id_username").addEventListener("input", function () {
     this.setCustomValidity("");
   });

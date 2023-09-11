@@ -2,29 +2,12 @@
   <form>
     <input type="text" id="search-input" placeholder="Search users..." />
   </form>
-  <div id="search-results">
-    {% for user in results %}
-    <div class="profile-badge-container">
-      <div id="profile-badge-{{ user.username }}"></div>
-    </div>
-    <script>
-      var userData = {
-        username: "{{ user.username }}",
-      };
-
-      ReactDOM.render(
-        <ProfileBadge profile={userData} />,
-        document.getElementById("profile-badge-{{ user.username }}")
-      );
-    </script>
-    {% empty %}
-    {% endfor %}
-  </div>
+  <div id="search-results"></div>
 </div>
 <script>
   document
     .getElementById("search-input")
-    .addEventListener("input", function () {
+    .addEventListener("input", function (e) {
       const username = this.value;
       fetch(`profiles/search/?query=${username}`)
         .then((response) => response.json())
@@ -36,14 +19,6 @@
               const userItem = document.createElement("div");
               userItem.textContent = user.username;
               results.appendChild(userItem);
-              var userData = {
-        username: "{{ user.username }}",
-      };
-
-      ReactDOM.render(
-        <ProfileBadge profile={userData} />,
-        document.getElementById("profile-badge-{{ user.username }}")
-      );
             });
           }
         });

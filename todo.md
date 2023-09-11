@@ -48,3 +48,6 @@ GOOGLE DRIVE CONFIGURATION
 USER SEARCH BAR
 ONLINE MESSAGES ?
 FORCE GOOGLE OAUTH JUST CREATED USERS TO SET THE PASSWORD BEFORE DOING ANYTHING ELSE
+Security: Make sure to validate and sanitize any user input before using it in a fetch URL to prevent security vulnerabilities like SQL injection or cross-site scripting (XSS) attacks.
+PAGINATION FOR USER SEARCH BAR
+! profile pictures

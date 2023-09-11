@@ -1,4 +1,5 @@
 from django.http import Http404, JsonResponse
+from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -62,6 +63,7 @@ def profile_update(request):
             user.save()
         if user_form.is_valid():
             user_obj = user_form.save(commit=False)
+            user.username_last_updated = timezone.now()
             user_obj.save()
             password1 = user_form.cleaned_data.get('password1')
             password2 = user_form.cleaned_data.get('password2')
