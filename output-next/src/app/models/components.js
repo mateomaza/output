@@ -61,7 +61,6 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
             {!hideForm && <PostForm onAdd={handleAdd} permission={permission} />}
             <PostsList posts={posts} current={current} onRepost={handleRepost} />
             {next !== null && <InfiniteScroll
-                children={''}
                 pageStart={0}
                 loadMore={handleNext}
                 hasMore={true || false}

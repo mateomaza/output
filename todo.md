@@ -56,6 +56,7 @@ Security: Make sure to validate and sanitize any user input before using it in a
 
 -ONLINE MESSAGES (PROGRESS) =>
 Remember to configure your server to support WebSocket connections if you're deploying your project in a production environment.
+! real time notifications
 
 -FORCE GOOGLE OAUTH JUST CREATED USERS TO SET THE PASSWORD BEFORE DOING ANYTHING ELSE (DONE)
 -ONLY ALLOW USERS TO CHANGE THEIR USERNAME ONCE PER WEEK (DONE)

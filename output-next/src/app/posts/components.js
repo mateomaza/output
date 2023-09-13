@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import Image from "next/image";
 
 import { PostsModel } from "../models";
 import { loadPosts, postAction, loadDetail } from "../lookup";
@@ -81,7 +82,7 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
           {post.content && (
             <p className="my-5 mx-5 text-center font4">{post.content}</p>
           )}
-          {post.image && <img src={post.resized_image} alt="Post"></img>}
+          {post.image && <Image src={post.resized_image} alt='Post Image'/>}
           <Repost post={post} />
         </div>
         <div className="btn btn-group mb-3 col-12 d-flex justify-content-end">

@@ -5,6 +5,6 @@ import consumers  # Import your consumer(s)
 
 application = ProtocolTypeRouter({
     "websocket": URLRouter([
-        re_path(r"ws/some_path/$", consumers.MessagingConsumer.as_asgi()),  # Example WebSocket URL
+        re_path(r"ws/some_path/$", consumers.ChatConsumer.as_asgi()),  # Example WebSocket URL
     ]),
 })

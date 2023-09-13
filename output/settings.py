@@ -50,11 +50,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'channels',
+    'pusher',
     # Internal
     'accounts',
     'profiles',
     'posts',
-    'messages'
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -74,6 +75,11 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"  # Use Redis in production
     },
 }
+
+PUSHER_APP_ID = '1668975'
+PUSHER_KEY = 'be9c8cfe8a972d05139f'
+PUSHER_SECRET = '9b8ee3280661e336c30d'
+PUSHER_CLUSTER = 'sa1' 
 
 ROOT_URLCONF = 'output.urls'
 

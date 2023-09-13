@@ -1,6 +1,7 @@
 import numeral from "numeral";
 import { useDropzone } from "react-dropzone";
 import { useState, useCallback } from "react";
+import Image from "next/image";
 
 export function DisplayCount(props) {
   return (
@@ -44,12 +45,7 @@ export const Dropzone = ({ onUpload }) => {
     <div {...getRootProps()} className="d-flex justify-content-center">
       <input {...getInputProps()} />
       {preview ? (
-        <img
-          src={preview}
-          alt="Preview"
-          className="mt-4 border"
-          style={{ width: "45%" }}
-        ></img>
+        <Image src={preview} alt='Preview' className="mt-4 border" width={"45%"}/>
       ) : (
         <div
           className="d-flex justify-content-center border rounded p-2 col-5 pointer2"
