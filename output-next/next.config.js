@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
 
-module.exports = nextConfig
+const withFonts = require("next-fonts");
+
+const nextConfig = {
+  webpack(config, options) {
+    return config;
+  },
+};
+module.exports = withFonts(nextConfig);

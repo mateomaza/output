@@ -35,19 +35,19 @@ function postLookup(method, endpoint, callback, data) {
   };
   const formData = new FormData();
   if (data.id) {
-    formData.append('id', data.id);
+    formData.append("id", data.id);
   }
   if (data.content) {
-    formData.append('content', data.content);
+    formData.append("content", data.content);
   }
   if (data.image) {
-    formData.append('image', data.image);
+    formData.append("image", data.image);
   }
   if (data.action) {
-    formData.append('action', data.action);
+    formData.append("action", data.action);
   }
-  console.log(data.likes)
-  formData.append('likes', data.likes)
+  console.log(data.likes);
+  formData.append("likes", data.likes);
 
   axios({
     method: method,
@@ -60,12 +60,12 @@ function postLookup(method, endpoint, callback, data) {
       callback(response.data, response.status);
     })
     .catch((error) => {
-      callback({ message: 'The request was an error' }, 400);
+      callback({ message: "The request was an error" }, 400);
     });
 }
 
 export function loadPosts(callback, username, next) {
-  let endpoint = '/posts';
+  let endpoint = "/posts";
   if (username) {
     endpoint = `/posts/?username=${username}`;
   }

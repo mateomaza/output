@@ -3,7 +3,7 @@ import {
     loadProfile, loadProfilePosts, profileFollow, currentProfile
 } from "./functions";
 
-export {
+export{
     loadPosts,
     createPost,
     postAction,

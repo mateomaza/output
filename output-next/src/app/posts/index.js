@@ -1,6 +1,6 @@
 import { PostsComponent, PostsList, PostDetail, PostForm, Post } from "./components";
 
-export {
+export default {
     PostsComponent,
     PostsList,
     PostDetail,

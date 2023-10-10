@@ -42,7 +42,7 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
   const isDetail = `${url_id}` === `${post.id}`;
 
   if (post.original) {
-    post.content = '';
+    post.content = "";
   }
   const handleAction = (response, status) => {
     if (status === 200) {
@@ -82,7 +82,7 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
           {post.content && (
             <p className="my-5 mx-5 text-center font4">{post.content}</p>
           )}
-          {post.image && <Image src={post.resized_image} alt='Post Image'/>}
+          {post.image && <Image src={post.resized_image} alt="Post Image" />}
           <Repost post={post} />
         </div>
         <div className="btn btn-group mb-3 col-12 d-flex justify-content-end">
@@ -270,7 +270,7 @@ export function PostForm({ onAdd, permission }) {
     const post = {
       content: content,
       image: image,
-      likes: 0
+      likes: 0,
     };
     if (!post) {
       return;
@@ -306,7 +306,10 @@ export function PostForm({ onAdd, permission }) {
               </button>
             </div>
           </form>
-          <Dropzone onUpload={handleUpload} encType='multipart/form-data'></Dropzone>
+          <Dropzone
+            onUpload={handleUpload}
+            encType="multipart/form-data"
+          ></Dropzone>
         </div>
       )}
     </>

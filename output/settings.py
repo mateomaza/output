@@ -32,10 +32,11 @@ MAX_POST_LENGTH = 280
 POST_ACTION_OPTIONS = ['like', 'unlike', 'repost']
 AUTH_USER_MODEL = 'accounts.User'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-
+# Google Cloud Storage settings
+GS_BUCKET_NAME = 'holi-cloud-bucket'
+GS_PROJECT_ID = 'holi-cloud'
+GS_MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Application definition
 
