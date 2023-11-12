@@ -1,40 +1,28 @@
-import './App.css';
+import React from "react";
+import { Routes, Route, Switch } from "react-router-dom";
 import { PostsComponent } from './posts';
-import { FeedComponent, GlobalFeedComponent } from './feed';
+import { PersonalFeedComponent, GlobalFeedComponent } from './feed';
 import { ProfileComponent } from './profiles';
+import { PostDetail } from "./posts";
+import ChatList from "./chat/chat-list";
+import Chat from "./chat/chatbox";
 
-const root = document.getElementById('root')
-
-function Posts() {
-  return <div className="App">
+function App() {
+  return (
     <div>
-      <PostsComponent {...(root.dataset)} />
+      <Routes>
+        <Route path="/posts" element={<PostsComponent />} />
+        <Route path="/personal" element={<PersonalFeedComponent />} />
+        <Route path="/global" element={<GlobalFeedComponent />} />
+        <Route path="/profiles/:profileId" element={<ProfileComponent />} />
+        <Route path="/posts/:postId" element={<PostDetail />} />
+        <Switch>
+          <Route path="/" exact component={ChatList} />
+          <Route path="/chat/:chatId" component={Chat} />
+        </Switch>
+      </Routes>
     </div>
-  </div>
+  );
 }
 
-function Feed() {
-  return <div className="App">
-    <div className='bg-dark'>
-      <FeedComponent {...(root.dataset)} />
-    </div>
-  </div>
-}
-
-function GlobalFeed() {
-  return <div className="App">
-    <div className='bg-dark'>
-      <GlobalFeedComponent {...(root.dataset)} />
-    </div>
-  </div>
-}
-
-function Profile() {
-  return <div className="App">
-    <div className='bg-dark'>
-      <ProfileComponent {...(root.dataset)} />
-    </div>
-  </div>
-}
-
-export { Posts, Feed, GlobalFeed, Profile }
+export default App;

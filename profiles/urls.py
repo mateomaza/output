@@ -5,5 +5,4 @@ urlpatterns = [
     path('update/', profile_update, name='profile_update'),
     path('<str:username>/detail/', profile_detail),
     path('search/', profile_search)
-
 ]

@@ -48,9 +48,6 @@ Long term todos:
 -REQUIRE EMAIL VERIFICATION FOR POSTING IMAGES
 -GOOGLE DRIVE CONFIGURATION
 
--CLIENT/SERVER RENDERING ->
-Migrate to Next.js
-
 USER SEARCH BAR (PROGRESS) ->
 Security: Make sure to validate and sanitize any user input before using it in a fetch URL to prevent security vulnerabilities like SQL injection or cross-site scripting (XSS) attacks.
 

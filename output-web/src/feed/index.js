@@ -1,6 +1,6 @@
-import { FeedComponent, GlobalFeedComponent } from "./components";
+import { PersonalFeedComponent, GlobalFeedComponent } from "./components";
 
 export {
-    FeedComponent,
+    PersonalFeedComponent,
     GlobalFeedComponent
 }

@@ -3,69 +3,17 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import './App.css';
 import reportWebVitals from './reportWebVitals';
-import { Posts, Feed, GlobalFeed, Profile } from './App';
-import { PostDetail } from './posts';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
 
-
-const root = ReactDOM.createRoot(document.getElementById("root"))
-
-
-const posts = document.getElementById("posts")
-
-if (posts) {
-  root.render(
-    <React.StrictMode>
-      <Posts />
-    </React.StrictMode>
-  )
-}
-
-
-const global = document.getElementById("global")
-
-if (global) {
-  root.render(
-    <React.StrictMode>
-      <GlobalFeed />
-    </React.StrictMode>
-  )
-}
-
-
-const feed = document.getElementById("feed")
-
-if (feed) {
-  root.render(
-    <React.StrictMode>
-      <Feed />
-    </React.StrictMode>
-  )
-}
-
-
-const profiles = document.getElementById("profiles")
-const profileElements = document.querySelectorAll('.profile')
-
-if (profiles && !feed) {
-  profileElements.forEach((element) => {
-    root.render(
-      <React.StrictMode>
-        <Profile {...(element.dataset)} />
-      </React.StrictMode>
-    );
-  })
-}
-
-
-const detailElements = document.querySelectorAll('.post-detail')
-
-detailElements.forEach((element) => {
-  root.render(
-    <React.StrictMode>
-      <PostDetail {...(element.dataset)} />
-    </React.StrictMode>
-  );
-})
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
 
 
 // If you want to start measuring performance in your app, pass a function

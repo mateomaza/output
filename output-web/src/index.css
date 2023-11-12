@@ -60,4 +60,15 @@ code {
   font: 11px/1 sans-serif;
 }
 
+.chat-link {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.chat-link:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
 

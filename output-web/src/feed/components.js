@@ -2,7 +2,7 @@ import { PostsModel } from "../models"
 import { loadFeed, loadGlobalFeed } from '../lookup'
 
 
-export function FeedComponent({ username, permission }) {
+export function PersonalFeedComponent({ username, permission }) {
     return <PostsModel permission={permission} loadFunction={loadFeed} username={username}/>
 }
 
