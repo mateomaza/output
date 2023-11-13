@@ -1,3 +1,4 @@
+import React from "react";
 import { PostsModel } from "../../models";
 import { loadProfilePosts } from "../../lookup";
 

@@ -8,7 +8,7 @@ from .views import (
 CLIENT
 Base Endpoint r'/api/profiles?/'
 """
-urlpatterns = [path('list', profiles_list),
+urlpatterns = [path('list/', profiles_list),
                path('<str:username>/follow/', profile_follow),
                path('<str:username>/', profile_follow),
                path('request/current/', current_profile)]

@@ -1,6 +1,6 @@
 import numeral from "numeral";
 import { useDropzone } from "react-dropzone";
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 
 export function DisplayCount(props) {
   return (

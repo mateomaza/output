@@ -15,38 +15,9 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
 
-  <div id="root" data-username="mateo" data-permission="yes">
-    <div class="d-none" id="feed"></div>
-    <div class="d-none" id="posts"></div>
-    <div class="d-none" id="global"></div>
-    <div class="d-none" id="details"></div>
-    <div class="d-none" id="profiles">
-      <div class="profile"></div> <!-- Profile Queries -->
-    </div> 
+  <div id="root">
   </div>
-
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   <script>
-    var path = window.location.pathname
-    var idRegex = /(?<post_id>\d+)/
-    var match = path.match(idRegex)
-    if (match) {
-      var posts = document.getElementById("posts")
-      posts.className = 'd-none'
-      post_id = match.groups.post_id
-      var detailElement = `<div class="post-detail" data-id=${post_id} data-class-name="col-6 mx-auto"></div>`
-      var details = document.getElementById('details')
-      details.innerHTML = detailElement
-    }
   </script>
 </body>
 

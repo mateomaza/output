@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { loadProfile, profileFollow, currentProfile } from '../lookup/'
 import { ProfileBadge } from './badges/'
 import { ProfilePostsComponent } from './posts'
 
 
-export function ProfileComponent({ username }) {
+export function ProfileComponent() {
+    const { username } = useParams();
 
     const [didLookup, setDidLookup] = useState(false)
     const [profile, setProfile] = useState(null)

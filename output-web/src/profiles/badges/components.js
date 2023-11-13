@@ -1,5 +1,5 @@
+import React from 'react'
 import { ProfileDisplay, ProfilePicture } from '../components'
-
 import { DisplayCount } from '../../utils'
 
 export function ProfileBadge({ profile, current, onFollow, profileLoading }) {

@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom';
 import axios from "axios";
-
 import { PostsModel } from "../models";
 import { loadPosts, postAction, loadDetail } from "../lookup";
 import { ProfileDisplay, ProfilePicture } from "../profiles";
 import { DisplayCount, getCookie, Dropzone } from "../utils";
 
-export function PostsComponent({ username, permission }) {
+export function PostsComponent() {
+  const { username, permission } = useParams();
   return (
     <PostsModel
       username={username}
@@ -312,7 +313,8 @@ export function PostForm({ onAdd, permission }) {
   );
 }
 
-export function PostDetail({ id }) {
+export function PostDetail() {
+  const { postId } = useParams();
   const [lookup, setLookup] = useState(false);
   const [post, setPost] = useState(null);
 
@@ -325,10 +327,10 @@ export function PostDetail({ id }) {
   };
   useEffect(() => {
     if (lookup === false) {
-      loadDetail(id, handleLookup);
+      loadDetail(postId, handleLookup);
       setLookup(true);
     }
-  }, [id, lookup, setLookup]);
+  }, [postId, lookup, setLookup]);
 
   return post === null ? null : (
     <div className="bg-dark">

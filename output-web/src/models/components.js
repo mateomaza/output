@@ -1,9 +1,6 @@
 import { PostsList, PostForm, } from '../posts'
-
-import { useState, useEffect } from 'react'
-
+import React, { useState, useEffect } from 'react'
 import { createPost, currentProfile } from '../lookup'
-
 import InfiniteScroll from 'react-infinite-scroller'
 
 
@@ -24,7 +21,6 @@ export function PostsModel({ username, permission, loadFunction, noRepost, hideF
             }
         }
         loadFunction(callback, username)
-        currentProfile(callback)
 
     }, [username, loadFunction])
 
