@@ -14,9 +14,9 @@ CLIENT
 Base Endpoint /api/posts/
 """
 urlpatterns = [
-    path('', posts_list),
-    path('<str:username>/profile/', profile_posts),
-    path('feed/', posts_feed),
+    path('list/all', posts_list),
+    path('from/<str:username>/', profile_posts),
+    path('feed/personal', posts_feed),
     path('feed/global', posts_global_feed),
     path('<int:post_id>/', post_detail),
     path('create/', post_create),

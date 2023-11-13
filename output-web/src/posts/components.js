@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from 'react-router-dom';
 import axios from "axios";
 import { PostsModel } from "../models";
 import { loadPosts, postAction, loadDetail } from "../lookup";
 import { ProfileDisplay, ProfilePicture } from "../profiles";
 import { DisplayCount, getCookie, Dropzone } from "../utils";
 
-export function PostsComponent() {
-  const { username, permission } = useParams();
+export function PostsComponent({ username, permission }) {
   return (
     <PostsModel
       username={username}
@@ -42,7 +40,7 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
   const isDetail = `${url_id}` === `${post.id}`;
 
   if (post.original) {
-    post.content = '';
+    post.content = "";
   }
   const handleAction = (response, status) => {
     if (status === 200) {
@@ -270,7 +268,7 @@ export function PostForm({ onAdd, permission }) {
     const post = {
       content: content,
       image: image,
-      likes: 0
+      likes: 0,
     };
     if (!post) {
       return;
@@ -288,7 +286,7 @@ export function PostForm({ onAdd, permission }) {
         <div className="col-12 mx-auto mb-3 p-5" style={{ width: "800px" }}>
           <form onSubmit={handleSubmit}>
             <div className="d-flex mb-3">
-              <p className="align-self-center font7 text-white my-5">
+              <p className="align-self-center font7 my-5">
                 280 characters maximum ⇢
               </p>
               <textarea
@@ -306,15 +304,17 @@ export function PostForm({ onAdd, permission }) {
               </button>
             </div>
           </form>
-          <Dropzone onUpload={handleUpload} encType='multipart/form-data'></Dropzone>
+          <Dropzone
+            onUpload={handleUpload}
+            encType="multipart/form-data"
+          ></Dropzone>
         </div>
       )}
     </>
   );
 }
 
-export function PostDetail() {
-  const { postId } = useParams();
+export function PostDetail({ id }) {
   const [lookup, setLookup] = useState(false);
   const [post, setPost] = useState(null);
 
@@ -327,10 +327,10 @@ export function PostDetail() {
   };
   useEffect(() => {
     if (lookup === false) {
-      loadDetail(postId, handleLookup);
+      loadDetail(id, handleLookup);
       setLookup(true);
     }
-  }, [postId, lookup, setLookup]);
+  }, [id, lookup, setLookup]);
 
   return post === null ? null : (
     <div className="bg-dark">

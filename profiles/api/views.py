@@ -29,6 +29,16 @@ def profiles_list(request):
         qs = qs.by_username(username)
     return get_paginated_queryset(qs, request)
 
+@api_view(['GET'])
+def profile_detail(request, username):
+    qs = Profile.objects.filter(user__username=username)
+    if not qs.exists():
+            return Response({'detail': 'User not found'}, status=404)
+    obj = qs.first()
+    serializer = PublicProfileSerializer(
+        instance=obj, context={'request': request})
+    return Response(serializer.data, status=200)
+
 @api_view(['GET', 'POST'])
 @authentication_classes([SessionAuthentication])
 def profile_follow(request, username):
