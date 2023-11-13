@@ -21,7 +21,7 @@ function App() {
         <Route path="/profiles/:username" element={<ProfileComponent />} />
         <Route path="/posts/:postId" element={<PostDetail {...rootProps}/>} />
         <Route path="/chat" element={<ChatList {...rootProps} />} />
-        <Route path="/chat/:chatId" element={<Chat {...rootProps} />} />
+        <Route path="/chat/:chatId" element={<Chat />} />
       </Routes>
     </div>
   );

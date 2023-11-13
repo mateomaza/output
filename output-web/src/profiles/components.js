@@ -49,9 +49,7 @@ export function ProfileComponent() {
           profileLoading={profileLoading}
         />
         {profile.username === current.username && (
-          <button className="btn font2 mb-3" onClick={handleUpdate}>
-            Update
-          </button>
+          <SendMessageButton/>
         )}
         <div className="mt-5">
           <ProfilePostsComponent username={username} />
@@ -64,8 +62,9 @@ export function ProfileComponent() {
 }
 
 export function ProfileLink(props) {
+  console.log(props.username)
   const handleProfileLink = () => {
-    window.location.href = `/profiles/${props.username}/detail`;
+    window.location.href = `/profiles/${props.username}`;
   };
   return (
     <span className="pointer" onClick={handleProfileLink}>
@@ -75,6 +74,7 @@ export function ProfileLink(props) {
 }
 
 export function ProfileDisplay({ profile, includeName, hideLink }) {
+  console.log(profile.username)
   const nameDisplay =
     includeName === true ? `${profile.first_name} ${profile.last_name} ` : null;
 
@@ -101,5 +101,25 @@ export function ProfilePicture({ profile }) {
         {profile.username[0]}
       </span>
     </ProfileLink>
+  );
+}
+
+function SendMessageButton({ targetUsername }) {
+  const [chatId, setChatId] = useState(null);
+
+  const handleCreateChat = async () => {
+      try {
+          const response = await axios.post(`/api/create_chat/${targetUsername}`);
+          if (response.status === 201 || response.status === 200) {
+              setChatId(response.data.chat_id);
+          } else {
+              console.error(response.data.message);
+          }
+      } catch (error) {
+          console.error('Error creating chat:', error);
+      }
+  };
+  return (
+      <button onClick={handleCreateChat} className="font2">Send Message</button>
   );
 }

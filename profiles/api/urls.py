@@ -10,4 +10,4 @@ Base Endpoint r'/api/profiles?/'
 """
 urlpatterns = [path('list/', profiles_list),
                path('<str:username>/follow/', profile_follow),
-               path('<str:username>/detail', profile_detail),]
+               path('<str:username>/detail', profile_detail)]

@@ -76,7 +76,7 @@ export function loadPosts(callback, username, next) {
 }
 
 export function loadDetail(post_id, callback) {
-  backendLookup("GET", `/posts/${post_id}`, callback);
+  backendLookup("GET", `/posts/${post_id}/detail`, callback);
 }
 
 export function createPost(data, callback) {

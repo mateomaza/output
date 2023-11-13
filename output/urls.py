@@ -41,7 +41,7 @@ urlpatterns = [
     path('auth/google/callback/', google_callback, name='google-callback'),
     path('set_password/', set_password, name='set_password'),
     path('send/message', send_message, name='send_message'),
-    path('get/<str:username>/chats', get_user_chats, name='send_message'),
+    path('get/<str:username>/chats', get_user_chats),
     path('check/follow', check_mutual_follow),
 ]
 

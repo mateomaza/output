@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom';
 import axios from "axios";
 import { PostsModel } from "../models";
 import { loadPosts, postAction, loadDetail } from "../lookup";
@@ -33,6 +34,7 @@ export function PostsList({ posts, current, onRepost }) {
 }
 
 export function Post({ post, current, onRepost, isRepost, hideActions }) {
+  console.log(post)
   const [data, setData] = useState(post);
   const path = window.location.pathname;
   const match = path.match(/(?<post_id>\d+)/);
@@ -51,7 +53,7 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
     }
   };
   const handlePostLink = () => {
-    window.location.href = post.id;
+    window.location.href = `posts/${post.id}/`;
   };
   return (
     <div className="mx-auto mt-2 mb-5 bg-white text-dark w-75 rounded">
@@ -69,7 +71,7 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
               {isRepost === true ? (
                 `${post.profile.first_name} ${post.profile.last_name} `
               ) : (
-                <ProfileDisplay profile={post.profile} includeName />
+                post.profile && <ProfileDisplay profile={post.profile} includeName />
               )}
             </p>
             {isRepost !== true &&
@@ -100,6 +102,11 @@ export function Post({ post, current, onRepost, isRepost, hideActions }) {
     </div>
   );
 }
+Post.defaultProps = {
+  post: {
+    profile: {},
+  },
+};
 
 export function Repost({ post }) {
   const repostProps = {
@@ -314,7 +321,8 @@ export function PostForm({ onAdd, permission }) {
   );
 }
 
-export function PostDetail({ id }) {
+export function PostDetail() {
+  const { postId } = useParams();
   const [lookup, setLookup] = useState(false);
   const [post, setPost] = useState(null);
 
@@ -327,10 +335,10 @@ export function PostDetail({ id }) {
   };
   useEffect(() => {
     if (lookup === false) {
-      loadDetail(id, handleLookup);
+      loadDetail(postId, handleLookup);
       setLookup(true);
     }
-  }, [id, lookup, setLookup]);
+  }, [postId, lookup, setLookup]);
 
   return post === null ? null : (
     <div className="bg-dark">

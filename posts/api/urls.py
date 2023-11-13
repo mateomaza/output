@@ -18,7 +18,7 @@ urlpatterns = [
     path('from/<str:username>/', profile_posts),
     path('feed/personal', posts_feed),
     path('feed/global', posts_global_feed),
-    path('<int:post_id>/', post_detail),
+    path('<int:post_id>/detail', post_detail),
     path('create/', post_create),
     path('action/', post_action),
     path('<int:post_id>/delete/', post_delete)]
