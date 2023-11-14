@@ -1,6 +1,6 @@
 import {
     loadPosts, createPost, postAction, loadDetail, loadFeed, loadGlobalFeed,
-    loadProfile, loadProfilePosts, profileFollow, currentProfile
+    loadProfile, loadProfilePosts, profileFollow, currentProfile, checkFollow
 } from "./functions";
 
 export {
@@ -13,5 +13,6 @@ export {
     loadProfile,
     loadProfilePosts,
     profileFollow,
-    currentProfile
+    currentProfile,
+    checkFollow
 }

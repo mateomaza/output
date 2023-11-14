@@ -125,3 +125,7 @@ export function profileFollow(action, username, callback) {
 export function currentProfile(callback) {
   backendLookup("GET", "/current/profile", callback);
 }
+
+export function checkFollow(callback, username) {
+  backendLookup("GET", `/check/${username}/follow/eachother`, callback);
+}

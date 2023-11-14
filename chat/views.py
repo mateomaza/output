@@ -37,13 +37,31 @@ def send_message(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
-def is_mutual_follow(user1_id, user2_id):
-    user1 = User.objects.get(id=user1_id)
-    user2 = User.objects.get(id=user2_id)
+def is_mutual_follow(user1_username, user2_username):
+    user1 = User.objects.get(username=user1_username)
+    user2 = User.objects.get(username=user2_username)
     return user1 in user2.following.all() and user2 in user1.following.all()
 
 @api_view(['GET'])
-def check_mutual_follow(request, profile_id):
-    current_user_id = request.user.id
-    mutual_follow = is_mutual_follow(current_user_id, profile_id)
-    return JsonResponse({'mutual_follow': mutual_follow})
+def check_mutual_follow(request, username):
+    if not request.user.is_authenticated:
+            mateo = User.objects.first()
+            request.user = mateo
+    current_user = request.user.username
+    mutual_follow = is_mutual_follow(current_user, username)
+    return JsonResponse({'mutual_follow': mutual_follow}, status=200)
+
+@api_view(['POST, GET'])
+def create_chat(request, username):
+    if not request.user.is_authenticated:
+            mateo = User.objects.first()
+            request.user = mateo
+    try:
+        target_user = User.objects.get(username=username)
+        if request.user.follows(target_user) and target_user.follows(request.user):
+            chat, created = Chat.objects.get_or_create(participants=[request.user, target_user])
+            return JsonResponse({'status': 'success', 'chat_id': chat.id}, status=201 if created else 200)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Users must follow each other to start a chat'}, status=403)
+    except User.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'User not found'}, status=404)

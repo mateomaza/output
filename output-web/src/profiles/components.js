@@ -1,31 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
-import { loadProfile, profileFollow, currentProfile } from "../lookup/";
+import axios from 'axios'
+import { useParams } from "react-router-dom";
+import { loadProfile, profileFollow, currentProfile, checkFollow } from "../lookup/";
 import { ProfileBadge } from "./badges/";
 import { ProfilePostsComponent } from "./posts";
 
 export function ProfileComponent() {
   const { username } = useParams();
-  const [didLookup, setDidLookup] = useState(false);
   const [profile, setProfile] = useState(null);
-  const [profileLoading, setProfileLoading] = useState(false);
   const [current, setCurrent] = useState(null);
+  const [mutualFollow, setMutualFollow] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   const handleLookup = (response, status) => {
     if (status === 200) {
       setProfile(response);
+      console.log(response.mutual_follow)
+      setMutualFollow(response.mutual_follow);
     }
     if (status === 202) {
       setCurrent(response);
     }
   };
+
   useEffect(() => {
-    if (didLookup === false) {
-      loadProfile(handleLookup, username);
-      currentProfile(handleLookup);
-      setDidLookup(true);
+    loadProfile(handleLookup, username);
+    currentProfile(handleLookup);
+  }, [username]);
+
+  useEffect(() => {
+    if (profile) {
+      const checkMutualFollow = async () => {
+        try {
+          checkFollow(handleLookup, username)
+        } catch (error) {
+          console.error('Error checking mutual follow:', error);
+        }
+      };
+
+      checkMutualFollow();
     }
-  }, [username, didLookup, setDidLookup]);
+  }, [profile, username]);
 
   const handleFollow = (action) => {
     profileFollow(action, username, (response, status) => {
@@ -36,10 +51,8 @@ export function ProfileComponent() {
     });
     setProfileLoading(true);
   };
-  const handleUpdate = () => {
-    window.location.href = "/profiles/update";
-  };
-  if (didLookup === true && profile && current) {
+
+  if (profile && current) {
     return (
       <>
         <ProfileBadge
@@ -48,8 +61,8 @@ export function ProfileComponent() {
           onFollow={handleFollow}
           profileLoading={profileLoading}
         />
-        {profile.username === current.username && (
-          <SendMessageButton/>
+        {(profile.username !== current.username) && mutualFollow && (
+          <SendMessageButton targetUsername={username} />
         )}
         <div className="mt-5">
           <ProfilePostsComponent username={username} />
@@ -62,7 +75,7 @@ export function ProfileComponent() {
 }
 
 export function ProfileLink(props) {
-  console.log(props.username)
+  console.log(props.username);
   const handleProfileLink = () => {
     window.location.href = `/profiles/${props.username}`;
   };
@@ -74,7 +87,7 @@ export function ProfileLink(props) {
 }
 
 export function ProfileDisplay({ profile, includeName, hideLink }) {
-  console.log(profile.username)
+  console.log(profile.username);
   const nameDisplay =
     includeName === true ? `${profile.first_name} ${profile.last_name} ` : null;
 
@@ -108,18 +121,21 @@ function SendMessageButton({ targetUsername }) {
   const [chatId, setChatId] = useState(null);
 
   const handleCreateChat = async () => {
-      try {
-          const response = await axios.post(`/api/create_chat/${targetUsername}`);
-          if (response.status === 201 || response.status === 200) {
-              setChatId(response.data.chat_id);
-          } else {
-              console.error(response.data.message);
-          }
-      } catch (error) {
-          console.error('Error creating chat:', error);
+    try {
+      const response = await axios.post(`/create/chat/${targetUsername}`);
+      if (response.status === 201 || response.status === 200) {
+        setChatId(response.data.chat_id);
+        window.location.href = `chat/${chatId}/`;
+      } else {
+        console.error(response.data.message);
       }
+    } catch (error) {
+      console.error("Error creating chat:", error);
+    }
   };
   return (
-      <button onClick={handleCreateChat} className="font2">Send Message</button>
+    <button onClick={handleCreateChat} className="font2">
+      Send Message
+    </button>
   );
 }
