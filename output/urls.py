@@ -18,7 +18,6 @@ from posts.views import global_feed, personal_feed, local_posts_list, local_post
 from accounts.views import login_view, logout_view, register_view, set_password
 from accounts.google import google_auth, google_callback
 from profiles.api.views import current_profile
-from chat.views import send_message, get_user_chats, check_mutual_follow, create_chat
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
@@ -36,14 +35,12 @@ urlpatterns = [
     re_path(r'profiles?/', include('profiles.urls')),
     path('api/posts/', include('posts.api.urls')),
     re_path(r'api/profiles?/', include('profiles.api.urls')),
+    path('api/movies/', include('movies.urls')),
     path('api/current/profile', current_profile),
     path('auth/google/login/', google_auth, name='google-login'),
     path('auth/google/callback/', google_callback, name='google-callback'),
     path('set_password/', set_password, name='set_password'),
-    path('send/message/', send_message, name='send_message'),
-    path('get/<str:username>/chats/', get_user_chats),
-    path('api/check/<str:username>/follow/eachother', check_mutual_follow),
-    path('create/chat/<str:username>/', create_chat),
+    
 ]
 
 if settings.DEBUG:

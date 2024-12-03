@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios'
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { loadProfile, profileFollow, currentProfile, checkFollow } from "../lookup/";
 import { ProfileBadge } from "./badges/";
 import { ProfilePostsComponent } from "./posts";
@@ -55,6 +55,7 @@ export function ProfileComponent() {
   if (profile && current) {
     return (
       <>
+        <Link to="/">Go back to feed</Link>
         <ProfileBadge
           profile={profile}
           current={current}

@@ -34,7 +34,6 @@ export function PostsList({ posts, current, onRepost }) {
 }
 
 export function Post({ post, current, onRepost, isRepost, hideActions }) {
-  console.log(post)
   const [data, setData] = useState(post);
   const path = window.location.pathname;
   const match = path.match(/(?<post_id>\d+)/);

@@ -6,6 +6,8 @@ import { ProfileComponent } from "./profiles";
 import { PostDetail } from "./posts";
 import ChatList from "./chat/chat-list";
 import Chat from "./chat/chatbox";
+import MoviesPage from "./movies/movies-page";
+import VisualizationPage from "./movies/visualization";
 
 const root = document.getElementById('root')
 
@@ -15,8 +17,10 @@ function App() {
   return (
     <div>
       <Routes>
+        <Route path="/movies" element={<MoviesPage />} />
+        <Route path="/top-by-year" element={<VisualizationPage />} />
         <Route path="/posts" element={<PostsComponent {...rootProps} />} />
-        <Route path="/personal" element={<PersonalFeedComponent {...rootProps}/>} />
+        <Route path="/" element={<PersonalFeedComponent {...rootProps}/>} />
         <Route path="/global" element={<GlobalFeedComponent {...rootProps}/>} />
         <Route path="/profiles/:username" element={<ProfileComponent />} />
         <Route path="/posts/:postId" element={<PostDetail {...rootProps}/>} />

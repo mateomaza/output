@@ -1,14 +1,18 @@
 import React from "react";
 import { PostsModel } from "../models";
 import { loadFeed, loadGlobalFeed } from "../lookup";
+import { Link } from "react-router-dom";
 
 export function PersonalFeedComponent({ username, permission }) {
   return (
+    <>
+    <Link to="/movies">View Top Movies and TV Shows</Link>
     <PostsModel
       permission={permission}
       loadFunction={loadFeed}
       username={username}
-    />
+    /></>
+    
   );
 }
 

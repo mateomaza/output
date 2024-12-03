@@ -38,7 +38,6 @@ class PostLike(models.Model):
     
 
 class Post(models.Model):
-    # Maps to SQL Data
     user = models.ForeignKey(User, related_name='posts',
                              on_delete=models.CASCADE, default='')
     repost = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
